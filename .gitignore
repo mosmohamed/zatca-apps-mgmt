@@ -1,0 +1,47 @@
+# Dependencies & build artifacts
+**/node_modules/
+**/vendor/
+**/dist/
+**/build/
+**/.vite/
+**/.turbo/
+**/coverage/
+**/.phpunit.cache/
+**/bootstrap/cache/*.php
+!**/bootstrap/cache/.gitignore
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+!**/.env.example
+backend/.env
+frontend/.env
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs & runtime
+*.log
+backend/storage/logs/*
+!backend/storage/logs/.gitignore
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/app/public/*
+!backend/storage/app/public/.gitignore
+
+# Tests / local dumps
+*.sql
+*.sqlite
+.phpunit.result.cache
+
+# Docker overrides
+docker-compose.override.yml
+
+# Large local assets (keep logos tracked if needed)
+Apps_Master_Sheet*.csv

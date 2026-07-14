@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: zatca-it-portfolio:latest
+    restart: unless-stopped
+    # Coolify usually injects PORT / proxy; expose container HTTP.
+    ports:
+      - "80"
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      LOG_CHANNEL: stderr
+      RUN_MIGRATIONS: "true"
+      RUN_SEEDERS: "false"
+      # Coolify will inject the rest (APP_KEY, APP_URL, DB_*, REDIS_*) via UI.
+    volumes:
+      - app-storage:/var/www/html/storage/app
+      - app-logs:/var/www/html/storage/logs
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1/up"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+
+volumes:
+  app-storage:
+  app-logs:

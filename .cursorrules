@@ -1,0 +1,359 @@
+Enterprise IT Portfolio & Access Management System
+
+AI Development Rules
+
+Version: 2.0
+
+1. General AI Coding Principles
+
+The AI must behave as a senior enterprise software engineer.
+All generated code must be:
+
+Production-ready.
+
+Secure.
+
+Maintainable.
+
+Following enterprise development standards.
+
+Free from placeholders.
+
+Free from TODO comments.
+
+Never generate:
+
+Fake implementations.
+
+Empty methods.
+
+Placeholder responses.
+
+Incomplete logic.
+
+If implementation requires multiple files, generate all required files.
+
+2. Backend Technology Stack
+
+Laravel 12 API
+
+PHP 8.3+
+
+MySQL
+
+Laravel Sanctum
+
+Spatie Permission
+
+Spatie Activitylog
+
+Maatwebsite Excel
+
+3. PHP Coding Standards
+
+All PHP files MUST:
+
+Follow PSR-12 formatting.
+
+Start with declare(strict_types=1);
+
+All classes MUST:
+
+Use strict typing.
+
+Define return types and property types.
+
+Avoid unnecessary mixed types.
+
+Correct Example:
+public function getUser(int $id): User
+
+4. Laravel Architecture Rules
+
+The application MUST follow a layered architecture.
+Do NOT implement the Repository Pattern. Eloquent is sufficient.
+
+Recommended structure:
+
+app/
+├── Http/
+│   ├── Controllers/Api/V1/
+│   ├── Requests/
+│   └── Resources/
+├── Services/
+├── Policies/
+├── Models/
+└── Exceptions/
+
+
+5. Controller Rules
+
+Controllers MUST remain thin. They are responsible ONLY for:
+
+Receiving requests.
+
+Calling Services.
+
+Returning Resources.
+
+Controllers MUST NOT contain: Business logic, Database queries, Complex calculations, or Permission logic.
+
+6. Service Layer Rules
+
+All business logic MUST exist inside Services (app/Services).
+Services handle: Business workflows, Complex operations, Transactions, and Integration logic.
+Services MUST NOT: Return HTTP responses, Handle validation, or Access Request objects.
+
+7. Validation Rules
+
+Validation MUST exist ONLY inside Form Requests (app/Http/Requests).
+Never validate inside Controllers, Services, or Models.
+All validation messages must support localization using Laravel helper: __('messages.validation.required')
+
+8. API Resource Rules
+
+All API responses MUST use API Resources.
+
+JsonResource (for single models)
+
+ResourceCollection (for collections)
+
+9. Database Rules
+
+All database operations MUST follow:
+
+Proper indexing on foreign keys and searchable columns.
+
+Explicit cascade behavior or nullOnDelete().
+Tables should include: id (Auto Increment, no UUIDs), created_at, updated_at, deleted_at (SoftDeletes where required).
+
+10. Query Optimization Rules
+
+The AI MUST prevent N+1 problems. Always use with() or loadMissing().
+Enable Model strict mode in AppServiceProvider:
+Model::preventLazyLoading(!app()->isProduction());
+
+11. Database Transactions
+
+Any multi-step write operation MUST use:
+DB::transaction(function () { ... });
+
+12. Authorization Rules
+
+Authorization MUST use Laravel Policies mapped to Spatie Permission.
+Authorization flow: Request -> Policy -> Permission -> Action.
+Do not use auth()->user()->can() inside controllers. Rely on Route Middleware or $this->authorize().
+
+13. Audit Logging Rules
+
+All sensitive operations MUST be logged using spatie/laravel-activitylog.
+Never manually insert audit records.
+
+14. API Standards
+
+Base API version: /api/v1
+
+Standard Success Response:
+
+{
+    "success": true,
+    "message": "Operation successful",
+    "data": {},
+    "errors": null
+}
+
+
+Validation Error Response (422):
+
+{
+    "success": false,
+    "message": "Validation failed",
+    "data": null,
+    "errors": { "email": ["The email field is required."] }
+}
+
+
+15. Pagination, Search, Sorting
+
+All index endpoints MUST support:
+
+Pagination: ?page=1&per_page=15 (Default 15).
+
+Search: ?search=keyword (Search indexed columns only).
+
+Sorting: ?sort=name (ASC) or ?sort=-created_at (DESC).
+
+16. API Security Rules
+
+Never expose sensitive database fields. Do not trust frontend validation. Use .env for secrets.
+
+17. Frontend Technology Stack
+
+React 19 + Vite + TypeScript
+
+Tailwind CSS
+
+TailAdmin (Layout Shell)
+
+shadcn/ui (Internal Components)
+
+TanStack Query (React Query)
+
+React Hook Form + Zod
+
+React Router v7
+
+Axios & Sonner
+
+18. Frontend Architecture Rules
+
+The frontend MUST follow Feature-Based Architecture. Never create flat structures.
+Required structure:
+
+src/
+├── features/
+│   └── featureName/
+│       ├── components/
+│       ├── hooks/
+│       ├── services/
+│       ├── pages/
+│       └── types/
+├── components/
+├── layouts/
+├── routes/
+├── lib/
+└── utils/
+
+
+19. React Component Rules
+
+All components MUST:
+
+Use Functional Components with TypeScript.
+
+Have clear responsibilities and be reusable.
+Avoid: Huge components, Business logic inside JSX, and Direct API calls inside components (use hooks/services instead).
+
+20. State Management Rules
+
+Server State: Must use TanStack Query (API data, Cache, Pagination, Loading states).
+
+Local UI State: Use React Hooks (Modal state, Form state, Tabs).
+Do NOT introduce Redux unless explicitly required.
+
+21. API Communication Rules
+
+All API communication MUST go through services/.
+Create a centralized Axios instance in src/lib/axios.ts to handle: Base URL, Auth tokens, Global errors, and Unauthorized handling.
+
+22. Forms Rules
+
+All forms MUST use React Hook Form + Zod.
+Every form MUST support: Client & Backend validation errors, Loading state, Submit prevention during mutation, and Success/Error notifications (via Sonner).
+
+23. UI Architecture Rules (Hybrid)
+
+TailAdmin is ONLY responsible for: Layout, Sidebar, Navbar, Footer, and Dashboard shell.
+
+shadcn/ui is used for: Buttons, Forms, Dialogs, Tables, Select, Combobox, Calendar, Alerts.
+CRITICAL: When generating tailwind config, dynamically merge TailAdmin's colors and shadcn's variables. Do NOT overwrite one with the other.
+
+24. Localization (i18n) Rules
+
+Supported languages: Arabic (ar) / English (en).
+The system MUST support:
+
+Dynamic language switching (RTL/LTR switching).
+
+Localized validation and API messages.
+
+Adapt Tailwind classes using logical properties (e.g., ms- instead of ml-).
+
+25. Date, Time and Number Formatting
+
+Never hardcode formats. Always use localization utilities.
+
+26. Accessibility Rules
+
+All UI components should consider: Keyboard navigation, Proper labels, Screen reader compatibility, and Focus states.
+
+27. Error Handling Rules
+
+Backend: Must return structured JSON errors.
+
+Frontend: Must handle Network errors, Validation errors, Auth expiration. Never show raw technical errors to users.
+
+28. Loading State Rules
+
+Every async operation MUST have: Loading indicator, Disabled submit actions. Avoid blank screens (use Skeletons).
+
+29. Testing Requirements
+
+Backend: Feature tests for APIs, Unit tests for Services, Authorization tests.
+
+Frontend: Component tests, Form validation tests, Critical workflow tests.
+
+30. Code Quality Rules
+
+Backend: Laravel Pint, PHPStan, PHPUnit.
+
+Frontend: ESLint, TypeScript Compiler, Prettier.
+Code must pass validation before merging.
+
+31. CI/CD Rules
+
+Every Pull Request MUST validate:
+
+Backend: composer install, php artisan test, vendor/bin/pint, phpstan analyse
+
+Frontend: npm install, npm run lint, npm run type-check, npm run build
+
+32. Environment Rules
+
+Never hardcode URLs, Passwords, Tokens, API keys, or Database credentials. Always use .env.
+
+33. Git Rules
+
+Commit messages should follow Conventional Commits: type(scope): message
+Examples: feat(users): add user management, fix(auth): resolve token refresh issue
+
+34. Documentation Rules
+
+Every feature MUST document: Feature Name, Purpose, Database Changes, API Endpoints, Permissions Required, Frontend Components.
+
+35. AI Generation Rules
+
+When generating code, the AI MUST:
+
+Understand existing architecture first.
+
+Follow current naming conventions.
+
+Reuse existing components.
+
+Avoid duplicated implementations.
+
+Generate complete files with required imports.
+
+Include migrations when database changes are required.
+
+Include tests for critical logic.
+
+36. Sprint Execution Rules
+
+Each sprint implementation MUST include:
+
+Backend: Migration, Model, Relationships, Requests, Policies, Services, Resources, Controllers, Tests.
+
+Frontend: Types, Services, Hooks, Components, Pages, Routes, Validation.
+
+37. Production Readiness Checklist
+
+Before marking any feature complete, check:
+[ ] Database optimized (Indexes/N+1)
+[ ] Authorization & Validation implemented
+[ ] API Resources used
+[ ] Audit logging added
+[ ] Localization completed
+[ ] Tests added
+[ ] No TODO comments or duplicated logic

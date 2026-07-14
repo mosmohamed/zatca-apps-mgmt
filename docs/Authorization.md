@@ -1,0 +1,4 @@
+Authorization & RBAC
+1. Authentication mechanismLaravel Sanctum: Issues API Tokens upon successful login.Frontend Handling: Token is stored (e.g., localStorage/Cookies) and attached via an Axios Interceptor to all outbound requests (Authorization: Bearer <token>).
+2. Spatie RolesThe system utilizes spatie/laravel-permission. There are no hardcoded string roles in the User model.super_admin: Has full CRUD permissions across the entire system.employee: Has restricted, read-only access limited to viewing their own application assignments.
+3. Policy EnforcementEvery Eloquent model has a corresponding Policy.Controller methods check authorization via $this->authorize('update', $application).The Policy resolves this by checking $user->hasRole('super_admin').Endpoints mutating data must be strictly blocked for anyone without super_admin.

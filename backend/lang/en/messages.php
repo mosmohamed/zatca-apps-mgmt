@@ -1,0 +1,190 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'validation' => [
+        'failed' => 'Validation failed.',
+        'required' => 'The :attribute field is required.',
+        'string' => 'The :attribute must be a string.',
+        'email' => 'The :attribute must be a valid email address.',
+        'unique' => 'The :attribute has already been taken.',
+        'exists' => 'The selected :attribute is invalid.',
+        'boolean' => 'The :attribute field must be true or false.',
+        'integer' => 'The :attribute must be an integer.',
+        'numeric' => 'The :attribute must be a number.',
+        'url' => 'The :attribute must be a valid URL.',
+        'max' => [
+            'string' => 'The :attribute may not be greater than :max characters.',
+        ],
+        'min' => [
+            'string' => 'The :attribute must be at least :min characters.',
+        ],
+        'in' => 'The selected :attribute is invalid.',
+        'confirmed' => 'The :attribute confirmation does not match.',
+        'date' => 'The :attribute is not a valid date.',
+        'nullable' => 'The :attribute field may be null.',
+    ],
+
+    'attributes' => [
+        'name' => 'name',
+        'name_ar' => 'Arabic name',
+        'name_en' => 'English name',
+        'code' => 'code',
+        'email' => 'email',
+        'phone' => 'phone',
+        'password' => 'password',
+        'first_name' => 'first name',
+        'last_name' => 'last name',
+        'vendor_id' => 'vendor',
+        'department_id' => 'department',
+        'application_type_id' => 'application type',
+        'application_id' => 'application',
+        'user_id' => 'user',
+        'app_role_id' => 'application role',
+        'job_title_id' => 'job title',
+        'status_id' => 'status',
+        'criticality_id' => 'criticality',
+        'support_type_id' => 'support type',
+        'description' => 'description',
+        'sort_order' => 'sort order',
+        'teams' => 'Teams',
+        'whatsapp' => 'WhatsApp',
+        'extension' => 'extension',
+        'business_owner' => 'business owner',
+        'technical_owner' => 'technical owner',
+        'documentation_url' => 'documentation URL',
+        'repository_url' => 'repository URL',
+        'contact_person_email' => 'contact person email',
+        'contact_person_phone' => 'contact person phone',
+        'remarks' => 'remarks',
+        'is_active' => 'active status',
+        'is_primary' => 'primary flag',
+        'assigned_at' => 'assigned at',
+        'password_confirmation' => 'password confirmation',
+        'users' => 'users',
+        'technologies' => 'technologies',
+        'category' => 'category',
+    ],
+
+    'auth' => [
+        'login_success' => 'Logged in successfully.',
+        'logout_success' => 'Logged out successfully.',
+        'me_success' => 'Authenticated user retrieved successfully.',
+        'failed' => 'These credentials do not match our records.',
+        'inactive' => 'This account is inactive.',
+        'unauthenticated' => 'Unauthenticated.',
+        'forbidden' => 'You are not authorized to perform this action.',
+    ],
+
+    'errors' => [
+        'not_found' => 'The requested resource was not found.',
+        'http' => 'An unexpected error occurred.',
+    ],
+
+    'vendors' => [
+        'listed' => 'Vendors retrieved successfully.',
+        'created' => 'Vendor created successfully.',
+        'retrieved' => 'Vendor retrieved successfully.',
+        'updated' => 'Vendor updated successfully.',
+        'deleted' => 'Vendor deleted successfully.',
+    ],
+
+    'departments' => [
+        'listed' => 'Departments retrieved successfully.',
+        'created' => 'Department created successfully.',
+        'retrieved' => 'Department retrieved successfully.',
+        'updated' => 'Department updated successfully.',
+        'deleted' => 'Department deleted successfully.',
+    ],
+
+    'users' => [
+        'listed' => 'Users retrieved successfully.',
+        'created' => 'User created successfully.',
+        'retrieved' => 'User retrieved successfully.',
+        'updated' => 'User updated successfully.',
+        'deleted' => 'User deleted successfully.',
+    ],
+
+    'applications' => [
+        'listed' => 'Applications retrieved successfully.',
+        'created' => 'Application created successfully.',
+        'retrieved' => 'Application retrieved successfully.',
+        'updated' => 'Application updated successfully.',
+        'deleted' => 'Application deleted successfully.',
+    ],
+
+    'assignments' => [
+        'listed' => 'Assignments retrieved successfully.',
+        'summary_listed' => 'Assignment matrix applications retrieved successfully.',
+        'matrix_retrieved' => 'Application assignment matrix retrieved successfully.',
+        'created' => 'Assignment created successfully.',
+        'bulk_created' => 'Bulk assignments created successfully.',
+        'retrieved' => 'Assignment retrieved successfully.',
+        'updated' => 'Assignment updated successfully.',
+        'deleted' => 'Assignment ended successfully.',
+    ],
+
+    'job_titles' => [
+        'listed' => 'Job titles retrieved successfully.',
+        'created' => 'Job title created successfully.',
+        'retrieved' => 'Job title retrieved successfully.',
+        'updated' => 'Job title updated successfully.',
+        'deleted' => 'Job title deleted successfully.',
+    ],
+
+    'support_types' => [
+        'listed' => 'Support types retrieved successfully.',
+        'created' => 'Support type created successfully.',
+        'retrieved' => 'Support type retrieved successfully.',
+        'updated' => 'Support type updated successfully.',
+        'deleted' => 'Support type deleted successfully.',
+    ],
+
+    'criticalities' => [
+        'listed' => 'Criticalities retrieved successfully.',
+        'created' => 'Criticality created successfully.',
+        'retrieved' => 'Criticality retrieved successfully.',
+        'updated' => 'Criticality updated successfully.',
+        'deleted' => 'Criticality deleted successfully.',
+    ],
+
+    'application_statuses' => [
+        'listed' => 'Application statuses retrieved successfully.',
+        'created' => 'Application status created successfully.',
+        'retrieved' => 'Application status retrieved successfully.',
+        'updated' => 'Application status updated successfully.',
+        'deleted' => 'Application status deleted successfully.',
+    ],
+
+    'technologies' => [
+        'listed' => 'Technologies retrieved successfully.',
+        'created' => 'Technology created successfully.',
+        'retrieved' => 'Technology retrieved successfully.',
+        'updated' => 'Technology updated successfully.',
+        'deleted' => 'Technology deleted successfully.',
+    ],
+
+    'app_roles' => [
+        'listed' => 'Application roles retrieved successfully.',
+        'created' => 'Application role created successfully.',
+        'retrieved' => 'Application role retrieved successfully.',
+        'updated' => 'Application role updated successfully.',
+        'deleted' => 'Application role deleted successfully.',
+    ],
+
+    'dashboard' => [
+        'retrieved' => 'Dashboard data retrieved successfully.',
+    ],
+
+    'lookups' => [
+        'departments' => 'Departments retrieved successfully.',
+        'application_types' => 'Application types retrieved successfully.',
+        'app_roles' => 'Application roles retrieved successfully.',
+        'job_titles' => 'Job titles retrieved successfully.',
+        'support_types' => 'Support types retrieved successfully.',
+        'criticalities' => 'Criticalities retrieved successfully.',
+        'application_statuses' => 'Application statuses retrieved successfully.',
+        'technologies' => 'Technologies retrieved successfully.',
+    ],
+];

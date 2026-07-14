@@ -1,0 +1,111 @@
+# syntax=docker/dockerfile:1.7
+
+############################
+# Stage 1: Frontend build
+############################
+FROM node:22-alpine AS frontend-build
+
+WORKDIR /app/frontend
+
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+
+COPY frontend/ ./
+# Same-origin API path behind nginx
+ENV VITE_API_BASE_URL=/api/v1
+RUN npm run build
+
+
+############################
+# Stage 2: PHP Composer deps
+############################
+FROM composer:2 AS vendor-build
+
+WORKDIR /app
+
+COPY backend/composer.json backend/composer.lock ./
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-progress \
+    --prefer-dist \
+    --optimize-autoloader \
+    --no-scripts
+
+
+############################
+# Stage 3: Production runtime
+############################
+FROM php:8.3-fpm-bookworm AS runtime
+
+LABEL org.opencontainers.image.title="ZATCA IT Portfolio" \
+      org.opencontainers.image.description="Laravel API + React SPA" \
+      org.opencontainers.image.source="https://github.com/mosmohamed/zatca-apps-mgmt"
+
+ENV APP_ENV=production \
+    APP_DEBUG=false \
+    LOG_CHANNEL=stderr \
+    PHP_OPCACHE_ENABLE=1
+
+# System packages + PHP extensions
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        curl \
+        git \
+        unzip \
+        nginx \
+        supervisor \
+        libicu-dev \
+        libzip-dev \
+        libpng-dev \
+        libjpeg62-turbo-dev \
+        libfreetype6-dev \
+        libonig-dev \
+        libxml2-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j"$(nproc)" \
+        bcmath \
+        exif \
+        gd \
+        intl \
+        mbstring \
+        opcache \
+        pcntl \
+        pdo_mysql \
+        zip \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -f /etc/nginx/sites-enabled/default
+
+# PHP / FPM / nginx / supervisor configuration
+COPY docker/php/php.ini /usr/local/etc/php/conf.d/99-production.ini
+COPY docker/php/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+RUN chmod +x /usr/local/bin/entrypoint.sh \
+    && mkdir -p /var/log/supervisor /var/www/frontend \
+    && chown -R www-data:www-data /var/www
+
+WORKDIR /var/www/html
+
+# Application code (backend)
+COPY --chown=www-data:www-data backend/ ./
+COPY --from=vendor-build --chown=www-data:www-data /app/vendor ./vendor
+
+# SPA build served by nginx
+COPY --from=frontend-build --chown=www-data:www-data /app/frontend/dist /var/www/frontend
+
+# Ensure writable dirs exist for first boot
+RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs storage/app/public bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R ug+rwx storage bootstrap/cache
+
+EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=5 \
+  CMD curl -fsS http://127.0.0.1/up || exit 1
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

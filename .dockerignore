@@ -1,0 +1,47 @@
+# Git / docs
+.git
+.gitignore
+.gitattributes
+.cursorrules
+docs
+*.md
+!README.md
+
+# Dependencies (installed in image)
+**/node_modules
+**/vendor
+
+# Build outputs
+**/dist
+**/build
+**/.vite
+frontend/dist
+backend/public/build
+backend/public/hot
+
+# Env & secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Tests & tooling
+**/tests
+**/phpunit.xml
+**/phpstan*
+**/.phpunit.cache
+**/coverage
+**/*.log
+
+# IDE / OS
+.idea
+.vscode
+.DS_Store
+Thumbs.db
+
+# Local data dumps
+*.sql
+*.sqlite
+Apps_Master_Sheet*.csv
+
+# Docker (do not recurse into itself unnecessarily)
+docker-compose.override.yml

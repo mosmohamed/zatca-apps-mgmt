@@ -1,0 +1,5 @@
+Functional Requirements
+1. DashboardSuper Admin View: KPI Cards (Total Users, Active Applications, Vendors count), Charts (Applications by Status/Type), and Recent Assignment Activity feed.Employee View: Personalized read-only view of their currently active application assignments.
+2. CRUD OperationsFull Create, Read, Update, and Soft Delete capabilities for:DepartmentsApplication TypesApp RolesVendorsApplicationsUsersApplication Assignments
+3. Data Grids & SearchAll listing views (Frontend DataTables) must support:Server-side Pagination (default 15/page, customizable).Server-side Sorting by clicking column headers.Server-side Debounced Searching (querying across relevant indexed columns like name_ar, name_en, code, email).4. Export Capabilitiessuper_admin can export data from Applications, Vendors, and Users tables to Excel (.xlsx).
+5. System Audit & LoggingUtilize spatie/laravel-activitylog to automatically record created, updated, and deleted events for Vendors, Applications, and Application Assignments.
