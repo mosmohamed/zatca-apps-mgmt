@@ -105,9 +105,16 @@ COPY --from=vendor-build --chown=www-data:www-data /app/vendor ./vendor
 COPY --from=frontend-build --chown=www-data:www-data /app/frontend/dist /var/www/frontend
 
 # Ensure writable dirs exist for first boot
-RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs storage/app/public bootstrap/cache \
+RUN mkdir -p \
+        storage/framework/cache/data \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs \
+        storage/app/public \
+        bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R ug+rwx storage bootstrap/cache
+    && find storage bootstrap/cache -type d -exec chmod 775 {} \; \
+    && find storage bootstrap/cache -type f -exec chmod 664 {} \;
 
 EXPOSE 80
 

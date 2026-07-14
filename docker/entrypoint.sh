@@ -3,18 +3,37 @@ set -eu
 
 cd /var/www/html
 
+fix_permissions() {
+  echo "[entrypoint] Fixing storage permissions for www-data..."
+  mkdir -p \
+    storage/framework/cache/data \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/logs \
+    storage/app/public \
+    bootstrap/cache
+
+  chown -R www-data:www-data storage bootstrap/cache
+  find storage bootstrap/cache -type d -exec chmod 775 {} \;
+  find storage bootstrap/cache -type f -exec chmod 664 {} \;
+}
+
+run_as_www() {
+  # Avoid root-owned cache/files that PHP-FPM (www-data) cannot write later.
+  if command -v runuser >/dev/null 2>&1; then
+    runuser -u www-data -- "$@"
+  else
+    su -s /bin/sh www-data -c "$*"
+  fi
+}
+
 echo "[entrypoint] Preparing Laravel runtime directories..."
-mkdir -p \
-  storage/framework/cache \
-  storage/framework/sessions \
-  storage/framework/views \
-  storage/logs \
-  storage/app/public \
-  bootstrap/cache
+fix_permissions
 
 # Coolify / compose injects env vars; support optional .env file fallback
 if [ ! -f .env ] && [ -f .env.example ]; then
   cp .env.example .env
+  chown www-data:www-data .env
 fi
 
 # Prefer Coolify-injected APP_KEY. If missing, generate without booting Artisan.
@@ -24,11 +43,11 @@ if [ -z "${APP_KEY:-}" ]; then
   export APP_KEY="${GENERATED_KEY}"
   if [ -f .env ]; then
     if grep -qE '^APP_KEY=' .env; then
-      # Replace empty or existing APP_KEY line
       sed -i "s|^APP_KEY=.*|APP_KEY=${GENERATED_KEY}|" .env
     else
       printf '\nAPP_KEY=%s\n' "${GENERATED_KEY}" >> .env
     fi
+    chown www-data:www-data .env
   fi
   echo "[entrypoint] APP_KEY set for this container lifetime. Persist it in Coolify env vars."
 fi
@@ -80,26 +99,25 @@ echo "[entrypoint] Database is ready."
 
 if [ "${RUN_MIGRATE_FRESH:-false}" = "true" ]; then
   echo "[entrypoint] RUN_MIGRATE_FRESH=true — wiping database and re-running all migrations..."
-  php artisan migrate:fresh --force --no-interaction
+  run_as_www php artisan migrate:fresh --force --no-interaction
   echo "[entrypoint] WARNING: Set RUN_MIGRATE_FRESH=false in Coolify after this boot (destructive)."
 elif [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
   echo "[entrypoint] Running migrations..."
-  php artisan migrate --force --no-interaction
+  run_as_www php artisan migrate --force --no-interaction
 fi
 
 if [ "${RUN_SEEDERS:-false}" = "true" ]; then
   echo "[entrypoint] Running seeders..."
-  php artisan db:seed --force --no-interaction
+  run_as_www php artisan db:seed --force --no-interaction
 fi
 
 echo "[entrypoint] Optimizing Laravel caches..."
-php artisan storage:link --force --no-interaction >/dev/null 2>&1 || true
-php artisan config:cache --no-interaction
-php artisan route:cache --no-interaction
-php artisan view:cache --no-interaction
+run_as_www php artisan storage:link --force --no-interaction >/dev/null 2>&1 || true
+run_as_www php artisan config:cache --no-interaction
+run_as_www php artisan route:cache --no-interaction
+run_as_www php artisan view:cache --no-interaction
 
-chown -R www-data:www-data storage bootstrap/cache
-chmod -R ug+rwx storage bootstrap/cache
+fix_permissions
 
 echo "[entrypoint] Starting supervisord..."
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

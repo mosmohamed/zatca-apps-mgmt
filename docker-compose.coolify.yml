@@ -12,11 +12,16 @@ services:
       APP_ENV: production
       APP_DEBUG: "false"
       LOG_CHANNEL: stderr
+      # Prefer database drivers unless Coolify Redis is configured.
+      CACHE_STORE: "${CACHE_STORE:-database}"
+      SESSION_DRIVER: "${SESSION_DRIVER:-database}"
+      QUEUE_CONNECTION: "${QUEUE_CONNECTION:-database}"
       RUN_MIGRATIONS: "true"
       RUN_SEEDERS: "false"
       # Coolify will inject the rest (APP_KEY, APP_URL, DB_*, REDIS_*) via UI.
     volumes:
       - app-storage:/var/www/html/storage/app
+      - app-framework-cache:/var/www/html/storage/framework
       - app-logs:/var/www/html/storage/logs
     networks:
       - coolify
@@ -29,6 +34,7 @@ services:
 
 volumes:
   app-storage:
+  app-framework-cache:
   app-logs:
 
 # Attach to Coolify's predefined network so this stack can reach
