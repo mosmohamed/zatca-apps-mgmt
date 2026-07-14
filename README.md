@@ -231,18 +231,32 @@ Keep these credentials ready for the app environment.
    - Select `mosmohamed/zatca-apps-mgmt`
    - Branch: `main`
    - Compose file: `docker-compose.coolify.yml`  
-     (uses Coolify-managed MySQL/Redis via env vars)
-4. Configure **Environment Variables** (see section 7)
-5. **Ports / Domains**
+     (joins the predefined `coolify` network so standalone MySQL is reachable)
+4. On the compose resource page, also enable **Connect to Predefined Network** (Advanced) — belt-and-suspenders with the YAML `networks.coolify.external: true`
+5. Configure **Environment Variables** (see section 7)
+6. **Ports / Domains**
    - Map domain (example: `apps.your-domain.gov.sa`) to the `app` service port **80**
    - Enable HTTPS (Let's Encrypt) in Coolify
-6. Set:
+7. Set:
 
    - `APP_URL=https://apps.your-domain.gov.sa`
    - `SANCTUM_STATEFUL_DOMAINS=apps.your-domain.gov.sa`
+   - `DB_HOST=<mysql-container-name>` (example: `z13ei8savxjbflwqk60dj3h7`)
 
-7. Deploy → watch build logs
-8. After green health check, open the domain
+8. Deploy → watch build logs
+9. After green health check, open the domain
+
+#### Reset database (empty / disposable DB only)
+
+In Coolify → your app resource → **Terminal** (or Execute Command on the `app` container):
+
+```bash
+php artisan migrate:fresh --force
+# optional seed:
+# php artisan migrate:fresh --seed --force
+```
+
+This drops every table and re-runs all migrations from scratch.
 
 ### Option B — Dockerfile resource
 
