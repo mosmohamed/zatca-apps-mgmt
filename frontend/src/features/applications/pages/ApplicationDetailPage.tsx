@@ -232,6 +232,20 @@ export function ApplicationDetailPage() {
                 label={t("applicationsDetails.fields.technicalOwner")}
                 value={application.technical_owner || "—"}
               />
+              {application.documentation_url ? (
+                <DetailItem
+                  label={t("applicationsDetails.fields.documentationUrl")}
+                  value={application.documentation_url}
+                  href={application.documentation_url}
+                />
+              ) : null}
+              {application.repository_url ? (
+                <DetailItem
+                  label={t("applicationsDetails.fields.repositoryUrl")}
+                  value={application.repository_url}
+                  href={application.repository_url}
+                />
+              ) : null}
               <DetailItem
                 label={t("applicationsDetails.fields.updatedAt")}
                 value={
@@ -411,13 +425,35 @@ function MetricCard({
   )
 }
 
-function DetailItem({ label, value }: { label: string; value: string }) {
+function DetailItem({
+  label,
+  value,
+  href,
+}: {
+  label: string
+  value: string
+  href?: string
+}) {
   return (
     <div className="rounded-xl border border-border/50 bg-muted/30 px-3.5 py-3 transition-colors hover:bg-muted/45">
       <dt className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
         {label}
       </dt>
-      <dd className="mt-1.5 text-sm font-medium break-words">{value}</dd>
+      <dd className="mt-1.5 text-sm font-medium break-words">
+        {href ? (
+          <a
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 text-primary underline-offset-4 hover:underline"
+          >
+            <span className="truncate">{value}</span>
+            <ExternalLink className="size-3.5 shrink-0" />
+          </a>
+        ) : (
+          value
+        )}
+      </dd>
     </div>
   )
 }

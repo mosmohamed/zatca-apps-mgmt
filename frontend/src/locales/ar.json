@@ -769,6 +769,8 @@
       "supportType": "نوع الدعم",
       "businessOwner": "مالك الأعمال",
       "technicalOwner": "المالك التقني",
+      "documentationUrl": "رابط التوثيق",
+      "repositoryUrl": "رابط المستودع",
       "updatedAt": "آخر تحديث",
       "createdAt": "تاريخ الإنشاء"
     },

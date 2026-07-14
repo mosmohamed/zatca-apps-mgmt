@@ -774,6 +774,8 @@
       "supportType": "Support type",
       "businessOwner": "Business owner",
       "technicalOwner": "Technical owner",
+      "documentationUrl": "Documentation URL",
+      "repositoryUrl": "Repository URL",
       "updatedAt": "Last updated",
       "createdAt": "Created"
     },
