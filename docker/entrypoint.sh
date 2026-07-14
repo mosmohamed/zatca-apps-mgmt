@@ -78,7 +78,11 @@ try {
 done
 echo "[entrypoint] Database is ready."
 
-if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
+if [ "${RUN_MIGRATE_FRESH:-false}" = "true" ]; then
+  echo "[entrypoint] RUN_MIGRATE_FRESH=true — wiping database and re-running all migrations..."
+  php artisan migrate:fresh --force --no-interaction
+  echo "[entrypoint] WARNING: Set RUN_MIGRATE_FRESH=false in Coolify after this boot (destructive)."
+elif [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
   echo "[entrypoint] Running migrations..."
   php artisan migrate --force --no-interaction
 fi
