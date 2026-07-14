@@ -27,7 +27,7 @@ class GlobalSearchFeatureTest extends TestCase
         $this->seedRolesAndPermissions();
 
         $this->employee = User::factory()->create([
-            'email' => 'search-employee@itportfolio.local',
+            'email' => 'search-employee@zatca.sa',
         ]);
         $this->employee->assignRole('employee');
     }

@@ -62,7 +62,7 @@ UI gates create/edit/delete actions with `isSuperAdmin`. API policies enforce th
 
 Default admin (overridable via env):
 
-- Email: `admin@itportfolio.local`
+- Email: `admin@zatca.sa`
 - Password: `password`
 - Env keys: `SUPER_ADMIN_EMAIL`, `SUPER_ADMIN_PASSWORD`
 
@@ -1011,7 +1011,7 @@ Until Sprint 1 of remaining work:
 ## Default local credentials
 
 ```
-admin@itportfolio.local / password
+admin@zatca.sa / password
 ```
 
 ## Verification commands

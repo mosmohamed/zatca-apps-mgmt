@@ -29,7 +29,7 @@ class TechnologyFeatureTest extends TestCase
         $this->seedRolesAndPermissions();
 
         $this->admin = User::factory()->create([
-            'email' => 'tech-admin@itportfolio.local',
+            'email' => 'tech-admin@zatca.sa',
         ]);
         $this->admin->assignRole('super_admin');
     }

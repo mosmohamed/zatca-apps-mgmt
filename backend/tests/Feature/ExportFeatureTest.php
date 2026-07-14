@@ -28,12 +28,12 @@ class ExportFeatureTest extends TestCase
         $this->seedRolesAndPermissions();
 
         $this->admin = User::factory()->create([
-            'email' => 'export-admin@itportfolio.local',
+            'email' => 'export-admin@zatca.sa',
         ]);
         $this->admin->assignRole('super_admin');
 
         $this->employee = User::factory()->create([
-            'email' => 'export-employee@itportfolio.local',
+            'email' => 'export-employee@zatca.sa',
         ]);
         $this->employee->assignRole('employee');
     }

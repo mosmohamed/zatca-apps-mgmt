@@ -50,7 +50,7 @@ export function LoginPage() {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "admin@itportfolio.local",
+      email: "admin@zatca.sa",
       password: "password",
     },
   })

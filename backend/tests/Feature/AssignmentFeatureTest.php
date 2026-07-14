@@ -39,17 +39,17 @@ class AssignmentFeatureTest extends TestCase
         $this->seedRolesAndPermissions();
 
         $this->admin = User::factory()->create([
-            'email' => 'admin-test@itportfolio.local',
+            'email' => 'admin-test@zatca.sa',
         ]);
         $this->admin->assignRole('super_admin');
 
         $this->employee = User::factory()->create([
-            'email' => 'employee-test@itportfolio.local',
+            'email' => 'employee-test@zatca.sa',
         ]);
         $this->employee->assignRole('employee');
 
         $this->assignee = User::factory()->create([
-            'email' => 'assignee-test@itportfolio.local',
+            'email' => 'assignee-test@zatca.sa',
         ]);
         $this->assignee->assignRole('employee');
 
