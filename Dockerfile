@@ -19,9 +19,13 @@ RUN npm run build
 ############################
 # Stage 2: PHP Composer deps
 ############################
+# Extensions are installed in the runtime stage; ignore platform checks here.
 FROM composer:2 AS vendor-build
 
 WORKDIR /app
+
+ENV COMPOSER_ALLOW_SUPERUSER=1 \
+    COMPOSER_HOME=/tmp/composer
 
 COPY backend/composer.json backend/composer.lock ./
 RUN composer install \
@@ -30,7 +34,8 @@ RUN composer install \
     --no-progress \
     --prefer-dist \
     --optimize-autoloader \
-    --no-scripts
+    --no-scripts \
+    --ignore-platform-reqs
 
 
 ############################
