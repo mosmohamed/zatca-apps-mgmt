@@ -1,20 +1,14 @@
 import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { ArrowDown, ArrowUp, ArrowUpDown, Pencil, Plus, Trash2 } from "lucide-react"
+import { Pencil, Plus, Trash2 } from "lucide-react"
 
-import { EmptyState } from "@/components/EmptyState"
-import { LoadingSkeleton } from "@/components/LoadingSkeleton"
 import { ConfirmAlertDialog } from "@/components/ConfirmAlertDialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+  EnterpriseDataTable,
+  type EnterpriseDataTableColumn,
+} from "@/components/EnterpriseDataTable"
+import type { EnterpriseExportConfig } from "@/components/enterprise-data-table/types"
+import { Button } from "@/components/ui/button"
 import { ApplicationFormDialog } from "@/features/applications/components/ApplicationFormDialog"
 import {
   useApplications,
@@ -25,29 +19,23 @@ import { useAuth } from "@/features/auth/hooks/use-auth"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { cn } from "@/lib/utils"
 
-type SortColumn = "name_en" | "code" | "created_at"
-
-function SortIcon({
-  column,
-  sort,
-}: {
-  column: SortColumn
-  sort: string
-}) {
-  const active = sort === column || sort === `-${column}`
-  if (!active) {
-    return <ArrowUpDown className="size-3.5 opacity-50" />
-  }
-  return sort.startsWith("-") ? (
-    <ArrowDown className="size-3.5" />
-  ) : (
-    <ArrowUp className="size-3.5" />
-  )
-}
+const ALL_COLUMN_IDS = [
+  "name",
+  "code",
+  "department",
+  "type",
+  "status",
+  "criticality",
+  "actions",
+]
 
 export function ApplicationsPage() {
   const { t } = useTranslation()
-  const { isSuperAdmin } = useAuth()
+  const { can } = useAuth()
+  const canCreate = can("applications.create")
+  const canUpdate = can("applications.update")
+  const canDelete = can("applications.delete")
+
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [perPage] = useState(15)
@@ -55,6 +43,9 @@ export function ApplicationsPage() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<Application | null>(null)
   const [pendingDelete, setPendingDelete] = useState<Application | null>(null)
+  const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([])
+  const [visibleColumnIds, setVisibleColumnIds] = useState<string[]>(ALL_COLUMN_IDS)
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false)
 
   const debouncedSearch = useDebouncedValue(search, 350)
 
@@ -74,19 +65,6 @@ export function ApplicationsPage() {
   const items = applicationsQuery.data?.items ?? []
   const pagination = applicationsQuery.data?.pagination
 
-  function toggleSort(column: SortColumn) {
-    setPage(1)
-    setSort((current) => {
-      if (current === column) {
-        return `-${column}`
-      }
-      if (current === `-${column}`) {
-        return column
-      }
-      return column
-    })
-  }
-
   function openCreate() {
     setEditing(null)
     setDialogOpen(true)
@@ -102,7 +80,144 @@ export function ApplicationsPage() {
       return
     }
     await deleteMutation.mutateAsync(pendingDelete.id)
+    setSelectedKeys((current) => current.filter((key) => key !== pendingDelete.id))
     setPendingDelete(null)
+  }
+
+  async function handleBulkDelete() {
+    await Promise.all(
+      selectedKeys.map((id) => deleteMutation.mutateAsync(Number(id)))
+    )
+    setSelectedKeys([])
+    setBulkDeleteOpen(false)
+  }
+
+  const columns = useMemo<EnterpriseDataTableColumn<Application>[]>(() => {
+    const base: EnterpriseDataTableColumn<Application>[] = [
+      {
+        id: "name",
+        header: t("applications.columns.name"),
+        label: t("applications.columns.name"),
+        sortable: true,
+        sortKey: "name_en",
+        cell: (row) => (
+          <div>
+            <div className="font-medium">{row.name_en}</div>
+            <div className="text-xs text-muted-foreground">{row.name_ar}</div>
+          </div>
+        ),
+      },
+      {
+        id: "code",
+        header: t("applications.columns.code"),
+        label: t("applications.columns.code"),
+        sortable: true,
+        sortKey: "code",
+        className: "font-mono text-xs",
+        cell: (row) => row.code,
+      },
+      {
+        id: "department",
+        header: t("applications.columns.department"),
+        label: t("applications.columns.department"),
+        cell: (row) => row.department?.name_en ?? "—",
+      },
+      {
+        id: "type",
+        header: t("applications.columns.type"),
+        label: t("applications.columns.type"),
+        cell: (row) => row.application_type?.name_en ?? "—",
+      },
+      {
+        id: "status",
+        header: t("applications.columns.status"),
+        label: t("applications.columns.status"),
+        cell: (row) => (
+          <span
+            className={cn(
+              "inline-flex rounded-md px-2 py-0.5 text-xs font-medium",
+              row.status?.name_en === "Active" &&
+                "bg-emerald-500/10 text-emerald-700",
+              row.status?.name_en === "Maintenance" &&
+                "bg-amber-500/10 text-amber-700",
+              row.status?.name_en === "Retired" &&
+                "bg-slate-500/10 text-slate-700",
+              row.status?.name_en === "Archived" &&
+                "bg-muted text-muted-foreground"
+            )}
+          >
+            {row.status?.name_en ?? "—"}
+          </span>
+        ),
+      },
+      {
+        id: "criticality",
+        header: t("applications.columns.criticality"),
+        label: t("applications.columns.criticality"),
+        cell: (row) => row.criticality?.name_en ?? "—",
+      },
+    ]
+
+    if (canUpdate || canDelete) {
+      base.push({
+        id: "actions",
+        header: <span className="block text-end">{t("common.actions")}</span>,
+        headerClassName: "text-end",
+        className: "text-end",
+        alwaysVisible: true,
+        cell: (row) => (
+          <div className="inline-flex gap-1">
+            {canUpdate ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => openEdit(row)}
+                aria-label={`${t("common.edit")} ${row.name_en}`}
+              >
+                <Pencil />
+              </Button>
+            ) : null}
+            {canDelete ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => setPendingDelete(row)}
+                disabled={deleteMutation.isPending}
+                aria-label={`${t("common.delete")} ${row.name_en}`}
+              >
+                <Trash2 />
+              </Button>
+            ) : null}
+          </div>
+        ),
+      })
+    }
+
+    return base
+  }, [canDelete, canUpdate, deleteMutation.isPending, t])
+
+  const exportConfig: EnterpriseExportConfig = {
+    entity: "applications",
+    filenamePrefix: "applications",
+    reportTitle: t("applications.title"),
+    columns: [
+      { key: "name_en", label: t("applications.columns.name") },
+      { key: "code", label: t("applications.columns.code") },
+      { key: "department", label: t("applications.columns.department") },
+      { key: "application_type", label: t("applications.columns.type") },
+      { key: "status", label: t("applications.columns.status") },
+      { key: "criticality", label: t("applications.columns.criticality") },
+    ],
+    getContext: () => ({
+      search: debouncedSearch,
+      sort,
+      page,
+      per_page: perPage,
+    }),
+    selectedIds: selectedKeys,
+    permission: "applications.export",
   }
 
   return (
@@ -114,7 +229,7 @@ export function ApplicationsPage() {
             {t("applications.description")}
           </p>
         </div>
-        {isSuperAdmin ? (
+        {canCreate ? (
           <Button type="button" onClick={openCreate}>
             <Plus />
             {t("applications.new")}
@@ -122,182 +237,53 @@ export function ApplicationsPage() {
         ) : null}
       </div>
 
-      <div className="rounded-xl border border-stroke bg-card p-4 shadow-sm">
-        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <Input
-            value={search}
-            onChange={(event) => {
-              setSearch(event.target.value)
-              setPage(1)
-            }}
-            placeholder={t("applications.searchPlaceholder")}
-            className="sm:max-w-sm"
-          />
-          <p className="text-xs text-muted-foreground">
-            {pagination
-              ? t("common.pagination", {
-                  total: pagination.total,
-                  current: pagination.current_page,
-                  last: pagination.last_page,
-                })
-              : t("common.loading")}
-          </p>
-        </div>
+      <EnterpriseDataTable
+        columns={columns}
+        data={items}
+        rowKey={(row) => row.id}
+        loading={applicationsQuery.isLoading}
+        search={search}
+        onSearchChange={(value) => {
+          setSearch(value)
+          setPage(1)
+        }}
+        searchPlaceholder={t("applications.searchPlaceholder")}
+        sort={sort}
+        onSortChange={(next) => {
+          setSort(next)
+          setPage(1)
+        }}
+        pagination={pagination}
+        onPageChange={setPage}
+        emptyTitle={t("applications.emptyTitle")}
+        emptyDescription={
+          debouncedSearch
+            ? t("common.tryDifferentSearch")
+            : t("applications.emptyCreate")
+        }
+        selectable={canDelete}
+        selectedKeys={selectedKeys}
+        onSelectedKeysChange={setSelectedKeys}
+        visibleColumnIds={visibleColumnIds}
+        onVisibleColumnIdsChange={setVisibleColumnIds}
+        exportConfig={exportConfig}
+        bulkActions={
+          canDelete ? (
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => setBulkDeleteOpen(true)}
+              disabled={deleteMutation.isPending}
+            >
+              <Trash2 />
+              {t("common.deleteSelected")}
+            </Button>
+          ) : null
+        }
+      />
 
-        {applicationsQuery.isLoading ? (
-          <LoadingSkeleton variant="table" rows={8} />
-        ) : items.length === 0 ? (
-          <EmptyState
-            title={t("applications.emptyTitle")}
-            description={
-              debouncedSearch
-                ? t("common.tryDifferentSearch")
-                : t("applications.emptyCreate")
-            }
-            actionLabel={isSuperAdmin ? t("applications.create") : undefined}
-            onAction={isSuperAdmin ? openCreate : undefined}
-          />
-        ) : (
-          <>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1"
-                      onClick={() => toggleSort("name_en")}
-                    >
-                      {t("applications.columns.name")}
-                      <SortIcon column="name_en" sort={sort} />
-                    </button>
-                  </TableHead>
-                  <TableHead>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1"
-                      onClick={() => toggleSort("code")}
-                    >
-                      {t("applications.columns.code")}
-                      <SortIcon column="code" sort={sort} />
-                    </button>
-                  </TableHead>
-                  <TableHead>{t("applications.columns.department")}</TableHead>
-                  <TableHead>{t("applications.columns.type")}</TableHead>
-                  <TableHead>{t("applications.columns.status")}</TableHead>
-                  <TableHead>{t("applications.columns.criticality")}</TableHead>
-                  {isSuperAdmin ? (
-                    <TableHead className="text-end">{t("common.actions")}</TableHead>
-                  ) : null}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {items.map((application) => (
-                  <TableRow key={application.id}>
-                    <TableCell>
-                      <div className="font-medium">{application.name_en}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {application.name_ar}
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-mono text-xs">
-                      {application.code}
-                    </TableCell>
-                    <TableCell>
-                      {application.department?.name_en ?? "—"}
-                    </TableCell>
-                    <TableCell>
-                      {application.application_type?.name_en ?? "—"}
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className={cn(
-                          "inline-flex rounded-md px-2 py-0.5 text-xs font-medium",
-                          application.status?.name_en === "Active" &&
-                            "bg-emerald-500/10 text-emerald-700",
-                          application.status?.name_en === "Maintenance" &&
-                            "bg-amber-500/10 text-amber-700",
-                          application.status?.name_en === "Retired" &&
-                            "bg-slate-500/10 text-slate-700",
-                          application.status?.name_en === "Archived" &&
-                            "bg-muted text-muted-foreground"
-                        )}
-                      >
-                        {application.status?.name_en ?? "—"}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      {application.criticality?.name_en ?? "—"}
-                    </TableCell>
-                    {isSuperAdmin ? (
-                      <TableCell className="text-end">
-                        <div className="inline-flex gap-1">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            onClick={() => openEdit(application)}
-                            aria-label={`${t("common.edit")} ${application.name_en}`}
-                          >
-                            <Pencil />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            onClick={() => setPendingDelete(application)}
-                            disabled={deleteMutation.isPending}
-                            aria-label={`${t("common.delete")} ${application.name_en}`}
-                          >
-                            <Trash2 />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    ) : null}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-
-            {pagination && pagination.last_page > 1 ? (
-              <div className="mt-4 flex items-center justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={pagination.current_page <= 1}
-                  onClick={() => setPage((current) => Math.max(1, current - 1))}
-                >
-                  {t("common.previous")}
-                </Button>
-                <span className="text-xs text-muted-foreground">
-                  {t("common.pageOf", {
-                    current: pagination.current_page,
-                    last: pagination.last_page,
-                  })}
-                </span>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={
-                    pagination.current_page >= pagination.last_page
-                  }
-                  onClick={() =>
-                    setPage((current) =>
-                      Math.min(pagination.last_page, current + 1)
-                    )
-                  }
-                >
-                  {t("common.next")}
-                </Button>
-              </div>
-            ) : null}
-          </>
-        )}
-      </div>
-
-      {isSuperAdmin ? (
+      {canCreate || canUpdate ? (
         <ApplicationFormDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
@@ -318,6 +304,17 @@ export function ApplicationsPage() {
         })}
         confirming={deleteMutation.isPending}
         onConfirm={confirmDelete}
+      />
+
+      <ConfirmAlertDialog
+        open={bulkDeleteOpen}
+        onOpenChange={setBulkDeleteOpen}
+        title={t("applications.bulkDeleteTitle")}
+        description={t("applications.bulkDeleteConfirm", {
+          count: selectedKeys.length,
+        })}
+        confirming={deleteMutation.isPending}
+        onConfirm={handleBulkDelete}
       />
     </section>
   )

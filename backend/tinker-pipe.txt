@@ -1,0 +1,10 @@
+echo Auth::getDefaultDriver(), PHP_EOL;
+echo config('auth.defaults.guard'), PHP_EOL;
+Laravel\Sanctum\Sanctum::actingAs(App\Models\User::role('super_admin')->first());
+echo Auth::getDefaultDriver(), PHP_EOL;
+echo (new Spatie\Permission\Models\Role)->guard_name, PHP_EOL;
+var_export(getModelForGuard((new Spatie\Permission\Models\Role)->guard_name));
+echo PHP_EOL;
+var_export(getModelForGuard('sanctum'));
+echo PHP_EOL;
+try { Spatie\Permission\Models\Role::first()->users(); echo 'users ok', PHP_EOL; } catch (Throwable $e) { echo get_class($e), ': ', $e->getMessage(), PHP_EOL; }

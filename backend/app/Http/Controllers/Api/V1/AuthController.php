@@ -31,7 +31,7 @@ class AuthController extends BaseController
             ]);
         }
 
-        $user->load(['vendor', 'roles']);
+        $user->load(['vendor', 'roles.permissions']);
 
         $token = $user->createToken('api')->plainTextToken;
 
@@ -46,7 +46,7 @@ class AuthController extends BaseController
     {
         /** @var User $user */
         $user = $request->user();
-        $user->load(['vendor', 'roles']);
+        $user->load(['vendor', 'roles.permissions']);
 
         return $this->resourceResponse(
             new UserResource($user),

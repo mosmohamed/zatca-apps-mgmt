@@ -42,6 +42,15 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        /*
+         * Required so Spatie Permission can resolve model classes when the
+         * request is authenticated via Sanctum (Auth::getDefaultDriver() === 'sanctum').
+         */
+        'sanctum' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
     ],
 
     /*

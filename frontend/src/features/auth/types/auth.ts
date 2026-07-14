@@ -19,6 +19,7 @@ export type AuthUser = {
   job_title_id: number | null
   is_active: boolean
   roles: string[]
+  permissions: string[]
   created_at: string | null
   updated_at: string | null
   deleted_at: string | null

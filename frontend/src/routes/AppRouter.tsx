@@ -19,10 +19,14 @@ import { ApplicationDetailPage } from "@/features/applications/pages/Application
 import { ApplicationsDetailsPage } from "@/features/applications/pages/ApplicationsDetailsPage"
 import { AppRolesPage } from "@/features/app-roles/pages/AppRolesPage"
 import { AssignmentsPage } from "@/features/assignments/pages/AssignmentsPage"
+import { ActivityLogPage } from "@/features/activity-log/pages/ActivityLogPage"
 import { CriticalitiesPage } from "@/features/criticalities/pages/CriticalitiesPage"
 import { DashboardPage } from "@/features/dashboard/pages/DashboardPage"
 import { DepartmentsPage } from "@/features/departments/pages/DepartmentsPage"
 import { JobTitlesPage } from "@/features/job-titles/pages/JobTitlesPage"
+import { RolesPage } from "@/features/roles/pages/RolesPage"
+import { SettingsProvider } from "@/features/settings/hooks/use-settings"
+import { SettingsPage } from "@/features/settings/pages/SettingsPage"
 import { SupportTypesPage } from "@/features/support-types/pages/SupportTypesPage"
 import { TechnologiesPage } from "@/features/technologies/pages/TechnologiesPage"
 import { UsersPage } from "@/features/users/pages/UsersPage"
@@ -72,6 +76,9 @@ function AppRoutes() {
                   element={<ApplicationStatusesPage />}
                 />
                 <Route path="technologies" element={<TechnologiesPage />} />
+                <Route path="roles" element={<RolesPage />} />
+                <Route path="activity-log" element={<ActivityLogPage />} />
+                <Route path="settings" element={<SettingsPage />} />
                 <Route path="403" element={<ForbiddenPage />} />
                 <Route path="500" element={<ServerErrorPage />} />
                 <Route path="404" element={<NotFoundPage />} />
@@ -91,7 +98,9 @@ export function AppRouter() {
   return (
     <AppProviders>
       <AuthProvider>
-        <AppRoutes />
+        <SettingsProvider>
+          <AppRoutes />
+        </SettingsProvider>
       </AuthProvider>
     </AppProviders>
   )

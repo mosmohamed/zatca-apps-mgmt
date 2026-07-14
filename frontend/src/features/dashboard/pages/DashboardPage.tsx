@@ -47,7 +47,6 @@ import { DashboardKpiCard } from "@/features/dashboard/components/DashboardKpiCa
 import { DashboardLiveHeader } from "@/features/dashboard/components/DashboardLiveHeader"
 import { useDashboard } from "@/features/dashboard/hooks/use-dashboard"
 import type { DashboardChartItem } from "@/features/dashboard/services/dashboard-service"
-import { cn } from "@/lib/utils"
 import { formatDateTime } from "@/utils/format"
 
 const CHART_PALETTE = [
@@ -175,7 +174,7 @@ export function DashboardPage() {
     return Math.round((activeEmployee.count / employeesTotal) * 100)
   }, [activeEmployee, employeesTotal])
 
-  function renderActiveEmployeeShape(props: {
+  function renderEmployeeSector(props: {
     cx?: number
     cy?: number
     innerRadius?: number
@@ -183,6 +182,7 @@ export function DashboardPage() {
     startAngle?: number
     endAngle?: number
     fill?: string
+    isActive?: boolean
   }) {
     const {
       cx = 0,
@@ -192,7 +192,22 @@ export function DashboardPage() {
       startAngle = 0,
       endAngle = 0,
       fill,
+      isActive = false,
     } = props
+
+    if (!isActive) {
+      return (
+        <Sector
+          cx={cx}
+          cy={cy}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          fill={fill}
+        />
+      )
+    }
 
     return (
       <g>
@@ -421,8 +436,7 @@ export function DashboardPage() {
                       nameKey="name"
                       innerRadius={68}
                       strokeWidth={4}
-                      activeIndex={activeEmployeeIndex ?? undefined}
-                      activeShape={renderActiveEmployeeShape}
+                      shape={renderEmployeeSector}
                       onMouseEnter={(_, index) => setActiveEmployeeIndex(index)}
                       onMouseLeave={() => setActiveEmployeeIndex(null)}
                       className="cursor-pointer outline-none"

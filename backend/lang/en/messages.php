@@ -187,4 +187,40 @@ return [
         'application_statuses' => 'Application statuses retrieved successfully.',
         'technologies' => 'Technologies retrieved successfully.',
     ],
+
+    'exports' => [
+        'not_found' => 'The requested export type was not found.',
+        'exported' => 'Export generated successfully.',
+        'no_data' => 'There is no data available for the selected export scope.',
+    ],
+
+    'roles' => [
+        'listed' => 'Roles retrieved successfully.',
+        'created' => 'Role created successfully.',
+        'retrieved' => 'Role retrieved successfully.',
+        'updated' => 'Role updated successfully.',
+        'permissions_updated' => 'Role permissions updated successfully.',
+        'deleted' => 'Role deleted successfully.',
+        'protected' => 'The super_admin role cannot be modified or deleted.',
+    ],
+
+    'permissions' => [
+        'listed' => 'Permissions retrieved successfully.',
+    ],
+
+    'search' => [
+        'results' => 'Search results retrieved successfully.',
+    ],
+
+    'activity_log' => [
+        'listed' => 'Activity logs retrieved successfully.',
+        'retrieved' => 'Activity log retrieved successfully.',
+        'stats_retrieved' => 'Activity log statistics retrieved successfully.',
+    ],
+
+    'settings' => [
+        'listed' => 'Settings retrieved successfully.',
+        'public_listed' => 'Public settings retrieved successfully.',
+        'updated' => 'Settings updated successfully.',
+    ],
 ];

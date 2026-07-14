@@ -21,6 +21,9 @@
     "criticalities": "Criticalities",
     "applicationStatuses": "Application Statuses",
     "technologies": "Technologies",
+    "roles": "Roles & Permissions",
+    "activityLog": "Activity Log",
+    "settings": "Settings",
     "forbidden": "Forbidden",
     "notFound": "Not Found",
     "serverError": "Server Error"
@@ -62,7 +65,13 @@
     "switchToEnglish": "Switch to English",
     "switchToArabic": "Switch to Arabic",
     "switchToDark": "Switch to dark mode",
-    "switchToLight": "Switch to light mode"
+    "switchToLight": "Switch to light mode",
+    "columns": "Columns",
+    "toggleColumns": "Toggle columns",
+    "selectAll": "Select all",
+    "selectRow": "Select row",
+    "selectedCount": "{{count}} selected",
+    "deleteSelected": "Delete selected"
   },
   "validation": {
     "required": "{{field}} is required.",
@@ -190,7 +199,11 @@
     "forbiddenTitle": "Access denied",
     "forbiddenDescription": "You do not have permission to view this resource. Contact an administrator if you believe this is a mistake.",
     "serverTitle": "Something went wrong",
-    "serverDescription": "An unexpected server error occurred. Please try again in a moment."
+    "serverDescription": "An unexpected server error occurred. Please try again in a moment.",
+    "offlineTitle": "You are offline",
+    "offlineDescription": "Check your internet connection and try again. Any unsaved changes may be lost.",
+    "retryConnection": "Retry connection",
+    "offlineBanner": "You are currently offline. Some features may be unavailable."
   },
   "empty": {
     "defaultDescription": "There is nothing to show here yet."
@@ -247,7 +260,9 @@
       "createFailed": "Failed to create application.",
       "updateFailed": "Failed to update application.",
       "deleteFailed": "Failed to delete application."
-    }
+    },
+    "bulkDeleteTitle": "Delete selected applications?",
+    "bulkDeleteConfirm": "Delete {{count}} selected applications? This soft-deletes the records."
   },
   "vendors": {
     "title": "Vendors",
@@ -257,7 +272,10 @@
     "searchPlaceholder": "Search name, email, phone...",
     "emptyTitle": "No vendors found",
     "emptyCreate": "Create the first vendor to start tracking external partners.",
+    "deleteTitle": "Delete vendor?",
     "deleteConfirm": "Delete vendor \"{{name}}\"? This soft-deletes the record.",
+    "bulkDeleteTitle": "Delete selected vendors?",
+    "bulkDeleteConfirm": "Delete {{count}} selected vendors? This soft-deletes the records.",
     "columns": {
       "name": "Name",
       "email": "Email",
@@ -332,7 +350,10 @@
     "searchPlaceholder": "Search name, email, job title...",
     "emptyTitle": "No users found",
     "emptyCreate": "Create the first user account.",
+    "deleteTitle": "Delete user?",
     "deleteConfirm": "Delete user \"{{name}}\"? This soft-deletes the account.",
+    "bulkDeleteTitle": "Delete selected users?",
+    "bulkDeleteConfirm": "Delete {{count}} selected users? This soft-deletes the accounts.",
     "columns": {
       "name": "Name",
       "email": "Email",
@@ -653,7 +674,10 @@
     "searchPlaceholder": "Search name, category, description...",
     "emptyTitle": "No technologies found",
     "emptyCreate": "Create the first technology to start tracking stacks.",
+    "deleteTitle": "Delete technology?",
     "deleteConfirm": "Delete technology \"{{name}}\"? This soft-deletes the record.",
+    "bulkDeleteTitle": "Delete selected technologies?",
+    "bulkDeleteConfirm": "Delete {{count}} selected technologies? This soft-deletes the records.",
     "categories": {
       "Frontend": "Frontend",
       "Backend": "Backend",
@@ -755,6 +779,170 @@
       "vendor": "Vendor",
       "primary": "Primary",
       "assignedAt": "Assigned at"
+    }
+  },
+  "export": {
+    "label": "Export",
+    "excel": "Excel (.xlsx)",
+    "json": "JSON",
+    "success": "Export completed. Your download should start shortly.",
+    "failed": "Failed to export data.",
+    "scopes": {
+      "currentPage": "Export current page",
+      "selected": "Export selected rows",
+      "filtered": "Export filtered results",
+      "all": "Export all data"
+    }
+  },
+  "search": {
+    "open": "Open global search",
+    "placeholder": "Search applications, vendors, users...",
+    "dialogTitle": "Global search",
+    "dialogDescription": "Search across applications, vendors, users, technologies, and departments.",
+    "hint": "Type at least 2 characters to search across the portfolio.",
+    "searching": "Searching...",
+    "noResults": "No results found for \"{{query}}\".",
+    "groups": {
+      "applications": "Applications",
+      "vendors": "Vendors",
+      "users": "Users",
+      "technologies": "Technologies",
+      "departments": "Departments"
+    }
+  },
+  "roles": {
+    "title": "Roles & Permissions",
+    "description": "Manage roles and configure module-level permissions.",
+    "new": "New role",
+    "emptyTitle": "No roles found",
+    "emptyCreate": "Create the first role to start assigning permissions.",
+    "selectRole": "Select a role to view its permissions.",
+    "systemRole": "System role",
+    "deleteTitle": "Delete role?",
+    "deleteConfirm": "Delete role \"{{name}}\"? Users assigned to this role will lose its permissions.",
+    "matrix": {
+      "module": "Module",
+      "description": "Toggle permissions per module and action, then save your changes.",
+      "save": "Save permissions",
+      "saving": "Saving...",
+      "toggleModuleRow": "Toggle all permissions for {{module}}",
+      "toggleActionColumn": "Toggle {{action}} for all modules",
+      "actions": {
+        "view": "View",
+        "create": "Create",
+        "update": "Update",
+        "delete": "Delete",
+        "export": "Export"
+      },
+      "modules": {
+        "applications": "Applications",
+        "vendors": "Vendors",
+        "users": "Users",
+        "technologies": "Technologies",
+        "departments": "Departments",
+        "assignments": "Assignments",
+        "roles": "Roles",
+        "activity_log": "Activity log",
+        "settings": "Settings"
+      }
+    },
+    "form": {
+      "createTitle": "New role",
+      "editTitle": "Rename role",
+      "createDescription": "Create a role, then configure its permissions in the matrix.",
+      "editDescription": "Update the role name.",
+      "name": "Role name",
+      "saving": "Saving...",
+      "createSubmit": "Create role",
+      "updateSubmit": "Save changes"
+    },
+    "toast": {
+      "created": "Role created successfully.",
+      "updated": "Role updated successfully.",
+      "deleted": "Role deleted successfully.",
+      "createFailed": "Failed to create role.",
+      "updateFailed": "Failed to update role.",
+      "deleteFailed": "Failed to delete role.",
+      "permissionsSaved": "Permissions saved successfully.",
+      "permissionsSaveFailed": "Failed to save permissions."
+    }
+  },
+  "activityLog": {
+    "title": "Activity Log",
+    "description": "Audit trail of sensitive operations across the portfolio.",
+    "viewDetails": "View details",
+    "systemCauser": "System",
+    "emptyTitle": "No activity recorded",
+    "emptyDescription": "Activity will appear here once users start making changes.",
+    "columns": {
+      "description": "Description",
+      "causer": "Performed by",
+      "subject": "Subject",
+      "event": "Event",
+      "date": "Date"
+    },
+    "filters": {
+      "causer": "Performed by",
+      "causerPlaceholder": "Search by user name...",
+      "subjectType": "Subject type",
+      "allSubjects": "All subjects",
+      "dateFrom": "From date",
+      "dateTo": "To date",
+      "reset": "Reset filters"
+    },
+    "subjectTypes": {
+      "Application": "Application",
+      "Vendor": "Vendor",
+      "User": "User",
+      "Technology": "Technology",
+      "Department": "Department",
+      "Assignment": "Assignment"
+    },
+    "stats": {
+      "mostActiveAdmins": "Most active admins",
+      "mostActiveAdminsDesc": "Users with the most recorded actions.",
+      "mostModifiedApplications": "Most modified applications",
+      "mostModifiedApplicationsDesc": "Applications changed most frequently.",
+      "topVendors": "Top vendors",
+      "topVendorsDesc": "Vendors referenced most in recent activity.",
+      "empty": "No data yet."
+    },
+    "details": {
+      "title": "Activity details",
+      "before": "Before",
+      "after": "After"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Configure company-wide preferences and security notices.",
+    "saving": "Saving...",
+    "tabs": {
+      "general": "General",
+      "preferences": "Preferences",
+      "security": "Security"
+    },
+    "general": {
+      "title": "General",
+      "description": "Basic information shown across the application.",
+      "companyName": "Company name",
+      "timezone": "Default timezone"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "description": "Default behavior for lists and pagination.",
+      "paginationSize": "Default pagination size",
+      "paginationSizeHint": "Number of rows shown per page by default (5–100)."
+    },
+    "security": {
+      "title": "Security",
+      "description": "Security-related information for this workspace.",
+      "sessionTimeoutTitle": "Session timeout",
+      "sessionTimeoutNote": "Sessions currently expire after {{minutes}} minutes of inactivity. Configurable session timeout is planned for a future release."
+    },
+    "toast": {
+      "updated": "Settings updated successfully.",
+      "updateFailed": "Failed to update settings."
     }
   }
 }

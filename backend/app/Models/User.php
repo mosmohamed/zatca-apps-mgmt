@@ -21,6 +21,13 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes;
 
     /**
+     * Spatie Permission must resolve against the `web` guard even when the
+     * request is authenticated via Sanctum (`auth:sanctum` switches the
+     * default auth driver to `sanctum`). Roles/permissions are seeded for `web`.
+     */
+    protected string $guard_name = 'web';
+
+    /**
      * @var list<string>
      */
     protected $fillable = [

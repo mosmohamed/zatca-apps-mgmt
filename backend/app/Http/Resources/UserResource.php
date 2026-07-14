@@ -40,6 +40,10 @@ class UserResource extends JsonResource
                 $this->relationLoaded('roles'),
                 fn () => $this->roles->pluck('name')->values()->all(),
             ),
+            'permissions' => $this->when(
+                $this->relationLoaded('roles'),
+                fn () => $this->getAllPermissions()->pluck('name')->values()->all(),
+            ),
             'created_at' => $this->formatDate($this->created_at),
             'updated_at' => $this->formatDate($this->updated_at),
             'deleted_at' => $this->formatDate($this->deleted_at),

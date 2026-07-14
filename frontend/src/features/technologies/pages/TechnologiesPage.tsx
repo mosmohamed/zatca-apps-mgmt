@@ -2,10 +2,12 @@ import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Pencil, Plus, Trash2 } from "lucide-react"
 
+import { ConfirmAlertDialog } from "@/components/ConfirmAlertDialog"
 import {
   EnterpriseDataTable,
   type EnterpriseDataTableColumn,
 } from "@/components/EnterpriseDataTable"
+import type { EnterpriseExportConfig } from "@/components/enterprise-data-table/types"
 import { Button } from "@/components/ui/button"
 import { TechnologyFormDialog } from "@/features/technologies/components/TechnologyFormDialog"
 import {
@@ -18,14 +20,31 @@ import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { cn } from "@/lib/utils"
 import { formatDateTime } from "@/utils/format"
 
+const ALL_COLUMN_IDS = [
+  "name",
+  "category",
+  "description",
+  "is_active",
+  "created_at",
+  "actions",
+]
+
 export function TechnologiesPage() {
   const { t } = useTranslation()
-  const { isSuperAdmin } = useAuth()
+  const { can } = useAuth()
+  const canCreate = can("technologies.create")
+  const canUpdate = can("technologies.update")
+  const canDelete = can("technologies.delete")
+
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [sort, setSort] = useState("name")
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<Technology | null>(null)
+  const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([])
+  const [visibleColumnIds, setVisibleColumnIds] = useState<string[]>(ALL_COLUMN_IDS)
+  const [pendingDelete, setPendingDelete] = useState<Technology | null>(null)
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false)
 
   const debouncedSearch = useDebouncedValue(search, 350)
   const listParams = useMemo(
@@ -43,12 +62,19 @@ export function TechnologiesPage() {
     setDialogOpen(true)
   }
 
-  async function handleDelete(technology: Technology) {
-    const confirmed = window.confirm(
-      t("technologies.deleteConfirm", { name: technology.name })
+  async function confirmDelete() {
+    if (!pendingDelete) return
+    await deleteMutation.mutateAsync(pendingDelete.id)
+    setSelectedKeys((current) => current.filter((key) => key !== pendingDelete.id))
+    setPendingDelete(null)
+  }
+
+  async function handleBulkDelete() {
+    await Promise.all(
+      selectedKeys.map((id) => deleteMutation.mutateAsync(Number(id)))
     )
-    if (!confirmed) return
-    await deleteMutation.mutateAsync(technology.id)
+    setSelectedKeys([])
+    setBulkDeleteOpen(false)
   }
 
   const columns = useMemo<EnterpriseDataTableColumn<Technology>[]>(() => {
@@ -56,6 +82,7 @@ export function TechnologiesPage() {
       {
         id: "name",
         header: t("technologies.columns.name"),
+        label: t("technologies.columns.name"),
         sortable: true,
         sortKey: "name",
         cell: (row) => <span className="font-medium">{row.name}</span>,
@@ -63,6 +90,7 @@ export function TechnologiesPage() {
       {
         id: "category",
         header: t("technologies.columns.category"),
+        label: t("technologies.columns.category"),
         sortable: true,
         sortKey: "category",
         cell: (row) =>
@@ -73,6 +101,7 @@ export function TechnologiesPage() {
       {
         id: "description",
         header: t("technologies.columns.description"),
+        label: t("technologies.columns.description"),
         cell: (row) => (
           <span className="line-clamp-2 text-muted-foreground">
             {row.description || "—"}
@@ -82,6 +111,7 @@ export function TechnologiesPage() {
       {
         id: "is_active",
         header: t("technologies.columns.isActive"),
+        label: t("technologies.columns.isActive"),
         sortable: true,
         sortKey: "is_active",
         cell: (row) => (
@@ -100,6 +130,7 @@ export function TechnologiesPage() {
       {
         id: "created_at",
         header: t("technologies.columns.created"),
+        label: t("technologies.columns.created"),
         sortable: true,
         sortKey: "created_at",
         cell: (row) => (
@@ -110,43 +141,69 @@ export function TechnologiesPage() {
       },
     ]
 
-    if (isSuperAdmin) {
+    if (canUpdate || canDelete) {
       base.push({
         id: "actions",
         header: <span className="block text-end">{t("common.actions")}</span>,
         headerClassName: "text-end",
         className: "text-end",
+        alwaysVisible: true,
         cell: (row) => (
           <div className="inline-flex gap-1">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              onClick={() => {
-                setEditing(row)
-                setDialogOpen(true)
-              }}
-              aria-label={`${t("common.edit")} ${row.name}`}
-            >
-              <Pencil />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              onClick={() => void handleDelete(row)}
-              disabled={deleteMutation.isPending}
-              aria-label={`${t("common.delete")} ${row.name}`}
-            >
-              <Trash2 />
-            </Button>
+            {canUpdate ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => {
+                  setEditing(row)
+                  setDialogOpen(true)
+                }}
+                aria-label={`${t("common.edit")} ${row.name}`}
+              >
+                <Pencil />
+              </Button>
+            ) : null}
+            {canDelete ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => setPendingDelete(row)}
+                disabled={deleteMutation.isPending}
+                aria-label={`${t("common.delete")} ${row.name}`}
+              >
+                <Trash2 />
+              </Button>
+            ) : null}
           </div>
         ),
       })
     }
 
     return base
-  }, [deleteMutation.isPending, isSuperAdmin, t])
+  }, [canDelete, canUpdate, deleteMutation.isPending, t])
+
+  const exportConfig: EnterpriseExportConfig = {
+    entity: "technologies",
+    filenamePrefix: "technologies",
+    reportTitle: t("technologies.title"),
+    columns: [
+      { key: "name", label: t("technologies.columns.name") },
+      { key: "category", label: t("technologies.columns.category") },
+      { key: "description", label: t("technologies.columns.description") },
+      { key: "is_active", label: t("technologies.columns.isActive") },
+      { key: "created_at", label: t("technologies.columns.created") },
+    ],
+    getContext: () => ({
+      search: debouncedSearch,
+      sort,
+      page,
+      per_page: 15,
+    }),
+    selectedIds: selectedKeys,
+    permission: "technologies.export",
+  }
 
   return (
     <section className="space-y-4">
@@ -157,7 +214,7 @@ export function TechnologiesPage() {
             {t("technologies.description")}
           </p>
         </div>
-        {isSuperAdmin ? (
+        {canCreate ? (
           <Button type="button" onClick={openCreate}>
             <Plus />
             {t("technologies.new")}
@@ -189,15 +246,59 @@ export function TechnologiesPage() {
             ? t("common.tryDifferentSearch")
             : t("technologies.emptyCreate")
         }
+        selectable={canDelete}
+        selectedKeys={selectedKeys}
+        onSelectedKeysChange={setSelectedKeys}
+        visibleColumnIds={visibleColumnIds}
+        onVisibleColumnIdsChange={setVisibleColumnIds}
+        exportConfig={exportConfig}
+        bulkActions={
+          canDelete ? (
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => setBulkDeleteOpen(true)}
+              disabled={deleteMutation.isPending}
+            >
+              <Trash2 />
+              {t("common.deleteSelected")}
+            </Button>
+          ) : null
+        }
       />
 
-      {isSuperAdmin ? (
+      {canCreate || canUpdate ? (
         <TechnologyFormDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
           technology={editing}
         />
       ) : null}
+
+      <ConfirmAlertDialog
+        open={pendingDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDelete(null)
+        }}
+        title={t("technologies.deleteTitle")}
+        description={t("technologies.deleteConfirm", {
+          name: pendingDelete?.name ?? "",
+        })}
+        confirming={deleteMutation.isPending}
+        onConfirm={confirmDelete}
+      />
+
+      <ConfirmAlertDialog
+        open={bulkDeleteOpen}
+        onOpenChange={setBulkDeleteOpen}
+        title={t("technologies.bulkDeleteTitle")}
+        description={t("technologies.bulkDeleteConfirm", {
+          count: selectedKeys.length,
+        })}
+        confirming={deleteMutation.isPending}
+        onConfirm={handleBulkDelete}
+      />
     </section>
   )
 }

@@ -21,6 +21,7 @@ type AuthContextValue = {
   isBootstrapping: boolean
   isSuperAdmin: boolean
   isEmployee: boolean
+  can: (permission: string) => boolean
   login: (payload: LoginPayload) => Promise<void>
   logout: () => Promise<void>
   refreshUser: () => Promise<void>
@@ -111,19 +112,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const isSuperAdmin = Boolean(user?.roles.includes("super_admin"))
+
+  const can = useCallback(
+    (permission: string) => {
+      if (isSuperAdmin) {
+        return true
+      }
+      return Boolean(user?.permissions?.includes(permission))
+    },
+    [isSuperAdmin, user]
+  )
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
       token,
       isAuthenticated: Boolean(token && user),
       isBootstrapping,
-      isSuperAdmin: Boolean(user?.roles.includes("super_admin")),
+      isSuperAdmin,
       isEmployee: Boolean(user?.roles.includes("employee")),
+      can,
       login,
       logout,
       refreshUser,
     }),
-    [user, token, isBootstrapping, login, logout, refreshUser]
+    [user, token, isBootstrapping, isSuperAdmin, can, login, logout, refreshUser]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

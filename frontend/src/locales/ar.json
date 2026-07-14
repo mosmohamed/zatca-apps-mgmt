@@ -21,6 +21,9 @@
     "criticalities": "مستويات الأهمية",
     "applicationStatuses": "حالات التطبيق",
     "technologies": "التقنيات",
+    "roles": "الأدوار والصلاحيات",
+    "activityLog": "سجل النشاط",
+    "settings": "الإعدادات",
     "forbidden": "غير مسموح",
     "notFound": "غير موجود",
     "serverError": "خطأ في الخادم"
@@ -62,7 +65,13 @@
     "switchToEnglish": "التبديل إلى الإنجليزية",
     "switchToArabic": "التبديل إلى العربية",
     "switchToDark": "التبديل إلى الوضع الداكن",
-    "switchToLight": "التبديل إلى الوضع الفاتح"
+    "switchToLight": "التبديل إلى الوضع الفاتح",
+    "columns": "الأعمدة",
+    "toggleColumns": "إظهار/إخفاء الأعمدة",
+    "selectAll": "تحديد الكل",
+    "selectRow": "تحديد الصف",
+    "selectedCount": "تم تحديد {{count}}",
+    "deleteSelected": "حذف المحدد"
   },
   "validation": {
     "required": "{{field}} مطلوب.",
@@ -184,7 +193,11 @@
     "forbiddenTitle": "تم رفض الوصول",
     "forbiddenDescription": "ليس لديك صلاحية لعرض هذا المورد. تواصل مع المسؤول إذا كنت تعتقد أن ذلك خطأ.",
     "serverTitle": "حدث خطأ ما",
-    "serverDescription": "حدث خطأ غير متوقع في الخادم. يرجى المحاولة مرة أخرى بعد لحظات."
+    "serverDescription": "حدث خطأ غير متوقع في الخادم. يرجى المحاولة مرة أخرى بعد لحظات.",
+    "offlineTitle": "أنت غير متصل بالإنترنت",
+    "offlineDescription": "تحقق من اتصالك بالإنترنت وحاول مرة أخرى. قد تُفقد أي تغييرات غير محفوظة.",
+    "retryConnection": "إعادة محاولة الاتصال",
+    "offlineBanner": "أنت غير متصل بالإنترنت حالياً. قد تكون بعض الميزات غير متاحة."
   },
   "empty": {
     "defaultDescription": "لا يوجد شيء لعرضه هنا بعد."
@@ -241,7 +254,9 @@
       "createFailed": "فشل إنشاء التطبيق.",
       "updateFailed": "فشل تحديث التطبيق.",
       "deleteFailed": "فشل حذف التطبيق."
-    }
+    },
+    "bulkDeleteTitle": "حذف التطبيقات المحددة؟",
+    "bulkDeleteConfirm": "حذف {{count}} تطبيقات محددة؟ سيتم الحذف الناعم للسجلات."
   },
   "vendors": {
     "title": "الموردون",
@@ -251,7 +266,10 @@
     "searchPlaceholder": "ابحث بالاسم أو البريد أو الهاتف...",
     "emptyTitle": "لم يتم العثور على موردين",
     "emptyCreate": "أنشئ أول مورد لبدء تتبع الشركاء الخارجيين.",
+    "deleteTitle": "حذف المورد؟",
     "deleteConfirm": "حذف المورد \"{{name}}\"؟ سيتم الحذف الناعم للسجل.",
+    "bulkDeleteTitle": "حذف الموردين المحددين؟",
+    "bulkDeleteConfirm": "حذف {{count}} موردين محددين؟ سيتم الحذف الناعم للسجلات.",
     "columns": {
       "name": "الاسم",
       "email": "البريد الإلكتروني",
@@ -326,7 +344,10 @@
     "searchPlaceholder": "ابحث بالاسم أو البريد أو المسمى...",
     "emptyTitle": "لم يتم العثور على مستخدمين",
     "emptyCreate": "أنشئ أول حساب مستخدم.",
+    "deleteTitle": "حذف المستخدم؟",
     "deleteConfirm": "حذف المستخدم \"{{name}}\"؟ سيتم الحذف الناعم للحساب.",
+    "bulkDeleteTitle": "حذف المستخدمين المحددين؟",
+    "bulkDeleteConfirm": "حذف {{count}} مستخدمين محددين؟ سيتم الحذف الناعم للحسابات.",
     "columns": {
       "name": "الاسم",
       "email": "البريد الإلكتروني",
@@ -645,7 +666,10 @@
     "searchPlaceholder": "ابحث بالاسم أو الفئة أو الوصف...",
     "emptyTitle": "لم يتم العثور على تقنيات",
     "emptyCreate": "أنشئ أول تقنية لبدء تتبع الحزم التقنية.",
+    "deleteTitle": "حذف التقنية؟",
     "deleteConfirm": "حذف التقنية \"{{name}}\"؟ سيتم الحذف الناعم للسجل.",
+    "bulkDeleteTitle": "حذف التقنيات المحددة؟",
+    "bulkDeleteConfirm": "حذف {{count}} تقنيات محددة؟ سيتم الحذف الناعم للسجلات.",
     "categories": {
       "Frontend": "واجهة أمامية",
       "Backend": "خلفية",
@@ -747,6 +771,170 @@
       "vendor": "المورد",
       "primary": "أساسي",
       "assignedAt": "تاريخ التعيين"
+    }
+  },
+  "export": {
+    "label": "تصدير",
+    "excel": "إكسل (.xlsx)",
+    "json": "JSON",
+    "success": "اكتمل التصدير. سيبدأ التنزيل قريباً.",
+    "failed": "فشل تصدير البيانات.",
+    "scopes": {
+      "currentPage": "تصدير الصفحة الحالية",
+      "selected": "تصدير الصفوف المحددة",
+      "filtered": "تصدير النتائج المفلترة",
+      "all": "تصدير جميع البيانات"
+    }
+  },
+  "search": {
+    "open": "فتح البحث الشامل",
+    "placeholder": "بحث في التطبيقات والموردين والمستخدمين...",
+    "dialogTitle": "البحث الشامل",
+    "dialogDescription": "بحث عبر التطبيقات والموردين والمستخدمين والتقنيات والأقسام.",
+    "hint": "اكتب حرفين على الأقل للبحث عبر المحفظة.",
+    "searching": "جاري البحث...",
+    "noResults": "لم يتم العثور على نتائج لـ \"{{query}}\".",
+    "groups": {
+      "applications": "التطبيقات",
+      "vendors": "الموردون",
+      "users": "المستخدمون",
+      "technologies": "التقنيات",
+      "departments": "الأقسام"
+    }
+  },
+  "roles": {
+    "title": "الأدوار والصلاحيات",
+    "description": "إدارة الأدوار وضبط الصلاحيات على مستوى الوحدات.",
+    "new": "دور جديد",
+    "emptyTitle": "لم يتم العثور على أدوار",
+    "emptyCreate": "أنشئ أول دور لبدء إسناد الصلاحيات.",
+    "selectRole": "اختر دوراً لعرض صلاحياته.",
+    "systemRole": "دور نظامي",
+    "deleteTitle": "حذف الدور؟",
+    "deleteConfirm": "حذف الدور \"{{name}}\"؟ سيفقد المستخدمون المعيّنون لهذا الدور صلاحياته.",
+    "matrix": {
+      "module": "الوحدة",
+      "description": "بدّل الصلاحيات لكل وحدة وإجراء، ثم احفظ التغييرات.",
+      "save": "حفظ الصلاحيات",
+      "saving": "جاري الحفظ...",
+      "toggleModuleRow": "تبديل جميع صلاحيات {{module}}",
+      "toggleActionColumn": "تبديل صلاحية {{action}} لجميع الوحدات",
+      "actions": {
+        "view": "عرض",
+        "create": "إنشاء",
+        "update": "تعديل",
+        "delete": "حذف",
+        "export": "تصدير"
+      },
+      "modules": {
+        "applications": "التطبيقات",
+        "vendors": "الموردون",
+        "users": "المستخدمون",
+        "technologies": "التقنيات",
+        "departments": "الأقسام",
+        "assignments": "التعيينات",
+        "roles": "الأدوار",
+        "activity_log": "سجل النشاط",
+        "settings": "الإعدادات"
+      }
+    },
+    "form": {
+      "createTitle": "دور جديد",
+      "editTitle": "إعادة تسمية الدور",
+      "createDescription": "أنشئ دوراً، ثم اضبط صلاحياته في المصفوفة.",
+      "editDescription": "حدّث اسم الدور.",
+      "name": "اسم الدور",
+      "saving": "جاري الحفظ...",
+      "createSubmit": "إنشاء الدور",
+      "updateSubmit": "حفظ التغييرات"
+    },
+    "toast": {
+      "created": "تم إنشاء الدور بنجاح.",
+      "updated": "تم تحديث الدور بنجاح.",
+      "deleted": "تم حذف الدور بنجاح.",
+      "createFailed": "فشل إنشاء الدور.",
+      "updateFailed": "فشل تحديث الدور.",
+      "deleteFailed": "فشل حذف الدور.",
+      "permissionsSaved": "تم حفظ الصلاحيات بنجاح.",
+      "permissionsSaveFailed": "فشل حفظ الصلاحيات."
+    }
+  },
+  "activityLog": {
+    "title": "سجل النشاط",
+    "description": "سجل تدقيق للعمليات الحساسة عبر المحفظة.",
+    "viewDetails": "عرض التفاصيل",
+    "systemCauser": "النظام",
+    "emptyTitle": "لا يوجد نشاط مسجل",
+    "emptyDescription": "سيظهر النشاط هنا بعد أن يبدأ المستخدمون بإجراء تغييرات.",
+    "columns": {
+      "description": "الوصف",
+      "causer": "تم التنفيذ بواسطة",
+      "subject": "الموضوع",
+      "event": "الحدث",
+      "date": "التاريخ"
+    },
+    "filters": {
+      "causer": "تم التنفيذ بواسطة",
+      "causerPlaceholder": "ابحث باسم المستخدم...",
+      "subjectType": "نوع الموضوع",
+      "allSubjects": "كل الموضوعات",
+      "dateFrom": "من تاريخ",
+      "dateTo": "إلى تاريخ",
+      "reset": "إعادة ضبط الفلاتر"
+    },
+    "subjectTypes": {
+      "Application": "تطبيق",
+      "Vendor": "مورد",
+      "User": "مستخدم",
+      "Technology": "تقنية",
+      "Department": "قسم",
+      "Assignment": "تعيين"
+    },
+    "stats": {
+      "mostActiveAdmins": "المدراء الأكثر نشاطاً",
+      "mostActiveAdminsDesc": "المستخدمون ذوو أكبر عدد من الإجراءات المسجلة.",
+      "mostModifiedApplications": "التطبيقات الأكثر تعديلاً",
+      "mostModifiedApplicationsDesc": "التطبيقات التي تم تغييرها بشكل متكرر.",
+      "topVendors": "أبرز الموردين",
+      "topVendorsDesc": "الموردون الأكثر ظهوراً في النشاط الأخير.",
+      "empty": "لا توجد بيانات حتى الآن."
+    },
+    "details": {
+      "title": "تفاصيل النشاط",
+      "before": "قبل",
+      "after": "بعد"
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "description": "ضبط التفضيلات العامة للشركة والإشعارات الأمنية.",
+    "saving": "جاري الحفظ...",
+    "tabs": {
+      "general": "عام",
+      "preferences": "التفضيلات",
+      "security": "الأمان"
+    },
+    "general": {
+      "title": "عام",
+      "description": "المعلومات الأساسية المعروضة عبر التطبيق.",
+      "companyName": "اسم الشركة",
+      "timezone": "المنطقة الزمنية الافتراضية"
+    },
+    "preferences": {
+      "title": "التفضيلات",
+      "description": "السلوك الافتراضي للقوائم والتصفح.",
+      "paginationSize": "حجم الصفحة الافتراضي",
+      "paginationSizeHint": "عدد الصفوف المعروضة لكل صفحة افتراضياً (5–100)."
+    },
+    "security": {
+      "title": "الأمان",
+      "description": "معلومات متعلقة بالأمان لهذا النظام.",
+      "sessionTimeoutTitle": "مهلة الجلسة",
+      "sessionTimeoutNote": "تنتهي الجلسات حالياً بعد {{minutes}} دقيقة من عدم النشاط. ميزة ضبط مهلة الجلسة مخطط لها في إصدار مستقبلي."
+    },
+    "toast": {
+      "updated": "تم تحديث الإعدادات بنجاح.",
+      "updateFailed": "فشل تحديث الإعدادات."
     }
   }
 }

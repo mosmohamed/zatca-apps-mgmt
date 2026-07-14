@@ -8,15 +8,19 @@ import {
   ChevronDown,
   Cpu,
   Database,
+  History,
   LayoutDashboard,
   Link2,
   MonitorSmartphone,
+  Settings,
   Shield,
+  ShieldCheck,
   Truck,
   Users,
 } from "lucide-react"
 
 import { AppLogo } from "@/components/AppLogo"
+import { useAuth } from "@/features/auth/hooks/use-auth"
 import { cn } from "@/lib/utils"
 import { useSidebar } from "@/layouts/SidebarContext"
 
@@ -30,27 +34,64 @@ const primaryNavItems = [
   { to: "/assignments", key: "assignments" as const, icon: Link2 },
 ]
 
-const masterDataNavItems = [
-  { to: "/departments", key: "departments" as const, icon: Building2 },
-  { to: "/vendors", key: "vendors" as const, icon: Truck },
-  { to: "/applications", key: "applications" as const, icon: MonitorSmartphone },
-  { to: "/users", key: "users" as const, icon: Users },
-  { to: "/job-titles", key: "jobTitles" as const, icon: Briefcase },
-  { to: "/app-roles", key: "appRoles" as const, icon: Shield },
-  { to: "/support-types", key: "supportTypes" as const, icon: Database },
-  { to: "/criticalities", key: "criticalities" as const, icon: Database },
+type NavItem = {
+  to: string
+  key: string
+  icon: typeof LayoutDashboard
+  end?: boolean
+  permission?: string
+}
+
+const masterDataNavItems: NavItem[] = [
+  { to: "/departments", key: "departments", icon: Building2 },
+  { to: "/vendors", key: "vendors", icon: Truck },
+  { to: "/applications", key: "applications", icon: MonitorSmartphone },
+  { to: "/users", key: "users", icon: Users },
+  { to: "/job-titles", key: "jobTitles", icon: Briefcase },
+  { to: "/app-roles", key: "appRoles", icon: Shield },
+  { to: "/support-types", key: "supportTypes", icon: Database },
+  { to: "/criticalities", key: "criticalities", icon: Database },
   {
     to: "/application-statuses",
-    key: "applicationStatuses" as const,
+    key: "applicationStatuses",
     icon: Database,
   },
-  { to: "/technologies", key: "technologies" as const, icon: Cpu },
+  { to: "/technologies", key: "technologies", icon: Cpu },
+  {
+    to: "/roles",
+    key: "roles",
+    icon: ShieldCheck,
+    permission: "roles.view",
+  },
+]
+
+const secondaryNavItems: NavItem[] = [
+  {
+    to: "/activity-log",
+    key: "activityLog",
+    icon: History,
+    permission: "activity_log.view",
+  },
+  {
+    to: "/settings",
+    key: "settings",
+    icon: Settings,
+    permission: "settings.view",
+  },
 ]
 
 export function AppSidebar() {
   const { t } = useTranslation()
+  const { can } = useAuth()
   const { isExpanded, isMobileOpen, closeMobile } = useSidebar()
   const [masterDataOpen, setMasterDataOpen] = useState(true)
+
+  const visibleMasterDataNavItems = masterDataNavItems.filter(
+    (item) => !item.permission || can(item.permission)
+  )
+  const visibleSecondaryNavItems = secondaryNavItems.filter(
+    (item) => !item.permission || can(item.permission)
+  )
 
   return (
     <>
@@ -133,7 +174,7 @@ export function AppSidebar() {
           ) : null}
 
           {(isExpanded ? masterDataOpen : true)
-            ? masterDataNavItems.map((item) => {
+            ? visibleMasterDataNavItems.map((item) => {
                 const Icon = item.icon
                 return (
                   <NavLink
@@ -156,6 +197,32 @@ export function AppSidebar() {
                 )
               })
             : null}
+
+          {visibleSecondaryNavItems.length > 0 ? (
+            <div className="mt-2 space-y-1 border-t border-sidebar-border pt-2">
+              {visibleSecondaryNavItems.map((item) => {
+                const Icon = item.icon
+                return (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    onClick={closeMobile}
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                        isActive
+                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                          : "text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
+                      )
+                    }
+                  >
+                    <Icon className="size-4 shrink-0" />
+                    {isExpanded ? <span>{t(`nav.${item.key}`)}</span> : null}
+                  </NavLink>
+                )
+              })}
+            </div>
+          ) : null}
         </nav>
       </aside>
     </>

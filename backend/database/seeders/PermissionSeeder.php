@@ -22,6 +22,7 @@ class PermissionSeeder extends Seeder
             'departments.create',
             'departments.update',
             'departments.delete',
+            'departments.export',
             'application-types.view',
             'application-types.create',
             'application-types.update',
@@ -50,14 +51,17 @@ class PermissionSeeder extends Seeder
             'technologies.create',
             'technologies.update',
             'technologies.delete',
+            'technologies.export',
             'vendors.view',
             'vendors.create',
             'vendors.update',
             'vendors.delete',
+            'vendors.export',
             'users.view',
             'users.create',
             'users.update',
             'users.delete',
+            'users.export',
             'applications.view',
             'applications.create',
             'applications.update',
@@ -67,8 +71,14 @@ class PermissionSeeder extends Seeder
             'assignments.create',
             'assignments.update',
             'assignments.delete',
-            'vendors.export',
-            'users.export',
+            'roles.view',
+            'roles.create',
+            'roles.update',
+            'roles.delete',
+            'permissions.view',
+            'activity-log.view',
+            'settings.view',
+            'settings.update',
         ];
 
         foreach ($permissions as $permission) {
@@ -95,6 +105,7 @@ class PermissionSeeder extends Seeder
             'users.view',
             'applications.view',
             'assignments.view',
+            'settings.view',
         ]);
     }
 }

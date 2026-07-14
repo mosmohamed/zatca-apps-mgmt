@@ -1,0 +1,5 @@
+﻿PHP 8.4.23 (cli) (built: Jul  1 2026 04:47:16) (NTS Visual C++ 2022 x64)
+Copyright (c) The PHP Group
+Built by The PHP Group
+Zend Engine v4.4.23, Copyright (c) Zend Technologies
+   PARSE ERROR  PHP Parse error: Syntax error, unexpected ')', expecting ';' in vendor\psy\psysh\src\Exception\ParseErrorException.php on line 44.

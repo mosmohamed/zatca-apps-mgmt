@@ -1,4 +1,4 @@
-import { LogOut, Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react"
+import { LogOut, Menu, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
@@ -10,9 +10,10 @@ import { useSidebar } from "@/layouts/SidebarContext"
 
 type AppHeaderProps = {
   title?: string
+  onOpenSearch?: () => void
 }
 
-export function AppHeader({ title }: AppHeaderProps) {
+export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
   const { t } = useTranslation()
   const { isExpanded, toggleExpanded, toggleMobile } = useSidebar()
   const { user, logout, isSuperAdmin } = useAuth()
@@ -59,6 +60,34 @@ export function AppHeader({ title }: AppHeaderProps) {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3">
+        {onOpenSearch ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="hidden items-center gap-2 text-muted-foreground sm:inline-flex"
+            onClick={onOpenSearch}
+            aria-label={t("search.open")}
+          >
+            <Search />
+            <span>{t("search.placeholder")}</span>
+            <kbd className="ms-2 rounded border border-stroke bg-muted px-1.5 py-0.5 text-[0.65rem] font-medium">
+              Ctrl K
+            </kbd>
+          </Button>
+        ) : null}
+        {onOpenSearch ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="sm:hidden"
+            onClick={onOpenSearch}
+            aria-label={t("search.open")}
+          >
+            <Search />
+          </Button>
+        ) : null}
         <ThemeToggle />
         <LanguageSwitcher />
         <div className="hidden text-end sm:block">

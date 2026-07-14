@@ -73,3 +73,23 @@ export function LoadingSkeleton({
     </div>
   )
 }
+
+/** Alias for `<LoadingSkeleton variant="table" />` used by list/table pages. */
+export function TableSkeleton(props: Omit<LoadingSkeletonProps, "variant">) {
+  return <LoadingSkeleton {...props} variant="table" />
+}
+
+/** Alias for `<LoadingSkeleton variant="page" />` used by dashboard-style pages. */
+export function DashboardSkeleton(props: Omit<LoadingSkeletonProps, "variant">) {
+  return <LoadingSkeleton {...props} variant="page" />
+}
+
+/** Alias for `<LoadingSkeleton variant="form" />` used by create/edit forms and dialogs. */
+export function FormSkeleton(props: Omit<LoadingSkeletonProps, "variant">) {
+  return <LoadingSkeleton {...props} variant="form" />
+}
+
+/** Alias for `<LoadingSkeleton variant="cards" />` used by details/summary panels. */
+export function DetailsSkeleton(props: Omit<LoadingSkeletonProps, "variant">) {
+  return <LoadingSkeleton {...props} variant="cards" />
+}
