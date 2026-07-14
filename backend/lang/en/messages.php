@@ -202,6 +202,11 @@ return [
         'permissions_updated' => 'Role permissions updated successfully.',
         'deleted' => 'Role deleted successfully.',
         'protected' => 'The super_admin role cannot be modified or deleted.',
+        'users_listed' => 'Role members retrieved successfully.',
+        'users_synced' => 'Role members updated successfully.',
+        'user_attached' => 'User assigned to role successfully.',
+        'user_detached' => 'User removed from role successfully.',
+        'super_admin_assign_forbidden' => 'Only a super admin can assign or manage the super_admin role.',
     ],
 
     'permissions' => [

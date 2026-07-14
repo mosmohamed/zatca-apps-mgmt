@@ -37,6 +37,8 @@ class StoreUserRequest extends FormRequest
             'extension' => ['nullable', 'string', 'max:50'],
             'job_title_id' => ['nullable', 'integer', Rule::exists('job_titles', 'id')],
             'is_active' => ['sometimes', 'boolean'],
+            'roles' => ['sometimes', 'array'],
+            'roles.*' => ['string', 'max:255', Rule::exists('roles', 'name')->where('guard_name', 'web')],
         ];
     }
 }

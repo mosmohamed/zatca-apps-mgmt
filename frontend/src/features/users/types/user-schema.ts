@@ -25,6 +25,7 @@ export function createUserFormSchemas(t: TFunction) {
     extension: z.string().trim().max(50).optional().nullable(),
     job_title_id: z.number().int().positive().nullable().optional(),
     is_active: z.boolean(),
+    roles: z.array(z.string()).default([]),
     password: z.string().optional().nullable(),
     password_confirmation: z.string().optional().nullable(),
   })

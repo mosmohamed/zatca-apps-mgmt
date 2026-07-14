@@ -95,6 +95,100 @@ class RoleService
     }
 
     /**
+     * @param  array{search?: string|null, page?: int|null, per_page?: int|null}  $filters
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, User>
+     */
+    public function listUsers(Role $role, array $filters = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        $perPage = max(1, min((int) ($filters['per_page'] ?? 15), 100));
+        $page = max(1, (int) ($filters['page'] ?? 1));
+
+        $query = User::query()
+            ->role($role->name, 'web')
+            ->with(['vendor', 'jobTitle', 'roles'])
+            ->orderBy('first_name')
+            ->orderBy('last_name');
+
+        $search = $filters['search'] ?? null;
+        if (is_string($search) && trim($search) !== '') {
+            $term = '%'.trim($search).'%';
+            $query->where(static function (Builder $builder) use ($term): void {
+                $builder
+                    ->where('first_name', 'like', $term)
+                    ->orWhere('last_name', 'like', $term)
+                    ->orWhere('email', 'like', $term);
+            });
+        }
+
+        return $query->paginate(perPage: $perPage, page: $page);
+    }
+
+    /**
+     * @param  list<int>  $userIds
+     */
+    public function syncUsers(Role $role, array $userIds, ?User $actor = null): Role
+    {
+        if ($role->name === self::PROTECTED_ROLE && ($actor === null || ! $actor->hasRole('super_admin'))) {
+            throw new RuntimeException('Only a super admin can manage super_admin membership.');
+        }
+
+        return DB::transaction(function () use ($role, $userIds): Role {
+            $uniqueIds = array_values(array_unique(array_map('intval', $userIds)));
+
+            // Prefer User::assignRole/removeRole (avoids Spatie Role::users() under Sanctum).
+            $currentlyAssigned = User::role($role->name, 'web')->pluck('id')->all();
+            $toDetach = array_diff($currentlyAssigned, $uniqueIds);
+            $toAttach = array_diff($uniqueIds, $currentlyAssigned);
+
+            if ($toDetach !== []) {
+                User::query()
+                    ->whereIn('id', $toDetach)
+                    ->get()
+                    ->each(static function (User $user) use ($role): void {
+                        $user->removeRole($role);
+                    });
+            }
+
+            if ($toAttach !== []) {
+                User::query()
+                    ->whereIn('id', $toAttach)
+                    ->get()
+                    ->each(static function (User $user) use ($role): void {
+                        $user->assignRole($role);
+                    });
+            }
+
+            $this->forgetPermissionCache();
+
+            return $this->find($role->id);
+        });
+    }
+
+    public function attachUser(Role $role, User $user, ?User $actor = null): void
+    {
+        if ($role->name === self::PROTECTED_ROLE && ($actor === null || ! $actor->hasRole('super_admin'))) {
+            throw new RuntimeException('Only a super admin can assign the super_admin role.');
+        }
+
+        if (! $user->hasRole($role->name)) {
+            $user->assignRole($role);
+            $this->forgetPermissionCache();
+        }
+    }
+
+    public function detachUser(Role $role, User $user, ?User $actor = null): void
+    {
+        if ($role->name === self::PROTECTED_ROLE && ($actor === null || ! $actor->hasRole('super_admin'))) {
+            throw new RuntimeException('Only a super admin can remove the super_admin role.');
+        }
+
+        if ($user->hasRole($role->name)) {
+            $user->removeRole($role);
+            $this->forgetPermissionCache();
+        }
+    }
+
+    /**
      * Count assigned users via an explicit subquery.
      *
      * Avoid Spatie's `users()` / `withCount('users')` under Sanctum: the package

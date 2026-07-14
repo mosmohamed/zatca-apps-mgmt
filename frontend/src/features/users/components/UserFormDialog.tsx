@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Combobox } from "@/components/ui/combobox"
+import { MultiCombobox } from "@/components/ui/multi-combobox"
 import {
   Dialog,
   DialogContent,
@@ -23,6 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useRoles } from "@/features/roles/hooks/use-roles"
 import {
   useCreateUser,
   useJobTitlesLookup,
@@ -34,6 +36,7 @@ import {
   type UserFormValues,
 } from "@/features/users/types/user-schema"
 import { useVendors } from "@/features/vendors/hooks/use-vendors"
+import { useAuth } from "@/features/auth/hooks/use-auth"
 import { getApiFieldErrors } from "@/lib/api-errors"
 
 type UserFormDialogProps = {
@@ -53,6 +56,7 @@ const emptyValues: UserFormValues = {
   extension: "",
   job_title_id: null,
   is_active: true,
+  roles: [],
   password: "",
   password_confirmation: "",
 }
@@ -73,6 +77,7 @@ function toFormValues(user?: ManagedUser | null): UserFormValues {
     extension: user.extension ?? "",
     job_title_id: user.job_title_id,
     is_active: user.is_active,
+    roles: user.roles ?? [],
     password: "",
     password_confirmation: "",
   }
@@ -142,6 +147,8 @@ function UserFormFields({
   updateMutation,
 }: UserFormFieldsProps) {
   const { t } = useTranslation()
+  const { isSuperAdmin } = useAuth()
+  const rolesQuery = useRoles()
 
   const { createUserFormSchema, updateUserFormSchema } = useMemo(
     () => createUserFormSchemas(t),
@@ -181,6 +188,17 @@ function UserFormFields({
     [jobTitles, t]
   )
 
+  const roleOptions = useMemo(
+    () =>
+      (rolesQuery.data ?? [])
+        .filter((role) => isSuperAdmin || role.name !== "super_admin")
+        .map((role) => ({
+          value: role.name,
+          label: role.name,
+        })),
+    [rolesQuery.data, isSuperAdmin]
+  )
+
   const isSubmitting = createMutation.isPending || updateMutation.isPending
 
   async function onSubmit(values: UserFormValues) {
@@ -195,6 +213,7 @@ function UserFormFields({
       extension: values.extension || null,
       job_title_id: values.job_title_id ?? null,
       is_active: values.is_active,
+      roles: values.roles ?? [],
       ...(values.password
         ? {
             password: values.password,
@@ -325,6 +344,27 @@ function UserFormFields({
                   placeholder={t("users.form.vendor")}
                   searchPlaceholder={t("vendors.searchPlaceholder")}
                   emptyMessage={t("vendors.emptyTitle")}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="roles"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("users.form.roles")}</FormLabel>
+              <FormControl>
+                <MultiCombobox
+                  options={roleOptions}
+                  values={field.value ?? []}
+                  onValuesChange={field.onChange}
+                  placeholder={t("users.form.rolesPlaceholder")}
+                  searchPlaceholder={t("users.form.searchRoles")}
+                  emptyMessage={t("roles.emptyTitle")}
                 />
               </FormControl>
               <FormMessage />

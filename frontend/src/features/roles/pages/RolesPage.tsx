@@ -7,8 +7,10 @@ import { EmptyState } from "@/components/EmptyState"
 import { LoadingSkeleton } from "@/components/LoadingSkeleton"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PermissionMatrix } from "@/features/roles/components/PermissionMatrix"
 import { RoleFormDialog } from "@/features/roles/components/RoleFormDialog"
+import { RoleMembersPanel } from "@/features/roles/components/RoleMembersPanel"
 import {
   useDeleteRole,
   usePermissionsCatalog,
@@ -33,6 +35,9 @@ export function RolesPage() {
   const permissions = permissionsQuery.data ?? []
 
   const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null)
+  const [activeTab, setActiveTab] = useState<"permissions" | "members">(
+    "permissions"
+  )
   const [checkedPermissions, setCheckedPermissions] = useState<Set<string>>(
     new Set()
   )
@@ -193,19 +198,30 @@ export function RolesPage() {
 
           <div className="space-y-4 rounded-xl border border-stroke bg-card p-4 shadow-sm">
             {selectedRole ? (
-              <>
+              <Tabs
+                value={activeTab}
+                onValueChange={(value) =>
+                  setActiveTab(value as "permissions" | "members")
+                }
+              >
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <h3 className="text-base font-semibold">{selectedRole.name}</h3>
                     <p className="text-sm text-muted-foreground">
-                      {t("roles.matrix.description")}
+                      {activeTab === "permissions"
+                        ? t("roles.matrix.description")
+                        : t("roles.members.description", {
+                            role: selectedRole.name,
+                          })}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
                     {selectedRole.is_system ? (
                       <Badge variant="muted">{t("roles.systemRole")}</Badge>
                     ) : null}
-                    {canManageRoles && !selectedRole.is_system ? (
+                    {activeTab === "permissions" &&
+                    canManageRoles &&
+                    !selectedRole.is_system ? (
                       <Button
                         type="button"
                         onClick={() => void handleSave()}
@@ -220,15 +236,30 @@ export function RolesPage() {
                   </div>
                 </div>
 
-                <PermissionMatrix
-                  permissions={permissions}
-                  checkedPermissions={checkedPermissions}
-                  onTogglePermission={togglePermission}
-                  onToggleModule={toggleMany}
-                  onToggleAction={toggleMany}
-                  disabled={matrixDisabled}
-                />
-              </>
+                <TabsList>
+                  <TabsTrigger value="permissions">
+                    {t("roles.tabs.permissions")}
+                  </TabsTrigger>
+                  <TabsTrigger value="members">
+                    {t("roles.tabs.members")}
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="permissions">
+                  <PermissionMatrix
+                    permissions={permissions}
+                    checkedPermissions={checkedPermissions}
+                    onTogglePermission={togglePermission}
+                    onToggleModule={toggleMany}
+                    onToggleAction={toggleMany}
+                    disabled={matrixDisabled}
+                  />
+                </TabsContent>
+
+                <TabsContent value="members">
+                  <RoleMembersPanel key={selectedRole.id} role={selectedRole} />
+                </TabsContent>
+              </Tabs>
             ) : (
               <EmptyState title={t("roles.selectRole")} />
             )}

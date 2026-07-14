@@ -44,4 +44,5 @@ export type UserPayload = {
   extension?: string | null
   job_title_id?: number | null
   is_active?: boolean
+  roles?: string[]
 }

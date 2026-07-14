@@ -202,6 +202,11 @@ return [
         'permissions_updated' => 'تم تحديث صلاحيات الدور بنجاح.',
         'deleted' => 'تم حذف الدور بنجاح.',
         'protected' => 'لا يمكن تعديل أو حذف دور super_admin.',
+        'users_listed' => 'تم جلب أعضاء الدور بنجاح.',
+        'users_synced' => 'تم تحديث أعضاء الدور بنجاح.',
+        'user_attached' => 'تم تعيين المستخدم للدور بنجاح.',
+        'user_detached' => 'تم إزالة المستخدم من الدور بنجاح.',
+        'super_admin_assign_forbidden' => 'فقط مسؤول النظام يمكنه إدارة دور super_admin.',
     ],
 
     'permissions' => [

@@ -351,6 +351,7 @@
     "columns": {
       "name": "الاسم",
       "email": "البريد الإلكتروني",
+      "roles": "الأدوار",
       "jobTitle": "المسمى الوظيفي",
       "vendor": "المورد",
       "active": "نشط",
@@ -370,6 +371,12 @@
       "vendorNone": "بدون مورد (داخلي)",
       "phone": "الهاتف",
       "jobTitle": "المسمى الوظيفي",
+      "jobTitleNone": "بدون مسمى وظيفي",
+      "searchJobTitles": "ابحث في المسميات الوظيفية...",
+      "roles": "الأدوار",
+      "rolesPlaceholder": "اختر الأدوار",
+      "searchRoles": "ابحث في الأدوار...",
+      "passwordConfirmation": "تأكيد كلمة المرور",
       "teams": "Teams",
       "slack": "Slack",
       "whatsapp": "WhatsApp",
@@ -812,6 +819,28 @@
     "systemRole": "دور نظامي",
     "deleteTitle": "حذف الدور؟",
     "deleteConfirm": "حذف الدور \"{{name}}\"؟ سيفقد المستخدمون المعيّنون لهذا الدور صلاحياته.",
+    "tabs": {
+      "permissions": "الصلاحيات",
+      "members": "الأعضاء"
+    },
+    "members": {
+      "title": "أعضاء الدور",
+      "description": "المستخدمون المعيّنون لدور \"{{role}}\".",
+      "assignUser": "تعيين مستخدم",
+      "selectUser": "اختر مستخدماً",
+      "searchUsers": "ابحث عن المستخدمين...",
+      "noUsersToAssign": "لا يوجد مستخدمون مؤهلون.",
+      "assign": "تعيين",
+      "assigning": "جاري التعيين...",
+      "searchMembers": "ابحث في الأعضاء...",
+      "emptyTitle": "لا يوجد أعضاء بعد",
+      "emptyDescription": "عيّن مستخدمين لهذا الدور لمنحهم صلاحياته.",
+      "removeUser": "إزالة {{name}} من الدور",
+      "removeTitle": "إزالة العضو؟",
+      "removeConfirm": "إزالة هذا المستخدم من الدور؟ سيفقد صلاحياته.",
+      "superAdminRestricted": "يمكن لمدير النظام فقط إدارة أعضاء دور super_admin.",
+      "readOnly": "يمكنك عرض الأعضاء لكن ليس لديك صلاحية التعيين أو الإزالة."
+    },
     "matrix": {
       "module": "الوحدة",
       "description": "بدّل الصلاحيات لكل وحدة وإجراء، ثم احفظ التغييرات.",
@@ -856,7 +885,11 @@
       "updateFailed": "فشل تحديث الدور.",
       "deleteFailed": "فشل حذف الدور.",
       "permissionsSaved": "تم حفظ الصلاحيات بنجاح.",
-      "permissionsSaveFailed": "فشل حفظ الصلاحيات."
+      "permissionsSaveFailed": "فشل حفظ الصلاحيات.",
+      "userAttached": "تم تعيين المستخدم للدور بنجاح.",
+      "userAttachFailed": "فشل تعيين المستخدم للدور.",
+      "userDetached": "تم إزالة المستخدم من الدور بنجاح.",
+      "userDetachFailed": "فشل إزالة المستخدم من الدور."
     }
   },
   "activityLog": {

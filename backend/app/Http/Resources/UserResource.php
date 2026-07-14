@@ -41,12 +41,44 @@ class UserResource extends JsonResource
                 fn () => $this->roles->pluck('name')->values()->all(),
             ),
             'permissions' => $this->when(
-                $this->relationLoaded('roles'),
-                fn () => $this->getAllPermissions()->pluck('name')->values()->all(),
+                $this->canResolvePermissionsWithoutLazyLoading(),
+                fn () => $this->resolvedPermissionNames(),
             ),
             'created_at' => $this->formatDate($this->created_at),
             'updated_at' => $this->formatDate($this->updated_at),
             'deleted_at' => $this->formatDate($this->deleted_at),
         ];
+    }
+
+    /**
+     * Permissions are only exposed when related permission data was eager-loaded
+     * (e.g. auth/me). Listing users with `roles` alone must not call Spatie helpers
+     * that touch unloaded `permissions` relations.
+     */
+    private function canResolvePermissionsWithoutLazyLoading(): bool
+    {
+        if (! $this->relationLoaded('roles')) {
+            return false;
+        }
+
+        return $this->roles->every(
+            static fn ($role): bool => $role->relationLoaded('permissions'),
+        );
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function resolvedPermissionNames(): array
+    {
+        $names = $this->roles
+            ->flatMap(static fn ($role) => $role->permissions->pluck('name'))
+            ->values();
+
+        if ($this->relationLoaded('permissions')) {
+            $names = $names->merge($this->permissions->pluck('name'));
+        }
+
+        return $names->unique()->sort()->values()->all();
     }
 }

@@ -37,7 +37,10 @@ class UserController extends BaseApiController
 
     public function store(StoreUserRequest $request): JsonResponse
     {
-        $user = $this->userService->create($request->validated());
+        /** @var User $actor */
+        $actor = $request->user();
+
+        $user = $this->userService->create($request->validated(), $actor);
 
         return $this->resourceResponse(
             new UserResource($user),
@@ -58,7 +61,10 @@ class UserController extends BaseApiController
 
     public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
-        $user = $this->userService->update($user, $request->validated());
+        /** @var User $actor */
+        $actor = $request->user();
+
+        $user = $this->userService->update($user, $request->validated(), $actor);
 
         return $this->resourceResponse(
             new UserResource($user),

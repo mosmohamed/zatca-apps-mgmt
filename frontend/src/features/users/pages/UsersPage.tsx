@@ -9,6 +9,7 @@ import {
   type EnterpriseDataTableColumn,
 } from "@/components/EnterpriseDataTable"
 import type { EnterpriseExportConfig } from "@/components/enterprise-data-table/types"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { UserFormDialog } from "@/features/users/components/UserFormDialog"
@@ -25,6 +26,7 @@ import { cn } from "@/lib/utils"
 const ALL_COLUMN_IDS = [
   "name",
   "email",
+  "roles",
   "vendor",
   "jobTitle",
   "active",
@@ -96,6 +98,7 @@ export function UsersPage() {
         extension: user.extension,
         job_title_id: user.job_title_id,
         is_active: !user.is_active,
+        roles: user.roles ?? [],
       },
     })
   }
@@ -124,6 +127,23 @@ export function UsersPage() {
         sortable: true,
         sortKey: "email",
         cell: (row) => row.email,
+      },
+      {
+        id: "roles",
+        header: t("users.columns.roles"),
+        label: t("users.columns.roles"),
+        cell: (row) =>
+          row.roles && row.roles.length > 0 ? (
+            <div className="flex flex-wrap gap-1">
+              {row.roles.map((role) => (
+                <Badge key={role} variant="outline">
+                  {role}
+                </Badge>
+              ))}
+            </div>
+          ) : (
+            <span className="text-muted-foreground">—</span>
+          ),
       },
       {
         id: "vendor",

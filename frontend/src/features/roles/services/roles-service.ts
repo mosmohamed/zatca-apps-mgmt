@@ -1,11 +1,29 @@
 import { api } from "@/lib/axios"
-import type { ApiEnvelope } from "@/types/api"
+import type { ApiEnvelope, ListQueryParams, PaginatedData } from "@/types/api"
 import type {
   Permission,
   Role,
   RolePayload,
   SyncRolePermissionsPayload,
 } from "@/features/roles/types/role"
+import type { ManagedUser } from "@/features/users/types/user"
+
+function toQuery(params: ListQueryParams): Record<string, string | number> {
+  const query: Record<string, string | number> = {
+    page: params.page ?? 1,
+    per_page: params.per_page ?? 15,
+  }
+
+  if (params.search?.trim()) {
+    query.search = params.search.trim()
+  }
+
+  if (params.sort) {
+    query.sort = params.sort
+  }
+
+  return query
+}
 
 export const rolesService = {
   async list(): Promise<Role[]> {
@@ -41,5 +59,28 @@ export const rolesService = {
       payload
     )
     return data.data
+  },
+
+  async listUsers(
+    roleId: number,
+    params: ListQueryParams = {}
+  ): Promise<PaginatedData<ManagedUser>> {
+    const { data } = await api.get<ApiEnvelope<PaginatedData<ManagedUser>>>(
+      `/roles/${roleId}/users`,
+      { params: toQuery(params) }
+    )
+    return data.data
+  },
+
+  async attachUser(roleId: number, userId: number): Promise<ManagedUser> {
+    const { data } = await api.post<ApiEnvelope<ManagedUser>>(
+      `/roles/${roleId}/users`,
+      { user_id: userId }
+    )
+    return data.data
+  },
+
+  async detachUser(roleId: number, userId: number): Promise<void> {
+    await api.delete<ApiEnvelope<null>>(`/roles/${roleId}/users/${userId}`)
   },
 }

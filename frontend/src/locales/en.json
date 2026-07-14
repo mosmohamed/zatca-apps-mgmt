@@ -357,6 +357,7 @@
     "columns": {
       "name": "Name",
       "email": "Email",
+      "roles": "Roles",
       "jobTitle": "Job title",
       "vendor": "Vendor",
       "active": "Active",
@@ -378,6 +379,9 @@
       "jobTitle": "Job title",
       "jobTitleNone": "No job title",
       "searchJobTitles": "Search job titles...",
+      "roles": "Roles",
+      "rolesPlaceholder": "Select roles",
+      "searchRoles": "Search roles...",
       "passwordConfirmation": "Confirm password",
       "teams": "Teams",
       "whatsapp": "WhatsApp",
@@ -820,6 +824,28 @@
     "systemRole": "System role",
     "deleteTitle": "Delete role?",
     "deleteConfirm": "Delete role \"{{name}}\"? Users assigned to this role will lose its permissions.",
+    "tabs": {
+      "permissions": "Permissions",
+      "members": "Members"
+    },
+    "members": {
+      "title": "Role members",
+      "description": "Users assigned to the \"{{role}}\" role.",
+      "assignUser": "Assign user",
+      "selectUser": "Select a user",
+      "searchUsers": "Search users...",
+      "noUsersToAssign": "No eligible users found.",
+      "assign": "Assign",
+      "assigning": "Assigning...",
+      "searchMembers": "Search members...",
+      "emptyTitle": "No members yet",
+      "emptyDescription": "Assign users to this role to grant its permissions.",
+      "removeUser": "Remove {{name}} from role",
+      "removeTitle": "Remove member?",
+      "removeConfirm": "Remove this user from the role? They will lose its permissions.",
+      "superAdminRestricted": "Only a super admin can manage members of the super_admin role.",
+      "readOnly": "You can view members but do not have permission to assign or remove them."
+    },
     "matrix": {
       "module": "Module",
       "description": "Toggle permissions per module and action, then save your changes.",
@@ -864,7 +890,11 @@
       "updateFailed": "Failed to update role.",
       "deleteFailed": "Failed to delete role.",
       "permissionsSaved": "Permissions saved successfully.",
-      "permissionsSaveFailed": "Failed to save permissions."
+      "permissionsSaveFailed": "Failed to save permissions.",
+      "userAttached": "User assigned to role successfully.",
+      "userAttachFailed": "Failed to assign user to role.",
+      "userDetached": "User removed from role successfully.",
+      "userDetachFailed": "Failed to remove user from role."
     }
   },
   "activityLog": {

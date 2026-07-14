@@ -54,6 +54,10 @@ Route::prefix('v1')->group(function (): void {
         Route::put('roles/{role}', [RoleController::class, 'update']);
         Route::delete('roles/{role}', [RoleController::class, 'destroy']);
         Route::put('roles/{role}/permissions', [RoleController::class, 'updatePermissions']);
+        Route::get('roles/{role}/users', [RoleController::class, 'users']);
+        Route::put('roles/{role}/users', [RoleController::class, 'syncUsers']);
+        Route::post('roles/{role}/users', [RoleController::class, 'attachUser']);
+        Route::delete('roles/{role}/users/{user}', [RoleController::class, 'detachUser']);
 
         Route::get('permissions', [PermissionController::class, 'index']);
 
