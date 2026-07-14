@@ -166,9 +166,11 @@ class LegacyApplicationImportSeeder extends Seeder
 
     private function resolveCsvPath(): ?string
     {
+        // Packaged with the app for Docker / Coolify seeding.
         $candidates = [
-            base_path('..'.DIRECTORY_SEPARATOR.'Apps_Master_Sheet - Sheet1.csv'),
+            database_path('data'.DIRECTORY_SEPARATOR.'apps_master_sheet.csv'),
             database_path('data'.DIRECTORY_SEPARATOR.'Apps_Master_Sheet - Sheet1.csv'),
+            base_path('..'.DIRECTORY_SEPARATOR.'Apps_Master_Sheet - Sheet1.csv'),
             base_path('Apps_Master_Sheet - Sheet1.csv'),
         ];
 

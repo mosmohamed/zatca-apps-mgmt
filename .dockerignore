@@ -38,10 +38,11 @@ backend/public/hot
 .DS_Store
 Thumbs.db
 
-# Local data dumps
+# Local data dumps (keep seeded master sheet inside the image)
 *.sql
 *.sqlite
-Apps_Master_Sheet*.csv
+/Apps_Master_Sheet*.csv
+!backend/database/data/apps_master_sheet.csv
 
 # Docker (do not recurse into itself unnecessarily)
 docker-compose.override.yml

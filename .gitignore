@@ -43,5 +43,6 @@ backend/storage/app/public/*
 # Docker overrides
 docker-compose.override.yml
 
-# Large local assets (keep logos tracked if needed)
-Apps_Master_Sheet*.csv
+# Legacy sheet may exist at repo root for local edits; tracked copy lives in backend/database/data/
+/Apps_Master_Sheet*.csv
+!backend/database/data/apps_master_sheet.csv
