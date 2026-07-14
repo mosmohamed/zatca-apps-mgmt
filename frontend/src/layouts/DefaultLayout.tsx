@@ -10,21 +10,35 @@ import { SidebarProvider, useSidebar } from "@/layouts/SidebarContext"
 const pageTitleKeys: Record<string, string> = {
   "/": "nav.dashboard",
   "/applications": "nav.applications",
+  "/applications-details": "nav.applicationsDetails",
   "/vendors": "nav.vendors",
   "/users": "nav.users",
   "/assignments": "nav.assignments",
   "/departments": "nav.departments",
+  "/job-titles": "nav.jobTitles",
+  "/app-roles": "nav.appRoles",
+  "/support-types": "nav.supportTypes",
+  "/criticalities": "nav.criticalities",
+  "/application-statuses": "nav.applicationStatuses",
+  "/technologies": "nav.technologies",
   "/403": "nav.forbidden",
   "/404": "nav.notFound",
   "/500": "nav.serverError",
+}
+
+function resolveTitleKey(pathname: string): string {
+  if (pathname.startsWith("/applications-details/")) {
+    return "nav.applicationDetail"
+  }
+
+  return pageTitleKeys[pathname] ?? "app.fallbackTitle"
 }
 
 function DefaultLayoutShell() {
   const { t } = useTranslation()
   const { isExpanded } = useSidebar()
   const { pathname } = useLocation()
-  const titleKey = pageTitleKeys[pathname]
-  const title = titleKey ? t(titleKey) : t("app.fallbackTitle")
+  const title = t(resolveTitleKey(pathname))
 
   return (
     <div className="min-h-screen bg-body">

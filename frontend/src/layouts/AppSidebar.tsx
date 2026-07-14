@@ -2,6 +2,7 @@ import { useState } from "react"
 import { NavLink } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import {
+  AppWindow,
   Briefcase,
   Building2,
   ChevronDown,
@@ -21,6 +22,11 @@ import { useSidebar } from "@/layouts/SidebarContext"
 
 const primaryNavItems = [
   { to: "/", key: "dashboard" as const, icon: LayoutDashboard, end: true },
+  {
+    to: "/applications-details",
+    key: "applicationsDetails" as const,
+    icon: AppWindow,
+  },
   { to: "/assignments", key: "assignments" as const, icon: Link2 },
 ]
 
@@ -72,11 +78,13 @@ export function AppSidebar() {
               className="w-full"
               imgClassName="h-8 max-w-[7.5rem] shrink-0"
               showWordmark
+              variant="onDark"
             />
           ) : (
             <AppLogo
               className="mx-auto justify-center"
               imgClassName="h-8 w-10 object-left object-contain"
+              variant="onDark"
             />
           )}
         </div>

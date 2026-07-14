@@ -1,12 +1,14 @@
 {
   "app": {
-    "name": "ZATCA IT Portfolio",
+    "name": "Zatca Application OPS",
     "tagline": "إدارة الصلاحيات",
-    "subtitle": "نظام محفظة تقنية المعلومات وإدارة الصلاحيات في الزكاة والضريبة والجمارك",
-    "fallbackTitle": "ZATCA IT Portfolio"
+    "subtitle": "نظام ادارة التطبيقات وإدارة الصلاحيات في هيئة الزكاة والضريبة والجمارك",
+    "fallbackTitle": "Zatca Application OPS"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
+    "applicationsDetails": "تفاصيل التطبيقات",
+    "applicationDetail": "تفاصيل التطبيق",
     "assignments": "التعيينات",
     "masterData": "البيانات الأساسية",
     "applications": "التطبيقات",
@@ -58,7 +60,9 @@
     "english": "English",
     "arabic": "العربية",
     "switchToEnglish": "التبديل إلى الإنجليزية",
-    "switchToArabic": "التبديل إلى العربية"
+    "switchToArabic": "التبديل إلى العربية",
+    "switchToDark": "التبديل إلى الوضع الداكن",
+    "switchToLight": "التبديل إلى الوضع الفاتح"
   },
   "validation": {
     "required": "{{field}} مطلوب.",
@@ -91,6 +95,41 @@
     "welcomeBack": "مرحباً بعودتك",
     "adminBlurb": "لديك صلاحية كاملة لإدارة التطبيقات والموردين والمستخدمين وسجل التعيينات.",
     "employeeBlurb": "يمكنك عرض التطبيقات والتعيينات النشطة الخاصة بك.",
+    "widgets": {
+      "localTime": "الوقت المحلي",
+      "weather": "الطقس",
+      "prayerTimes": "مواقيت الصلاة",
+      "humidity": "الرطوبة",
+      "wind": "الرياح",
+      "uvIndex": "مؤشر الأشعة",
+      "visibility": "مدى الرؤية",
+      "rainChance": "فرصة المطر",
+      "precipitation": "هطول",
+      "sunrise": "الشروق",
+      "sunset": "الغروب",
+      "feelsLike": "الإحساس",
+      "hijri": "هجري",
+      "weatherUnavailable": "بيانات الطقس غير متاحة مؤقتاً.",
+      "prayerUnavailable": "مواقيت الصلاة غير متاحة مؤقتاً.",
+      "nextPrayer": "التالي: {{prayer}}",
+      "prayers": {
+        "fajr": "الفجر",
+        "dhuhr": "الظهر",
+        "asr": "العصر",
+        "maghrib": "المغرب",
+        "isha": "العشاء"
+      },
+      "weatherCodes": {
+        "clear": "صافٍ",
+        "partlyCloudy": "غائم جزئياً",
+        "fog": "ضباب",
+        "rain": "أمطار",
+        "snow": "ثلوج",
+        "showers": "زخات مطر",
+        "thunder": "عواصف رعدية",
+        "unknown": "حالة غير معروفة"
+      }
+    },
     "applicationsDesc": "جرد أصول تقنية المعلومات",
     "usersDesc": "الموظفون والمقاولون",
     "vendorsDesc": "الشركاء الخارجيون",
@@ -124,6 +163,8 @@
       "allStatuses": "كل الحالات",
       "employeesLabel": "الموظفون",
       "applicationsLabel": "التطبيقات",
+      "employeesHoverHint": "مرّر فوق مقطع لاستكشاف حصة التعيينات.",
+      "employeesHoverDetail": "{{count}} موظف · {{percent}}% من التعيينات المفتوحة",
       "emptyTitle": "لا توجد بيانات للرسم بعد",
       "emptyTechnologies": "اربط التقنيات بالتطبيقات لملء هذا الرسم.",
       "emptyEmployees": "عيّن مستخدمين على التطبيقات لعرض العدد لكل تطبيق.",
@@ -157,6 +198,7 @@
     "searchPlaceholder": "ابحث بالاسم أو الرمز أو المالك...",
     "emptyTitle": "لم يتم العثور على تطبيقات",
     "emptyCreate": "أنشئ أول تطبيق لبدء الجرد.",
+    "deleteTitle": "حذف التطبيق؟",
     "deleteConfirm": "حذف التطبيق \"{{name}}\"؟ سيتم الحذف الناعم للسجل.",
     "columns": {
       "name": "الاسم",
@@ -640,6 +682,71 @@
       "createFailed": "فشل إنشاء التقنية.",
       "updateFailed": "فشل تحديث التقنية.",
       "deleteFailed": "فشل حذف التقنية."
+    }
+  },
+  "applicationsDetails": {
+    "title": "تفاصيل التطبيقات",
+    "description": "استعرض تطبيقات المحفظة مع مقاييس التعيينات النشطة.",
+    "viewDetails": "عرض التفاصيل",
+    "backToList": "العودة إلى تفاصيل التطبيقات",
+    "emptyTitle": "لم يتم العثور على تطبيقات",
+    "emptyDescription": "جرّب بحثاً مختلفاً، أو أضف تطبيقات من البيانات الأساسية.",
+    "emptyFilteredDescription": "لا توجد تطبيقات مطابقة للفلاتر الحالية. أعد ضبط الفلاتر لعرض الكل.",
+    "unknownDepartment": "غير محدد",
+    "unknownType": "غير مصنّف",
+    "showingCount": "عرض {{shown}} من {{total}}",
+    "invalidId": "تطبيق غير صالح",
+    "invalidIdDescription": "معرّف التطبيق في الرابط غير صالح.",
+    "notFoundTitle": "التطبيق غير موجود",
+    "notFoundDescription": "قد يكون التطبيق محذوفاً أو لا تملك صلاحية الوصول.",
+    "overviewTitle": "نظرة عامة",
+    "overviewDescription": "الهوية والملكية وبيانات الدعم الأساسية.",
+    "techTitle": "حزمة التقنيات",
+    "techDescription": "التقنيات المرتبطة بهذا التطبيق.",
+    "noTechnologies": "لا توجد تقنيات مرتبطة بعد.",
+    "teamTitle": "الفريق المعيّن",
+    "teamDescription": "التعيينات المفتوحة لهذا التطبيق.",
+    "noTeamTitle": "لا توجد تعيينات نشطة",
+    "noTeamDescription": "قم بتعيين المستخدمين من وحدة التعيينات.",
+    "documentation": "التوثيق",
+    "repository": "المستودع",
+    "internal": "داخلي",
+    "filters": {
+      "title": "الفلاتر",
+      "searchPlaceholder": "ابحث بالاسم أو الرمز أو المالك...",
+      "status": "الحالة",
+      "department": "القسم",
+      "category": "التصنيف",
+      "staffing": "التعيينات",
+      "allStatuses": "كل الحالات",
+      "allDepartments": "كل الأقسام",
+      "allCategories": "كل التصنيفات",
+      "allStaffing": "كل حالات التعيين",
+      "staffed": "يوجد مستخدمون معيّنون",
+      "unstaffed": "بدون مستخدمين معيّنين",
+      "reset": "إعادة ضبط الفلاتر"
+    },
+    "metrics": {
+      "users": "المستخدمون",
+      "department": "القسم",
+      "activeUsers": "المستخدمون النشطون",
+      "activeVendors": "الموردون النشطون",
+      "technologies": "التقنيات"
+    },
+    "fields": {
+      "type": "نوع التطبيق",
+      "supportType": "نوع الدعم",
+      "businessOwner": "مالك الأعمال",
+      "technicalOwner": "المالك التقني",
+      "updatedAt": "آخر تحديث",
+      "createdAt": "تاريخ الإنشاء"
+    },
+    "teamColumns": {
+      "member": "العضو",
+      "role": "الدور",
+      "vendor": "المورد",
+      "primary": "أساسي",
+      "assignedAt": "تاريخ التعيين"
     }
   }
 }

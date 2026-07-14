@@ -15,6 +15,8 @@ import { AuthProvider } from "@/features/auth/hooks/use-auth"
 import { LoginPage } from "@/features/auth/pages/LoginPage"
 import { ApplicationStatusesPage } from "@/features/application-statuses/pages/ApplicationStatusesPage"
 import { ApplicationsPage } from "@/features/applications/pages/ApplicationsPage"
+import { ApplicationDetailPage } from "@/features/applications/pages/ApplicationDetailPage"
+import { ApplicationsDetailsPage } from "@/features/applications/pages/ApplicationsDetailsPage"
 import { AppRolesPage } from "@/features/app-roles/pages/AppRolesPage"
 import { AssignmentsPage } from "@/features/assignments/pages/AssignmentsPage"
 import { CriticalitiesPage } from "@/features/criticalities/pages/CriticalitiesPage"
@@ -49,6 +51,14 @@ function AppRoutes() {
               <Route element={<DefaultLayout />}>
                 <Route index element={<DashboardPage />} />
                 <Route path="assignments" element={<AssignmentsPage />} />
+                <Route
+                  path="applications-details"
+                  element={<ApplicationsDetailsPage />}
+                />
+                <Route
+                  path="applications-details/:id"
+                  element={<ApplicationDetailPage />}
+                />
                 <Route path="applications" element={<ApplicationsPage />} />
                 <Route path="vendors" element={<VendorsPage />} />
                 <Route path="users" element={<UsersPage />} />

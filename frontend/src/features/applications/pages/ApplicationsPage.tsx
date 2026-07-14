@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUp, ArrowUpDown, Pencil, Plus, Trash2 } from "lucide-re
 
 import { EmptyState } from "@/components/EmptyState"
 import { LoadingSkeleton } from "@/components/LoadingSkeleton"
+import { ConfirmAlertDialog } from "@/components/ConfirmAlertDialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -53,6 +54,7 @@ export function ApplicationsPage() {
   const [sort, setSort] = useState("-created_at")
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<Application | null>(null)
+  const [pendingDelete, setPendingDelete] = useState<Application | null>(null)
 
   const debouncedSearch = useDebouncedValue(search, 350)
 
@@ -95,14 +97,12 @@ export function ApplicationsPage() {
     setDialogOpen(true)
   }
 
-  async function handleDelete(application: Application) {
-    const confirmed = window.confirm(
-      t("applications.deleteConfirm", { name: application.name_en })
-    )
-    if (!confirmed) {
+  async function confirmDelete() {
+    if (!pendingDelete) {
       return
     }
-    await deleteMutation.mutateAsync(application.id)
+    await deleteMutation.mutateAsync(pendingDelete.id)
+    setPendingDelete(null)
   }
 
   return (
@@ -245,7 +245,7 @@ export function ApplicationsPage() {
                             type="button"
                             variant="ghost"
                             size="icon-sm"
-                            onClick={() => void handleDelete(application)}
+                            onClick={() => setPendingDelete(application)}
                             disabled={deleteMutation.isPending}
                             aria-label={`${t("common.delete")} ${application.name_en}`}
                           >
@@ -304,6 +304,21 @@ export function ApplicationsPage() {
           application={editing}
         />
       ) : null}
+
+      <ConfirmAlertDialog
+        open={pendingDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setPendingDelete(null)
+          }
+        }}
+        title={t("applications.deleteTitle")}
+        description={t("applications.deleteConfirm", {
+          name: pendingDelete?.name_en ?? "",
+        })}
+        confirming={deleteMutation.isPending}
+        onConfirm={confirmDelete}
+      />
     </section>
   )
 }

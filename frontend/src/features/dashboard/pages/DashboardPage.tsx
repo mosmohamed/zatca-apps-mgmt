@@ -21,6 +21,7 @@ import {
   PolarGrid,
   Radar,
   RadarChart,
+  Sector,
   XAxis,
   YAxis,
 } from "recharts"
@@ -42,6 +43,8 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import { useAuth } from "@/features/auth/hooks/use-auth"
+import { DashboardKpiCard } from "@/features/dashboard/components/DashboardKpiCard"
+import { DashboardLiveHeader } from "@/features/dashboard/components/DashboardLiveHeader"
 import { useDashboard } from "@/features/dashboard/hooks/use-dashboard"
 import type { DashboardChartItem } from "@/features/dashboard/services/dashboard-service"
 import { cn } from "@/lib/utils"
@@ -111,10 +114,13 @@ function buildNamedChartConfig(
 
 export function DashboardPage() {
   const { t } = useTranslation()
-  const { user, isSuperAdmin } = useAuth()
+  const { isSuperAdmin } = useAuth()
   const navigate = useNavigate()
   const dashboardQuery = useDashboard()
   const [activeStatus, setActiveStatus] = useState<string>("all")
+  const [activeEmployeeIndex, setActiveEmployeeIndex] = useState<number | null>(
+    null
+  )
 
   const data = dashboardQuery.data
   const totals = data?.totals
@@ -154,6 +160,63 @@ export function DashboardPage() {
     () => employeesChartData.reduce((sum, item) => sum + item.count, 0),
     [employeesChartData]
   )
+
+  const activeEmployee = useMemo(() => {
+    if (activeEmployeeIndex === null) {
+      return null
+    }
+    return employeesChartData[activeEmployeeIndex] ?? null
+  }, [activeEmployeeIndex, employeesChartData])
+
+  const activeEmployeeShare = useMemo(() => {
+    if (!activeEmployee || employeesTotal === 0) {
+      return 0
+    }
+    return Math.round((activeEmployee.count / employeesTotal) * 100)
+  }, [activeEmployee, employeesTotal])
+
+  function renderActiveEmployeeShape(props: {
+    cx?: number
+    cy?: number
+    innerRadius?: number
+    outerRadius?: number
+    startAngle?: number
+    endAngle?: number
+    fill?: string
+  }) {
+    const {
+      cx = 0,
+      cy = 0,
+      innerRadius = 0,
+      outerRadius = 0,
+      startAngle = 0,
+      endAngle = 0,
+      fill,
+    } = props
+
+    return (
+      <g>
+        <Sector
+          cx={cx}
+          cy={cy}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius + 10}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          fill={fill}
+        />
+        <Sector
+          cx={cx}
+          cy={cy}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          innerRadius={outerRadius + 14}
+          outerRadius={outerRadius + 18}
+          fill={fill}
+        />
+      </g>
+    )
+  }
 
   const technologiesRadarData = useMemo(
     () =>
@@ -225,72 +288,63 @@ export function DashboardPage() {
       value: totals?.applications ?? 0,
       icon: AppWindow,
       to: "/applications",
-      accent: "from-sky-500/15 to-sky-500/5 text-sky-700",
+      accent: {
+        card: "border-sky-500/20 bg-sky-500/[0.04] dark:border-sky-400/25 dark:bg-sky-400/[0.06]",
+        strip: "bg-sky-500/80 dark:bg-sky-400/70",
+        icon: "text-sky-600/12 dark:text-sky-300/15",
+      },
     },
     {
       label: t("dashboard.kpi.activeUsers"),
       value: totals?.active_users ?? 0,
       icon: Users,
       to: "/users",
-      accent: "from-emerald-500/15 to-emerald-500/5 text-emerald-700",
+      accent: {
+        card: "border-emerald-500/20 bg-emerald-500/[0.04] dark:border-emerald-400/25 dark:bg-emerald-400/[0.06]",
+        strip: "bg-emerald-500/80 dark:bg-emerald-400/70",
+        icon: "text-emerald-600/12 dark:text-emerald-300/15",
+      },
     },
     {
       label: t("dashboard.kpi.vendors"),
       value: totals?.vendors ?? 0,
       icon: Truck,
       to: "/vendors",
-      accent: "from-amber-500/15 to-amber-500/5 text-amber-700",
+      accent: {
+        card: "border-amber-500/20 bg-amber-500/[0.04] dark:border-amber-400/25 dark:bg-amber-400/[0.06]",
+        strip: "bg-amber-500/80 dark:bg-amber-400/70",
+        icon: "text-amber-600/12 dark:text-amber-300/15",
+      },
     },
     {
       label: t("dashboard.kpi.technologies"),
       value: totals?.technologies ?? 0,
       icon: Cpu,
       to: "/technologies",
-      accent: "from-violet-500/15 to-violet-500/5 text-violet-700",
+      accent: {
+        card: "border-violet-500/20 bg-violet-500/[0.04] dark:border-violet-400/25 dark:bg-violet-400/[0.06]",
+        strip: "bg-violet-500/80 dark:bg-violet-400/70",
+        icon: "text-violet-600/12 dark:text-violet-300/15",
+      },
     },
   ]
 
   return (
     <section className="space-y-6">
-      <div className="relative overflow-hidden rounded-2xl border border-stroke bg-gradient-to-br from-card via-card to-sky-500/5 p-6 shadow-sm">
-        <div className="pointer-events-none absolute -end-16 -top-16 size-48 rounded-full bg-sky-500/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-20 start-10 size-40 rounded-full bg-emerald-500/10 blur-3xl" />
-        <p className="text-sm text-muted-foreground">{t("dashboard.welcomeBack")}</p>
-        <h2 className="mt-1 text-2xl font-semibold tracking-tight">
-          {user?.full_name ?? t("common.user")}
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-          {isSuperAdmin
-            ? t("dashboard.adminBlurb")
-            : t("dashboard.employeeBlurb")}
-        </p>
-      </div>
+      <DashboardLiveHeader />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {kpiCards.map((item) => {
-          const Icon = item.icon
-          return (
-            <button
-              key={item.to}
-              type="button"
-              onClick={() => navigate(item.to)}
-              className={cn(
-                "group rounded-2xl border border-stroke bg-gradient-to-br p-5 text-start shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                item.accent
-              )}
-            >
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">{item.label}</p>
-                <span className="rounded-lg bg-background/70 p-2 shadow-sm transition-transform duration-300 group-hover:scale-110">
-                  <Icon className="size-4" />
-                </span>
-              </div>
-              <p className="mt-3 text-3xl font-semibold tracking-tight text-foreground">
-                {item.value}
-              </p>
-            </button>
-          )
-        })}
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {kpiCards.map((item, index) => (
+          <DashboardKpiCard
+            key={item.to}
+            label={item.label}
+            value={item.value}
+            icon={item.icon}
+            to={item.to}
+            index={index}
+            accent={item.accent}
+          />
+        ))}
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
@@ -351,56 +405,87 @@ export function DashboardPage() {
                 description={t("dashboard.charts.emptyEmployees")}
               />
             ) : (
-              <ChartContainer
-                config={employeesConfig}
-                className="mx-auto aspect-square max-h-[320px]"
-              >
-                <PieChart>
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent hideLabel nameKey="key" />}
-                  />
-                  <Pie
-                    data={employeesChartData}
-                    dataKey="count"
-                    nameKey="key"
-                    innerRadius={68}
-                    strokeWidth={4}
-                    {...CHART_ANIMATION}
-                  >
-                    <Label
-                      content={({ viewBox }) => {
-                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                          return (
-                            <text
-                              x={viewBox.cx}
-                              y={viewBox.cy}
-                              textAnchor="middle"
-                              dominantBaseline="middle"
-                            >
-                              <tspan
+              <div className="space-y-3">
+                <ChartContainer
+                  config={employeesConfig}
+                  className="mx-auto aspect-square max-h-[300px]"
+                >
+                  <PieChart>
+                    <ChartTooltip
+                      cursor={false}
+                      content={<ChartTooltipContent hideLabel nameKey="name" />}
+                    />
+                    <Pie
+                      data={employeesChartData}
+                      dataKey="count"
+                      nameKey="name"
+                      innerRadius={68}
+                      strokeWidth={4}
+                      activeIndex={activeEmployeeIndex ?? undefined}
+                      activeShape={renderActiveEmployeeShape}
+                      onMouseEnter={(_, index) => setActiveEmployeeIndex(index)}
+                      onMouseLeave={() => setActiveEmployeeIndex(null)}
+                      className="cursor-pointer outline-none"
+                      {...CHART_ANIMATION}
+                    >
+                      <Label
+                        content={({ viewBox }) => {
+                          if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                            return (
+                              <text
                                 x={viewBox.cx}
                                 y={viewBox.cy}
-                                className="fill-foreground text-3xl font-bold"
+                                textAnchor="middle"
+                                dominantBaseline="middle"
                               >
-                                {employeesTotal.toLocaleString()}
-                              </tspan>
-                              <tspan
-                                x={viewBox.cx}
-                                y={(viewBox.cy ?? 0) + 24}
-                                className="fill-muted-foreground text-sm"
-                              >
-                                {t("dashboard.charts.employeesLabel")}
-                              </tspan>
-                            </text>
-                          )
-                        }
-                        return null
-                      }}
-                    />
-                  </Pie>
-                </PieChart>
-              </ChartContainer>
+                                <tspan
+                                  x={viewBox.cx}
+                                  y={(viewBox.cy ?? 0) - 6}
+                                  className="fill-foreground text-2xl font-bold"
+                                >
+                                  {activeEmployee
+                                    ? activeEmployee.count.toLocaleString()
+                                    : employeesTotal.toLocaleString()}
+                                </tspan>
+                                <tspan
+                                  x={viewBox.cx}
+                                  y={(viewBox.cy ?? 0) + 16}
+                                  className="fill-muted-foreground text-xs"
+                                >
+                                  {activeEmployee
+                                    ? `${activeEmployeeShare}% · ${
+                                        activeEmployee.name.length > 16
+                                          ? `${activeEmployee.name.slice(0, 16)}…`
+                                          : activeEmployee.name
+                                      }`
+                                    : t("dashboard.charts.employeesLabel")}
+                                </tspan>
+                              </text>
+                            )
+                          }
+                          return null
+                        }}
+                      />
+                    </Pie>
+                  </PieChart>
+                </ChartContainer>
+
+                {activeEmployee ? (
+                  <div className="mx-auto max-w-sm rounded-xl border border-stroke/80 bg-muted/30 px-3 py-2 text-center text-sm transition-all duration-300 animate-in fade-in-0 zoom-in-95">
+                    <p className="font-medium">{activeEmployee.name}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      {t("dashboard.charts.employeesHoverDetail", {
+                        count: activeEmployee.count.toLocaleString(),
+                        percent: activeEmployeeShare,
+                      })}
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-center text-xs text-muted-foreground">
+                    {t("dashboard.charts.employeesHoverHint")}
+                  </p>
+                )}
+              </div>
             )}
           </CardContent>
         </Card>

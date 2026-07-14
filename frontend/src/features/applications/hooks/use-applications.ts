@@ -38,6 +38,14 @@ export function useApplications(params: ListQueryParams) {
   })
 }
 
+export function useApplication(id: number) {
+  return useQuery({
+    queryKey: applicationKeys.detail(id),
+    queryFn: () => applicationsService.get(id),
+    enabled: Number.isFinite(id) && id > 0,
+  })
+}
+
 export function useDepartmentsLookup() {
   return useQuery({
     queryKey: lookupKeys.departments,
@@ -115,8 +123,13 @@ export function useUpdateApplication() {
       id: number
       payload: ApplicationPayload
     }) => applicationsService.update(id, payload),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: applicationKeys.lists() })
+    onSuccess: async (_data, variables) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: applicationKeys.lists() }),
+        queryClient.invalidateQueries({
+          queryKey: applicationKeys.detail(variables.id),
+        }),
+      ])
       toast.success(i18n.t("applications.toast.updated"))
     },
     onError: (error) => {
@@ -132,8 +145,13 @@ export function useDeleteApplication() {
 
   return useMutation({
     mutationFn: (id: number) => applicationsService.remove(id),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: applicationKeys.lists() })
+    onSuccess: async (_data, id) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: applicationKeys.lists() }),
+        queryClient.invalidateQueries({
+          queryKey: applicationKeys.detail(id),
+        }),
+      ])
       toast.success(i18n.t("applications.toast.deleted"))
     },
     onError: (error) => {

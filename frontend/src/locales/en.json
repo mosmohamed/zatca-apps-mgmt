@@ -1,12 +1,14 @@
 {
   "app": {
-    "name": "ZATCA IT Portfolio",
+    "name": "ZATCA OPS",
     "tagline": "Access Management",
-    "subtitle": "ZATCA Enterprise IT Portfolio & Access Management",
-    "fallbackTitle": "ZATCA IT Portfolio"
+    "subtitle": "ZATCA Applications Operations & Access Management",
+    "fallbackTitle": "ZATCA OPS"
   },
   "nav": {
     "dashboard": "Dashboard",
+    "applicationsDetails": "Applications Details",
+    "applicationDetail": "Application Detail",
     "assignments": "Assignments",
     "masterData": "Master Data",
     "applications": "Applications",
@@ -58,7 +60,9 @@
     "english": "English",
     "arabic": "Arabic",
     "switchToEnglish": "Switch to English",
-    "switchToArabic": "Switch to Arabic"
+    "switchToArabic": "Switch to Arabic",
+    "switchToDark": "Switch to dark mode",
+    "switchToLight": "Switch to light mode"
   },
   "validation": {
     "required": "{{field}} is required.",
@@ -97,6 +101,41 @@
     "welcomeBack": "Welcome back",
     "adminBlurb": "You have full access to manage applications, vendors, users, and assignment history.",
     "employeeBlurb": "You can view applications and your active access assignments.",
+    "widgets": {
+      "localTime": "Local time",
+      "weather": "Weather",
+      "prayerTimes": "Prayer times",
+      "humidity": "Humidity",
+      "wind": "Wind",
+      "uvIndex": "UV index",
+      "visibility": "Visibility",
+      "rainChance": "Rain chance",
+      "precipitation": "Precip.",
+      "sunrise": "Sunrise",
+      "sunset": "Sunset",
+      "feelsLike": "Feels like",
+      "hijri": "Hijri",
+      "weatherUnavailable": "Weather is temporarily unavailable.",
+      "prayerUnavailable": "Prayer times are temporarily unavailable.",
+      "nextPrayer": "Next: {{prayer}}",
+      "prayers": {
+        "fajr": "Fajr",
+        "dhuhr": "Dhuhr",
+        "asr": "Asr",
+        "maghrib": "Maghrib",
+        "isha": "Isha"
+      },
+      "weatherCodes": {
+        "clear": "Clear sky",
+        "partlyCloudy": "Partly cloudy",
+        "fog": "Foggy",
+        "rain": "Rain",
+        "snow": "Snow",
+        "showers": "Showers",
+        "thunder": "Thunderstorm",
+        "unknown": "Unknown conditions"
+      }
+    },
     "applicationsDesc": "IT asset inventory",
     "usersDesc": "Employees & contractors",
     "vendorsDesc": "External partners",
@@ -130,6 +169,8 @@
       "allStatuses": "All statuses",
       "employeesLabel": "Employees",
       "applicationsLabel": "Applications",
+      "employeesHoverHint": "Hover a segment to explore staffing share.",
+      "employeesHoverDetail": "{{count}} employees · {{percent}}% of open assignments",
       "emptyTitle": "No chart data yet",
       "emptyTechnologies": "Link technologies to applications to populate this chart.",
       "emptyEmployees": "Assign users to applications to see headcount per app.",
@@ -163,6 +204,7 @@
     "searchPlaceholder": "Search name, code, owner...",
     "emptyTitle": "No applications found",
     "emptyCreate": "Create the first application to start your inventory.",
+    "deleteTitle": "Delete application?",
     "deleteConfirm": "Delete application \"{{name}}\"? This soft-deletes the record.",
     "columns": {
       "name": "Name",
@@ -648,6 +690,71 @@
       "createFailed": "Failed to create technology.",
       "updateFailed": "Failed to update technology.",
       "deleteFailed": "Failed to delete technology."
+    }
+  },
+  "applicationsDetails": {
+    "title": "Applications Details",
+    "description": "Browse portfolio applications with live staffing metrics.",
+    "viewDetails": "View details",
+    "backToList": "Back to applications details",
+    "emptyTitle": "No applications found",
+    "emptyDescription": "Try a different search, or add applications from Master Data.",
+    "emptyFilteredDescription": "No applications match the current filters. Reset filters to see all apps.",
+    "unknownDepartment": "Unassigned",
+    "unknownType": "Uncategorized",
+    "showingCount": "Showing {{shown}} of {{total}}",
+    "invalidId": "Invalid application",
+    "invalidIdDescription": "The application id in the URL is not valid.",
+    "notFoundTitle": "Application not found",
+    "notFoundDescription": "This application may have been deleted or you do not have access.",
+    "overviewTitle": "Overview",
+    "overviewDescription": "Core identity, ownership, and support metadata.",
+    "techTitle": "Technology stack",
+    "techDescription": "Technologies linked to this application.",
+    "noTechnologies": "No technologies linked yet.",
+    "teamTitle": "Assigned team",
+    "teamDescription": "Open personnel assignments for this application.",
+    "noTeamTitle": "No active assignments",
+    "noTeamDescription": "Assign users from the Assignments module.",
+    "documentation": "Documentation",
+    "repository": "Repository",
+    "internal": "Internal",
+    "filters": {
+      "title": "Filters",
+      "searchPlaceholder": "Search name, code, owner...",
+      "status": "Status",
+      "department": "Department",
+      "category": "Category",
+      "staffing": "Staffing",
+      "allStatuses": "All statuses",
+      "allDepartments": "All departments",
+      "allCategories": "All categories",
+      "allStaffing": "All staffing",
+      "staffed": "Has assigned users",
+      "unstaffed": "No assigned users",
+      "reset": "Reset filters"
+    },
+    "metrics": {
+      "users": "Users",
+      "department": "Department",
+      "activeUsers": "Active users",
+      "activeVendors": "Active vendors",
+      "technologies": "Technologies"
+    },
+    "fields": {
+      "type": "Application type",
+      "supportType": "Support type",
+      "businessOwner": "Business owner",
+      "technicalOwner": "Technical owner",
+      "updatedAt": "Last updated",
+      "createdAt": "Created"
+    },
+    "teamColumns": {
+      "member": "Member",
+      "role": "Role",
+      "vendor": "Vendor",
+      "primary": "Primary",
+      "assignedAt": "Assigned at"
     }
   }
 }

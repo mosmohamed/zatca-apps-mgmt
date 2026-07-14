@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
+import { ThemeToggle } from "@/components/ThemeToggle"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/features/auth/hooks/use-auth"
 import { useSidebar } from "@/layouts/SidebarContext"
@@ -58,6 +59,7 @@ export function AppHeader({ title }: AppHeaderProps) {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3">
+        <ThemeToggle />
         <LanguageSwitcher />
         <div className="hidden text-end sm:block">
           <p className="text-sm font-medium leading-none">
