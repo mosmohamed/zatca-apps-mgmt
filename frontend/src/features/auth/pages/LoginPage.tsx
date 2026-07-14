@@ -115,7 +115,7 @@ export function LoginPage() {
                     <Input
                       type="email"
                       autoComplete="username"
-                      placeholder="admin@itportfolio.local"
+                      placeholder="admin@zatca.sa"
                       {...field}
                     />
                   </FormControl>
