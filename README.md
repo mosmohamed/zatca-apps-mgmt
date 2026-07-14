@@ -2,7 +2,7 @@
 
 Enterprise **IT Portfolio & Access Management** platform for ZATCA.
 
-- **Backend:** Laravel 13 (PHP 8.3) API with Sanctum, Spatie Permission, Activity Log
+- **Backend:** Laravel 13 (PHP 8.4+) API with Sanctum, Spatie Permission, Activity Log
 - **Frontend:** React 19 + Vite + TypeScript + Tailwind v4 + shadcn/ui
 - **Deploy:** Docker + Nginx + PHP-FPM + Supervisor (Coolify-ready)
 
@@ -62,7 +62,7 @@ Browser -> Nginx:80
 
 ### Prerequisites
 
-- PHP 8.3+, Composer 2
+- PHP 8.4+, Composer 2
 - Node.js 22+, npm
 - MySQL 8+
 
@@ -102,7 +102,7 @@ cp .env.docker.example .env.docker
 # Edit secrets, especially APP_KEY / DB passwords / SUPER_ADMIN_*
 
 # Generate a Laravel key (one-time):
-docker run --rm php:8.3-cli php -r "echo 'base64:'.base64_encode(random_bytes(32)), PHP_EOL;"
+docker run --rm php:8.4-cli php -r "echo 'base64:'.base64_encode(random_bytes(32)), PHP_EOL;"
 # Paste into APP_KEY=base64:...
 
 docker compose up -d --build
@@ -340,7 +340,8 @@ API sample: `GET /api/v1/dashboard` (authenticated)
 |---------|--------------|-----|
 | 502 Bad Gateway | PHP-FPM not ready | Check supervisord / app logs |
 | SPA blank page | Wrong asset paths / failed frontend build | Rebuild image; verify `/assets/*` |
-| API 500 on boot | Missing `APP_KEY` / DB credentials | Fix env, redeploy |
+| API 500 / Artisan parse error on Request.php | PHP 8.3 vs Symfony 8 (needs 8.4+) | Rebuild with `php:8.4-fpm` image |
+| Database is not ready after N attempts | Wrong `DB_HOST` or services not networked | Set Coolify MySQL hostname; join same network |
 | CORS/auth cookie issues | Domains mismatch | Align `APP_URL` + `SANCTUM_STATEFUL_DOMAINS` |
 | Migrate failures | DB not reachable | Verify Coolify DB host/network |
 | Uploaded files missing after redeploy | Ephemeral storage | Persist `/var/www/html/storage/app` volume |

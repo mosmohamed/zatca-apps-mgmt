@@ -41,7 +41,8 @@ RUN composer install \
 ############################
 # Stage 3: Production runtime
 ############################
-FROM php:8.3-fpm-bookworm AS runtime
+# Symfony 8 (via Laravel 13 lockfile) requires PHP >= 8.4.1
+FROM php:8.4-fpm-bookworm AS runtime
 
 LABEL org.opencontainers.image.title="ZATCA IT Portfolio" \
       org.opencontainers.image.description="Laravel API + React SPA" \
