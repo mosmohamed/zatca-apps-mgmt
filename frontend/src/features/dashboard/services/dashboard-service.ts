@@ -6,12 +6,16 @@ export type DashboardTotals = {
   active_users: number
   vendors: number
   technologies: number
+  licenses: number
   assignments: number
   open_assignments: number
 }
 
 export type DashboardChartItem = {
-  name: string
+  key?: string
+  name?: string
+  name_en?: string
+  name_ar?: string
   count: number
 }
 
@@ -40,6 +44,9 @@ export type DashboardData = {
     technologies_usage: DashboardChartItem[]
     employees_per_application: DashboardChartItem[]
     applications_by_department: DashboardChartItem[]
+    license_usage: DashboardChartItem[]
+    license_status_distribution: DashboardChartItem[]
+    licenses_by_environment: DashboardChartItem[]
   }
   recent_activity: DashboardActivity[]
 }

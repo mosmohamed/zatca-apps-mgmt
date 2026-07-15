@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
@@ -22,6 +22,7 @@ import {
   getApiErrorMessage,
   useAuth,
 } from "@/features/auth/hooks/use-auth"
+import { useSettings } from "@/features/settings/hooks/use-settings"
 
 type LoginFormValues = {
   email: string
@@ -31,9 +32,14 @@ type LoginFormValues = {
 export function LoginPage() {
   const { t } = useTranslation()
   const { login } = useAuth()
+  const { settings } = useSettings()
   const navigate = useNavigate()
   const location = useLocation()
   const [formError, setFormError] = useState<string | null>(null)
+
+  useEffect(() => {
+    document.title = settings.company_name
+  }, [settings.company_name])
 
   const loginSchema = useMemo(
     () =>
@@ -95,7 +101,9 @@ export function LoginPage() {
             imgClassName="mx-auto h-12 w-auto max-w-[220px]"
           />
           <div className="space-y-1">
-            <p className="text-sm font-semibold tracking-tight">{t("app.name")}</p>
+            <p className="text-sm font-semibold tracking-tight">
+              {settings.company_name}
+            </p>
             <h1 className="text-2xl font-semibold tracking-tight">
               {t("auth.signIn")}
             </h1>

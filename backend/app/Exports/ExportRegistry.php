@@ -7,6 +7,7 @@ namespace App\Exports;
 use App\Exports\Contracts\ExportDefinitionInterface;
 use App\Exports\Definitions\ApplicationsExportDefinition;
 use App\Exports\Definitions\DepartmentsExportDefinition;
+use App\Exports\Definitions\LicensesExportDefinition;
 use App\Exports\Definitions\TechnologiesExportDefinition;
 use App\Exports\Definitions\UsersExportDefinition;
 use App\Exports\Definitions\VendorsExportDefinition;
@@ -22,6 +23,7 @@ final class ExportRegistry
         'vendors' => VendorsExportDefinition::class,
         'users' => UsersExportDefinition::class,
         'technologies' => TechnologiesExportDefinition::class,
+        'licenses' => LicensesExportDefinition::class,
         'departments' => DepartmentsExportDefinition::class,
     ];
 
@@ -33,7 +35,7 @@ final class ExportRegistry
             throw new InvalidArgumentException(sprintf('No export definition registered for entity "%s".', $entity));
         }
 
-        return new $class();
+        return new $class;
     }
 
     public function has(string $entity): bool

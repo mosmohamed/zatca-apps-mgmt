@@ -49,11 +49,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false
 
-    if (!isAuthenticated) {
-      setIsLoading(false)
-      return
-    }
-
     setIsLoading(true)
 
     async function bootstrap() {
@@ -76,7 +71,15 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true
     }
-  }, [isAuthenticated])
+  }, [])
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return
+    }
+
+    void refreshSettings()
+  }, [isAuthenticated, refreshSettings])
 
   const updateSettings = useCallback(async (payload: UpdateSettingsPayload) => {
     setIsSaving(true)

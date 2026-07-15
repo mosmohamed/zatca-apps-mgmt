@@ -9,6 +9,7 @@ import {
   Cpu,
   Database,
   History,
+  KeyRound,
   LayoutDashboard,
   Link2,
   MonitorSmartphone,
@@ -19,19 +20,13 @@ import {
   Users,
 } from "lucide-react"
 
-import { AppLogo } from "@/components/AppLogo"
 import { useAuth } from "@/features/auth/hooks/use-auth"
+import { useSettings } from "@/features/settings/hooks/use-settings"
 import { cn } from "@/lib/utils"
 import { useSidebar } from "@/layouts/SidebarContext"
 
 const primaryNavItems = [
   { to: "/", key: "dashboard" as const, icon: LayoutDashboard, end: true },
-  {
-    to: "/applications-details",
-    key: "applicationsDetails" as const,
-    icon: AppWindow,
-  },
-  { to: "/assignments", key: "assignments" as const, icon: Link2 },
 ]
 
 type NavItem = {
@@ -43,6 +38,12 @@ type NavItem = {
 }
 
 const masterDataNavItems: NavItem[] = [
+  {
+    to: "/applications-details",
+    key: "applicationsDetails",
+    icon: AppWindow,
+  },
+  { to: "/assignments", key: "assignments", icon: Link2 },
   { to: "/departments", key: "departments", icon: Building2 },
   { to: "/vendors", key: "vendors", icon: Truck },
   { to: "/applications", key: "applications", icon: MonitorSmartphone },
@@ -67,10 +68,16 @@ const masterDataNavItems: NavItem[] = [
 
 const secondaryNavItems: NavItem[] = [
   {
+    to: "/licenses",
+    key: "licenses",
+    icon: KeyRound,
+    permission: "licenses.view",
+  },
+  {
     to: "/activity-log",
     key: "activityLog",
     icon: History,
-    permission: "activity_log.view",
+    permission: "activity-log.view",
   },
   {
     to: "/settings",
@@ -83,6 +90,7 @@ const secondaryNavItems: NavItem[] = [
 export function AppSidebar() {
   const { t } = useTranslation()
   const { can } = useAuth()
+  const { settings } = useSettings()
   const { isExpanded, isMobileOpen, closeMobile } = useSidebar()
   const [masterDataOpen, setMasterDataOpen] = useState(true)
 
@@ -91,6 +99,14 @@ export function AppSidebar() {
   )
   const visibleSecondaryNavItems = secondaryNavItems.filter(
     (item) => !item.permission || can(item.permission)
+  )
+
+  // Licenses should sit below Master Data and above activity-log/settings.
+  const licensesItem = visibleSecondaryNavItems.find(
+    (item) => item.key === "licenses"
+  )
+  const trailingSecondaryNavItems = visibleSecondaryNavItems.filter(
+    (item) => item.key !== "licenses"
   )
 
   return (
@@ -115,18 +131,26 @@ export function AppSidebar() {
       >
         <div className="flex h-16 items-center border-b border-sidebar-border px-4">
           {isExpanded ? (
-            <AppLogo
-              className="w-full"
-              imgClassName="h-8 max-w-[7.5rem] shrink-0"
-              showWordmark
-              variant="onDark"
-            />
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold leading-tight text-sidebar-foreground">
+                {settings.company_name}
+              </p>
+              <p className="truncate text-xs text-sidebar-foreground/70">
+                {t("app.tagline")}
+              </p>
+            </div>
           ) : (
-            <AppLogo
-              className="mx-auto justify-center"
-              imgClassName="h-8 w-10 object-left object-contain"
-              variant="onDark"
-            />
+            <p
+              className="mx-auto max-w-full truncate text-center text-xs font-semibold text-sidebar-foreground"
+              title={settings.company_name}
+            >
+              {settings.company_name
+                .split(/\s+/)
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((part) => part.charAt(0).toUpperCase())
+                .join("") || "IT"}
+            </p>
           )}
         </div>
 
@@ -198,9 +222,34 @@ export function AppSidebar() {
               })
             : null}
 
-          {visibleSecondaryNavItems.length > 0 ? (
+          {licensesItem ? (
+            (() => {
+              const Icon = licensesItem.icon
+              return (
+                <NavLink
+                  to={licensesItem.to}
+                  onClick={closeMobile}
+                  className={({ isActive }) =>
+                    cn(
+                      "mt-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                      isActive
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                        : "text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
+                    )
+                  }
+                >
+                  <Icon className="size-4 shrink-0" />
+                  {isExpanded ? (
+                    <span>{t(`nav.${licensesItem.key}`)}</span>
+                  ) : null}
+                </NavLink>
+              )
+            })()
+          ) : null}
+
+          {trailingSecondaryNavItems.length > 0 ? (
             <div className="mt-2 space-y-1 border-t border-sidebar-border pt-2">
-              {visibleSecondaryNavItems.map((item) => {
+              {trailingSecondaryNavItems.map((item) => {
                 const Icon = item.icon
                 return (
                   <NavLink

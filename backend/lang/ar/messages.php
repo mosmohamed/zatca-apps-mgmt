@@ -51,7 +51,7 @@ return [
         'teams' => 'Teams',
         'whatsapp' => 'واتساب',
         'extension' => 'التحويلة',
-        'business_owner' => 'مالك الأعمال',
+        'business_owner' => 'إدارة هيئة الزكاة والضريبة والجمارك',
         'technical_owner' => 'المالك التقني',
         'documentation_url' => 'رابط التوثيق',
         'repository_url' => 'رابط المستودع',
@@ -65,6 +65,16 @@ return [
         'users' => 'المستخدمون',
         'technologies' => 'التقنيات',
         'category' => 'الفئة',
+        'publisher' => 'الناشر',
+        'product' => 'المنتج',
+        'version' => 'الإصدار',
+        'environment' => 'البيئة',
+        'licensed' => 'المرخص',
+        'used' => 'المستخدم',
+        'available' => 'المتاح',
+        'proof_of_entitlement' => 'إثبات الاستحقاق',
+        'start_date' => 'تاريخ البدء',
+        'end_date' => 'تاريخ الانتهاء',
     ],
 
     'auth' => [
@@ -163,6 +173,15 @@ return [
         'retrieved' => 'تم جلب التقنية بنجاح.',
         'updated' => 'تم تحديث التقنية بنجاح.',
         'deleted' => 'تم حذف التقنية بنجاح.',
+    ],
+
+    'licenses' => [
+        'listed' => 'تم جلب التراخيص بنجاح.',
+        'created' => 'تم إنشاء الترخيص بنجاح.',
+        'retrieved' => 'تم جلب الترخيص بنجاح.',
+        'updated' => 'تم تحديث الترخيص بنجاح.',
+        'deleted' => 'تم حذف الترخيص بنجاح.',
+        'stats' => 'تم جلب إحصائيات التراخيص بنجاح.',
     ],
 
     'app_roles' => [

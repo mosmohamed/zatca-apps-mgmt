@@ -2,10 +2,12 @@ import { LogOut, Menu, PanelLeftClose, PanelLeftOpen, Search } from "lucide-reac
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
+import { AppLogo } from "@/components/AppLogo"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/features/auth/hooks/use-auth"
+import { useTheme } from "@/hooks/use-theme"
 import { useSidebar } from "@/layouts/SidebarContext"
 
 type AppHeaderProps = {
@@ -17,6 +19,7 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
   const { t } = useTranslation()
   const { isExpanded, toggleExpanded, toggleMobile } = useSidebar()
   const { user, logout, isSuperAdmin } = useAuth()
+  const { theme } = useTheme()
   const navigate = useNavigate()
 
   async function handleLogout() {
@@ -24,9 +27,11 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
     navigate("/login", { replace: true })
   }
 
+  const logoVariant = theme === "dark" ? "onDark" : "default"
+
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-stroke bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:px-6">
-      <div className="flex items-center gap-2">
+    <header className="sticky top-0 z-30 grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-stroke bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:gap-3 md:px-6">
+      <div className="flex min-w-0 items-center gap-2 justify-self-start">
         <Button
           variant="ghost"
           size="icon"
@@ -49,17 +54,25 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
         >
           {isExpanded ? <PanelLeftClose /> : <PanelLeftOpen />}
         </Button>
-        <div>
-          <h1 className="text-base font-semibold md:text-lg">
+        <div className="min-w-0">
+          <h1 className="truncate text-base font-semibold md:text-lg">
             {title ?? t("nav.dashboard")}
           </h1>
-          <p className="hidden text-xs text-muted-foreground sm:block">
+          <p className="hidden truncate text-xs text-muted-foreground sm:block">
             {t("app.subtitle")}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex justify-self-center">
+        <AppLogo
+          className="justify-center"
+          imgClassName="h-8 max-w-[8.5rem] shrink-0 sm:h-9 sm:max-w-[10rem]"
+          variant={logoVariant}
+        />
+      </div>
+
+      <div className="flex items-center gap-2 justify-self-end sm:gap-3">
         {onOpenSearch ? (
           <Button
             type="button"

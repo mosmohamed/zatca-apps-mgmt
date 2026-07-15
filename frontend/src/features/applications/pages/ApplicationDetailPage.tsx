@@ -22,6 +22,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { useApplication } from "@/features/applications/hooks/use-applications"
 import { useApplicationAssignmentDetails } from "@/features/assignments/hooks/use-assignments"
 import { cn } from "@/lib/utils"
@@ -316,68 +324,72 @@ export function ApplicationDetailPage() {
               description={t("applicationsDetails.noTeamDescription")}
             />
           ) : (
-            <div className="overflow-x-auto rounded-xl border border-stroke/80">
-              <table className="w-full min-w-[640px] text-sm">
-                <thead className="bg-muted/50 text-start">
-                  <tr>
-                    <th className="px-3 py-2.5 font-medium">
+            <div className="overflow-hidden rounded-xl border border-stroke/80">
+              <Table className="min-w-[720px] table-fixed">
+                <TableHeader className="bg-muted/50">
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="w-[28%] whitespace-nowrap">
                       {t("applicationsDetails.teamColumns.member")}
-                    </th>
-                    <th className="px-3 py-2.5 font-medium">
+                    </TableHead>
+                    <TableHead className="w-[18%] whitespace-nowrap">
                       {t("applicationsDetails.teamColumns.role")}
-                    </th>
-                    <th className="px-3 py-2.5 font-medium">
+                    </TableHead>
+                    <TableHead className="w-[20%] whitespace-nowrap">
                       {t("applicationsDetails.teamColumns.vendor")}
-                    </th>
-                    <th className="px-3 py-2.5 font-medium">
+                    </TableHead>
+                    <TableHead className="w-[14%] whitespace-nowrap">
                       {t("applicationsDetails.teamColumns.primary")}
-                    </th>
-                    <th className="px-3 py-2.5 font-medium">
+                    </TableHead>
+                    <TableHead className="w-[20%] whitespace-nowrap">
                       {t("applicationsDetails.teamColumns.assignedAt")}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {assignments.map((assignment) => (
-                    <tr
-                      key={assignment.id}
-                      className="border-t border-stroke/70 transition-colors hover:bg-muted/30"
-                    >
-                      <td className="px-3 py-3">
-                        <p className="font-medium">
-                          {assignment.user?.full_name ?? "—"}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {assignment.user?.email}
-                        </p>
-                      </td>
-                      <td className="px-3 py-3">
-                        <Badge variant="secondary" className="rounded-full">
+                    <TableRow key={assignment.id}>
+                      <TableCell className="align-middle">
+                        <div className="min-w-0 space-y-0.5">
+                          <p className="truncate font-medium leading-none">
+                            {assignment.user?.full_name ?? "—"}
+                          </p>
+                          <p className="truncate text-xs text-muted-foreground">
+                            {assignment.user?.email ?? "—"}
+                          </p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="align-middle">
+                        <Badge
+                          variant="secondary"
+                          className="max-w-full truncate rounded-full"
+                        >
                           {assignment.app_role?.name ?? "—"}
                         </Badge>
-                      </td>
-                      <td className="px-3 py-3">
+                      </TableCell>
+                      <TableCell className="align-middle truncate">
                         {assignment.user?.vendor?.name ??
                           t("applicationsDetails.internal")}
-                      </td>
-                      <td className="px-3 py-3">
+                      </TableCell>
+                      <TableCell className="align-middle">
                         {assignment.is_primary ? (
                           <Badge className="rounded-full">
                             {t("common.yes")}
                           </Badge>
                         ) : (
-                          t("common.no")
+                          <span className="text-muted-foreground">
+                            {t("common.no")}
+                          </span>
                         )}
-                      </td>
-                      <td className="px-3 py-3 text-muted-foreground">
+                      </TableCell>
+                      <TableCell className="align-middle whitespace-nowrap text-muted-foreground">
                         {assignment.assigned_at
                           ? formatDateTime(assignment.assigned_at)
                           : "—"}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           )}
         </CardContent>

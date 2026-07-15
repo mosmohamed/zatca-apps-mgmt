@@ -26,6 +26,28 @@ export function formatDateTime(
   }).format(date)
 }
 
+export function formatDate(
+  value: string | null | undefined,
+  options?: Intl.DateTimeFormatOptions
+): string {
+  if (!value) {
+    return "—"
+  }
+
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(value)
+    ? new Date(`${value}T00:00:00`)
+    : new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    return value
+  }
+
+  return new Intl.DateTimeFormat(getCurrentLocale(), {
+    dateStyle: "medium",
+    ...options,
+  }).format(date)
+}
+
 export function formatNumber(value: number): string {
   return new Intl.NumberFormat(getCurrentLocale()).format(value)
 }

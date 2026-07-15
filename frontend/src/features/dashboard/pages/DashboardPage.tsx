@@ -5,6 +5,7 @@ import {
   Activity,
   AppWindow,
   Cpu,
+  KeyRound,
   Link2,
   Truck,
   Users,
@@ -47,63 +48,34 @@ import { DashboardKpiCard } from "@/features/dashboard/components/DashboardKpiCa
 import { DashboardLiveHeader } from "@/features/dashboard/components/DashboardLiveHeader"
 import { useDashboard } from "@/features/dashboard/hooks/use-dashboard"
 import type { DashboardChartItem } from "@/features/dashboard/services/dashboard-service"
+import {
+  CHART_TICK_STYLE,
+  colorForIndex,
+  localizeChartName,
+  toChartKey,
+  truncateLabel,
+  withLocalizedColors,
+} from "@/features/dashboard/utils/chart-labels"
 import { formatDateTime } from "@/utils/format"
-
-const CHART_PALETTE = [
-  "var(--chart-1)",
-  "var(--chart-2)",
-  "var(--chart-3)",
-  "var(--chart-4)",
-  "var(--chart-5)",
-  "#0EA5E9",
-  "#10B981",
-  "#F59E0B",
-  "#8B5CF6",
-  "#EF4444",
-  "#14B8A6",
-  "#EC4899",
-]
 
 const CHART_ANIMATION = {
   animationDuration: 1500,
   animationBegin: 200,
 }
 
-function toChartKey(value: string, index: number): string {
-  const slug = value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-  return slug || `item-${index}`
-}
-
-function colorForIndex(index: number): string {
-  return CHART_PALETTE[index % CHART_PALETTE.length]
-}
-
-function withBarColors(items: DashboardChartItem[]) {
-  return items.map((item, index) => {
-    const key = toChartKey(item.name, index)
-    return {
-      ...item,
-      key,
-      fill: colorForIndex(index),
-    }
-  })
-}
-
 function buildNamedChartConfig(
   items: DashboardChartItem[],
-  valueLabel: string
+  valueLabel: string,
+  isArabic: boolean
 ): ChartConfig {
   const config: ChartConfig = {
     count: { label: valueLabel },
   }
 
   items.forEach((item, index) => {
-    const key = toChartKey(item.name, index)
+    const key = toChartKey(item, index)
     config[key] = {
-      label: item.name,
+      label: localizeChartName(item, isArabic),
       color: colorForIndex(index),
     }
   })
@@ -112,7 +84,8 @@ function buildNamedChartConfig(
 }
 
 export function DashboardPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isArabic = i18n.language.startsWith("ar")
   const { isSuperAdmin } = useAuth()
   const navigate = useNavigate()
   const dashboardQuery = useDashboard()
@@ -130,29 +103,34 @@ export function DashboardPage() {
   const applicationsByStatus = data?.charts.applications_by_status ?? []
   const applicationsByDepartment =
     data?.charts.applications_by_department ?? []
+  const licenseUsage = data?.charts.license_usage ?? []
+  const licenseStatusDistribution =
+    data?.charts.license_status_distribution ?? []
+  const licensesByEnvironment = data?.charts.licenses_by_environment ?? []
   const recentActivity = data?.recent_activity ?? []
 
   const employeesChartData = useMemo(
     () =>
       employeesPerApplication.map((item, index) => {
-        const key = toChartKey(item.name, index)
+        const key = toChartKey(item, index)
         return {
           key,
-          name: item.name,
+          name: localizeChartName(item, isArabic),
           count: item.count,
           fill: `var(--color-${key})`,
         }
       }),
-    [employeesPerApplication]
+    [employeesPerApplication, isArabic]
   )
 
   const employeesConfig = useMemo(
     () =>
       buildNamedChartConfig(
         employeesPerApplication,
-        t("dashboard.charts.employeesLabel")
+        t("dashboard.charts.employeesLabel"),
+        isArabic
       ),
-    [employeesPerApplication, t]
+    [employeesPerApplication, isArabic, t]
   )
 
   const employeesTotal = useMemo(
@@ -236,10 +214,10 @@ export function DashboardPage() {
   const technologiesRadarData = useMemo(
     () =>
       technologyUsage.map((item) => ({
-        technology: item.name,
+        technology: localizeChartName(item, isArabic),
         count: item.count,
       })),
-    [technologyUsage]
+    [isArabic, technologyUsage]
   )
 
   const technologiesConfig = useMemo(
@@ -254,15 +232,17 @@ export function DashboardPage() {
   )
 
   const statusSourceData = useMemo(
-    () => withBarColors(applicationsByStatus),
-    [applicationsByStatus]
+    () => withLocalizedColors(applicationsByStatus, isArabic),
+    [applicationsByStatus, isArabic]
   )
 
   const statusChartData = useMemo(() => {
     if (activeStatus === "all") {
       return statusSourceData
     }
-    return statusSourceData.filter((item) => item.name === activeStatus)
+    return statusSourceData.filter(
+      (item) => (item.key ?? item.name) === activeStatus
+    )
   }, [activeStatus, statusSourceData])
 
   const statusTotal = useMemo(
@@ -274,23 +254,70 @@ export function DashboardPage() {
     () =>
       buildNamedChartConfig(
         applicationsByStatus,
-        t("dashboard.charts.applicationsLabel")
+        t("dashboard.charts.applicationsLabel"),
+        isArabic
       ),
-    [applicationsByStatus, t]
+    [applicationsByStatus, isArabic, t]
   )
 
   const departmentChartData = useMemo(
-    () => withBarColors(applicationsByDepartment),
-    [applicationsByDepartment]
+    () => withLocalizedColors(applicationsByDepartment, isArabic),
+    [applicationsByDepartment, isArabic]
   )
 
   const departmentConfig = useMemo(
     () =>
       buildNamedChartConfig(
         applicationsByDepartment,
-        t("dashboard.charts.applicationsLabel")
+        t("dashboard.charts.applicationsLabel"),
+        isArabic
       ),
-    [applicationsByDepartment, t]
+    [applicationsByDepartment, isArabic, t]
+  )
+
+  const licenseUsageData = useMemo(
+    () => withLocalizedColors(licenseUsage, isArabic),
+    [isArabic, licenseUsage]
+  )
+
+  const licenseUsageConfig = useMemo(
+    () =>
+      buildNamedChartConfig(
+        licenseUsage,
+        t("dashboard.kpi.licenses"),
+        isArabic
+      ),
+    [isArabic, licenseUsage, t]
+  )
+
+  const licenseStatusData = useMemo(
+    () => withLocalizedColors(licenseStatusDistribution, isArabic),
+    [isArabic, licenseStatusDistribution]
+  )
+
+  const licenseStatusConfig = useMemo(
+    () =>
+      buildNamedChartConfig(
+        licenseStatusDistribution,
+        t("dashboard.kpi.licenses"),
+        isArabic
+      ),
+    [isArabic, licenseStatusDistribution, t]
+  )
+
+  const licensesByEnvironmentData = useMemo(
+    () => withLocalizedColors(licensesByEnvironment, isArabic),
+    [isArabic, licensesByEnvironment]
+  )
+
+  const licensesByEnvironmentConfig = useMemo(
+    () =>
+      buildNamedChartConfig(
+        licensesByEnvironment,
+        t("dashboard.kpi.licenses"),
+        isArabic
+      ),
+    [isArabic, licensesByEnvironment, t]
   )
 
   if (dashboardQuery.isLoading) {
@@ -342,13 +369,24 @@ export function DashboardPage() {
         icon: "text-violet-600/12 dark:text-violet-300/15",
       },
     },
+    {
+      label: t("dashboard.kpi.licenses"),
+      value: totals?.licenses ?? 0,
+      icon: KeyRound,
+      to: "/licenses",
+      accent: {
+        card: "border-cyan-500/20 bg-cyan-500/[0.04] dark:border-cyan-400/25 dark:bg-cyan-400/[0.06]",
+        strip: "bg-cyan-500/80 dark:bg-cyan-400/70",
+        icon: "text-cyan-600/12 dark:text-cyan-300/15",
+      },
+    },
   ]
 
   return (
     <section className="space-y-6">
       <DashboardLiveHeader />
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         {kpiCards.map((item, index) => (
           <DashboardKpiCard
             key={item.to}
@@ -391,7 +429,10 @@ export function DashboardPage() {
                     radialLines={false}
                     stroke="var(--border)"
                   />
-                  <PolarAngleAxis dataKey="technology" />
+                  <PolarAngleAxis
+                    dataKey="technology"
+                    tick={CHART_TICK_STYLE}
+                  />
                   <Radar
                     dataKey="count"
                     fill="var(--color-count)"
@@ -467,11 +508,7 @@ export function DashboardPage() {
                                   className="fill-muted-foreground text-xs"
                                 >
                                   {activeEmployee
-                                    ? `${activeEmployeeShare}% · ${
-                                        activeEmployee.name.length > 16
-                                          ? `${activeEmployee.name.slice(0, 16)}…`
-                                          : activeEmployee.name
-                                      }`
+                                    ? `${activeEmployeeShare}% · ${truncateLabel(activeEmployee.name, 14)}`
                                     : t("dashboard.charts.employeesLabel")}
                                 </tspan>
                               </text>
@@ -528,22 +565,25 @@ export function DashboardPage() {
                   {statusTotal.toLocaleString()}
                 </span>
               </button>
-              {applicationsByStatus.map((status) => (
-                <button
-                  key={status.name}
-                  type="button"
-                  data-active={activeStatus === status.name}
-                  className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t border-stroke px-6 py-4 text-start even:border-s data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-s sm:px-8 sm:py-6"
-                  onClick={() => setActiveStatus(status.name)}
-                >
-                  <span className="text-xs text-muted-foreground">
-                    {status.name}
-                  </span>
-                  <span className="text-lg font-bold leading-none sm:text-2xl">
-                    {status.count.toLocaleString()}
-                  </span>
-                </button>
-              ))}
+              {statusSourceData.map((status) => {
+                const filterKey = status.key ?? status.name
+                return (
+                  <button
+                    key={filterKey}
+                    type="button"
+                    data-active={activeStatus === filterKey}
+                    className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t border-stroke px-6 py-4 text-start even:border-s data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-s sm:px-8 sm:py-6"
+                    onClick={() => setActiveStatus(filterKey)}
+                  >
+                    <span className="text-xs text-muted-foreground">
+                      {status.name}
+                    </span>
+                    <span className="text-lg font-bold leading-none sm:text-2xl">
+                      {status.count.toLocaleString()}
+                    </span>
+                  </button>
+                )
+              })}
             </div>
           </CardHeader>
           <CardContent className="px-2 sm:p-6">
@@ -568,8 +608,14 @@ export function DashboardPage() {
                     tickLine={false}
                     axisLine={false}
                     tickMargin={8}
+                    tick={CHART_TICK_STYLE}
                   />
-                  <YAxis allowDecimals={false} tickLine={false} axisLine={false} />
+                  <YAxis
+                    allowDecimals={false}
+                    tickLine={false}
+                    axisLine={false}
+                    tick={CHART_TICK_STYLE}
+                  />
                   <ChartTooltip
                     content={
                       <ChartTooltipContent className="w-[150px]" nameKey="count" />
@@ -621,14 +667,20 @@ export function DashboardPage() {
                   margin={{ left: 8, right: 16 }}
                 >
                   <CartesianGrid horizontal={false} />
-                  <XAxis type="number" allowDecimals={false} hide />
+                  <XAxis
+                    type="number"
+                    allowDecimals={false}
+                    hide
+                    tick={CHART_TICK_STYLE}
+                  />
                   <YAxis
                     dataKey="name"
                     type="category"
                     tickLine={false}
                     axisLine={false}
-                    width={110}
+                    width={isArabic ? 140 : 120}
                     tickMargin={8}
+                    tick={CHART_TICK_STYLE}
                   />
                   <ChartTooltip
                     cursor={false}
@@ -640,6 +692,193 @@ export function DashboardPage() {
                     {...CHART_ANIMATION}
                   >
                     {departmentChartData.map((entry) => (
+                      <Cell
+                        key={entry.key}
+                        fill={entry.fill}
+                        stroke={entry.fill}
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ChartContainer>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+        <Card className="py-0">
+          <CardHeader className="pt-6">
+            <CardTitle>{t("dashboard.charts.licenseUsage")}</CardTitle>
+            <CardDescription>
+              {t("dashboard.charts.licenseUsageDesc")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pb-6">
+            {licenseUsageData.length === 0 ? (
+              <EmptyState
+                title={t("dashboard.charts.emptyTitle")}
+                description={t("dashboard.charts.emptyLicenses")}
+              />
+            ) : (
+              <ChartContainer
+                config={licenseUsageConfig}
+                className="aspect-auto h-[280px] w-full"
+              >
+                <BarChart
+                  accessibilityLayer
+                  data={licenseUsageData}
+                  margin={{ left: 12, right: 12 }}
+                >
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="name"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tick={CHART_TICK_STYLE}
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    tickLine={false}
+                    axisLine={false}
+                    tick={CHART_TICK_STYLE}
+                  />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent className="w-[150px]" nameKey="count" />
+                    }
+                  />
+                  <Bar
+                    dataKey="count"
+                    radius={[6, 6, 0, 0]}
+                    {...CHART_ANIMATION}
+                  >
+                    {licenseUsageData.map((entry) => (
+                      <Cell
+                        key={entry.key}
+                        fill={entry.fill}
+                        stroke={entry.fill}
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ChartContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="py-0">
+          <CardHeader className="pt-6">
+            <CardTitle>{t("dashboard.charts.licenseStatus")}</CardTitle>
+            <CardDescription>
+              {t("dashboard.charts.licenseStatusDesc")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pb-6">
+            {licenseStatusData.length === 0 ? (
+              <EmptyState
+                title={t("dashboard.charts.emptyTitle")}
+                description={t("dashboard.charts.emptyLicenses")}
+              />
+            ) : (
+              <ChartContainer
+                config={licenseStatusConfig}
+                className="aspect-auto h-[280px] w-full"
+              >
+                <BarChart
+                  accessibilityLayer
+                  data={licenseStatusData}
+                  margin={{ left: 12, right: 12 }}
+                >
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="name"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tick={CHART_TICK_STYLE}
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    tickLine={false}
+                    axisLine={false}
+                    tick={CHART_TICK_STYLE}
+                  />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent className="w-[150px]" nameKey="count" />
+                    }
+                  />
+                  <Bar
+                    dataKey="count"
+                    radius={[6, 6, 0, 0]}
+                    {...CHART_ANIMATION}
+                  >
+                    {licenseStatusData.map((entry) => (
+                      <Cell
+                        key={entry.key}
+                        fill={entry.fill}
+                        stroke={entry.fill}
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ChartContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="py-0 lg:col-span-2 xl:col-span-1">
+          <CardHeader className="pt-6">
+            <CardTitle>{t("dashboard.charts.licensesByEnvironment")}</CardTitle>
+            <CardDescription>
+              {t("dashboard.charts.licensesByEnvironmentDesc")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pb-6">
+            {licensesByEnvironmentData.length === 0 ? (
+              <EmptyState
+                title={t("dashboard.charts.emptyTitle")}
+                description={t("dashboard.charts.emptyLicenses")}
+              />
+            ) : (
+              <ChartContainer
+                config={licensesByEnvironmentConfig}
+                className="aspect-auto h-[280px] w-full"
+              >
+                <BarChart
+                  accessibilityLayer
+                  data={licensesByEnvironmentData}
+                  layout="vertical"
+                  margin={{ left: 8, right: 16 }}
+                >
+                  <CartesianGrid horizontal={false} />
+                  <XAxis
+                    type="number"
+                    allowDecimals={false}
+                    hide
+                    tick={CHART_TICK_STYLE}
+                  />
+                  <YAxis
+                    dataKey="name"
+                    type="category"
+                    tickLine={false}
+                    axisLine={false}
+                    width={isArabic ? 140 : 120}
+                    tickMargin={8}
+                    tick={CHART_TICK_STYLE}
+                  />
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel />}
+                  />
+                  <Bar
+                    dataKey="count"
+                    radius={[0, 6, 6, 0]}
+                    {...CHART_ANIMATION}
+                  >
+                    {licensesByEnvironmentData.map((entry) => (
                       <Cell
                         key={entry.key}
                         fill={entry.fill}

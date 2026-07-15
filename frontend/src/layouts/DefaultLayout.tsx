@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { OfflineBanner } from "@/components/error-pages"
 import { GlobalSearchDialog } from "@/features/search/components/GlobalSearchDialog"
+import { useSettings } from "@/features/settings/hooks/use-settings"
 import { useOnlineStatus } from "@/hooks/use-online-status"
 import { cn } from "@/lib/utils"
 import { AppHeader } from "@/layouts/AppHeader"
@@ -25,6 +26,7 @@ const pageTitleKeys: Record<string, string> = {
   "/criticalities": "nav.criticalities",
   "/application-statuses": "nav.applicationStatuses",
   "/technologies": "nav.technologies",
+  "/licenses": "nav.licenses",
   "/roles": "nav.roles",
   "/activity-log": "nav.activityLog",
   "/settings": "nav.settings",
@@ -38,6 +40,10 @@ function resolveTitleKey(pathname: string): string {
     return "nav.applicationDetail"
   }
 
+  if (pathname.startsWith("/licenses/") && pathname !== "/licenses") {
+    return "nav.licenseDetail"
+  }
+
   return pageTitleKeys[pathname] ?? "app.fallbackTitle"
 }
 
@@ -45,9 +51,14 @@ function DefaultLayoutShell() {
   const { t } = useTranslation()
   const { isExpanded } = useSidebar()
   const { pathname } = useLocation()
+  const { settings } = useSettings()
   const title = t(resolveTitleKey(pathname))
   const isOnline = useOnlineStatus()
   const [searchOpen, setSearchOpen] = useState(false)
+
+  useEffect(() => {
+    document.title = `${title} · ${settings.company_name}`
+  }, [title, settings.company_name])
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {

@@ -28,6 +28,8 @@ import { RolesPage } from "@/features/roles/pages/RolesPage"
 import { SettingsProvider } from "@/features/settings/hooks/use-settings"
 import { SettingsPage } from "@/features/settings/pages/SettingsPage"
 import { SupportTypesPage } from "@/features/support-types/pages/SupportTypesPage"
+import { LicenseDetailPage } from "@/features/licenses/pages/LicenseDetailPage"
+import { LicensesPage } from "@/features/licenses/pages/LicensesPage"
 import { TechnologiesPage } from "@/features/technologies/pages/TechnologiesPage"
 import { UsersPage } from "@/features/users/pages/UsersPage"
 import { VendorsPage } from "@/features/vendors/pages/VendorsPage"
@@ -76,6 +78,8 @@ function AppRoutes() {
                   element={<ApplicationStatusesPage />}
                 />
                 <Route path="technologies" element={<TechnologiesPage />} />
+                <Route path="licenses" element={<LicensesPage />} />
+                <Route path="licenses/:id" element={<LicenseDetailPage />} />
                 <Route path="roles" element={<RolesPage />} />
                 <Route path="activity-log" element={<ActivityLogPage />} />
                 <Route path="settings" element={<SettingsPage />} />

@@ -171,7 +171,7 @@ class TechnologyFeatureTest extends TestCase
             ]);
 
         $usage = collect($response->json('data.charts.technologies_usage'));
-        $this->assertTrue($usage->contains(fn (array $row): bool => $row['name'] === 'React Dash'));
+        $this->assertTrue($usage->contains(fn (array $row): bool => ($row['name_en'] ?? $row['name'] ?? null) === 'React Dash'));
 
         $employees = collect($response->json('data.charts.employees_per_application'));
         $this->assertIsArray($employees->all());

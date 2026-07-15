@@ -102,7 +102,7 @@ final class ApplicationsExportDefinition implements ExportDefinitionInterface
             ),
             ExportColumn::make(
                 'business_owner',
-                'Business Owner',
+                'ZATCA Management',
                 static fn (Application $m): string => (string) ($m->business_owner ?? '-'),
                 20,
             ),

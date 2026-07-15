@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\DepartmentController;
 use App\Http\Controllers\Api\V1\ExportController;
 use App\Http\Controllers\Api\V1\GlobalSearchController;
 use App\Http\Controllers\Api\V1\JobTitleController;
+use App\Http\Controllers\Api\V1\LicenseController;
 use App\Http\Controllers\Api\V1\LookupController;
 use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\RoleController;
@@ -81,6 +82,8 @@ Route::prefix('v1')->group(function (): void {
         Route::apiResource('criticalities', CriticalityController::class);
         Route::apiResource('application-statuses', ApplicationStatusController::class);
         Route::apiResource('technologies', TechnologyController::class);
+        Route::get('licenses/statistics', [LicenseController::class, 'statistics']);
+        Route::apiResource('licenses', LicenseController::class);
         Route::apiResource('app-roles', AppRoleController::class);
     });
 });

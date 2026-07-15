@@ -4,25 +4,27 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Models\AppRole;
 use App\Models\Application;
 use App\Models\ApplicationAssignment;
 use App\Models\ApplicationStatus;
+use App\Models\AppRole;
 use App\Models\Criticality;
 use App\Models\Department;
 use App\Models\JobTitle;
+use App\Models\License;
 use App\Models\Setting;
 use App\Models\SupportType;
 use App\Models\Technology;
 use App\Models\User;
 use App\Models\Vendor;
-use App\Policies\AppRolePolicy;
 use App\Policies\ApplicationAssignmentPolicy;
 use App\Policies\ApplicationPolicy;
 use App\Policies\ApplicationStatusPolicy;
+use App\Policies\AppRolePolicy;
 use App\Policies\CriticalityPolicy;
 use App\Policies\DepartmentPolicy;
 use App\Policies\JobTitlePolicy;
+use App\Policies\LicensePolicy;
 use App\Policies\SettingPolicy;
 use App\Policies\SupportTypePolicy;
 use App\Policies\TechnologyPolicy;
@@ -61,6 +63,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(ApplicationStatus::class, ApplicationStatusPolicy::class);
         Gate::policy(AppRole::class, AppRolePolicy::class);
         Gate::policy(Technology::class, TechnologyPolicy::class);
+        Gate::policy(License::class, LicensePolicy::class);
         Gate::policy(Setting::class, SettingPolicy::class);
     }
 }

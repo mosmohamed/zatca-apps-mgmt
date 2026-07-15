@@ -51,7 +51,7 @@ return [
         'teams' => 'Teams',
         'whatsapp' => 'WhatsApp',
         'extension' => 'extension',
-        'business_owner' => 'business owner',
+        'business_owner' => 'ZATCA Management',
         'technical_owner' => 'technical owner',
         'documentation_url' => 'documentation URL',
         'repository_url' => 'repository URL',
@@ -65,6 +65,16 @@ return [
         'users' => 'users',
         'technologies' => 'technologies',
         'category' => 'category',
+        'publisher' => 'publisher',
+        'product' => 'product',
+        'version' => 'version',
+        'environment' => 'environment',
+        'licensed' => 'licensed',
+        'used' => 'used',
+        'available' => 'available',
+        'proof_of_entitlement' => 'proof of entitlement',
+        'start_date' => 'start date',
+        'end_date' => 'end date',
     ],
 
     'auth' => [
@@ -163,6 +173,15 @@ return [
         'retrieved' => 'Technology retrieved successfully.',
         'updated' => 'Technology updated successfully.',
         'deleted' => 'Technology deleted successfully.',
+    ],
+
+    'licenses' => [
+        'listed' => 'Licenses retrieved successfully.',
+        'created' => 'License created successfully.',
+        'retrieved' => 'License retrieved successfully.',
+        'updated' => 'License updated successfully.',
+        'deleted' => 'License deleted successfully.',
+        'stats' => 'License statistics retrieved successfully.',
     ],
 
     'app_roles' => [
