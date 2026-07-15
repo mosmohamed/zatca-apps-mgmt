@@ -15,14 +15,10 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  Label,
-  Pie,
-  PieChart,
   PolarAngleAxis,
   PolarGrid,
   Radar,
   RadarChart,
-  Sector,
   XAxis,
   YAxis,
 } from "recharts"
@@ -44,8 +40,14 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import { useAuth } from "@/features/auth/hooks/use-auth"
+import { DashboardChartCard } from "@/features/dashboard/components/DashboardChartCard"
 import { DashboardKpiCard } from "@/features/dashboard/components/DashboardKpiCard"
 import { DashboardLiveHeader } from "@/features/dashboard/components/DashboardLiveHeader"
+import { DepartmentRankingChart } from "@/features/dashboard/components/DepartmentRankingChart"
+import { EmployeesDonutChart } from "@/features/dashboard/components/EmployeesDonutChart"
+import { LicenseEnvironmentBars } from "@/features/dashboard/components/LicenseEnvironmentBars"
+import { LicenseStatusDonutChart } from "@/features/dashboard/components/LicenseStatusDonutChart"
+import { LicenseUsageRadialChart } from "@/features/dashboard/components/LicenseUsageRadialChart"
 import { useDashboard } from "@/features/dashboard/hooks/use-dashboard"
 import type { DashboardChartItem } from "@/features/dashboard/services/dashboard-service"
 import {
@@ -53,14 +55,13 @@ import {
   colorForIndex,
   localizeChartName,
   toChartKey,
-  truncateLabel,
   withLocalizedColors,
 } from "@/features/dashboard/utils/chart-labels"
 import { formatDateTime } from "@/utils/format"
 
 const CHART_ANIMATION = {
-  animationDuration: 1500,
-  animationBegin: 200,
+  animationDuration: 1400,
+  animationBegin: 160,
 }
 
 function buildNamedChartConfig(
@@ -90,9 +91,6 @@ export function DashboardPage() {
   const navigate = useNavigate()
   const dashboardQuery = useDashboard()
   const [activeStatus, setActiveStatus] = useState<string>("all")
-  const [activeEmployeeIndex, setActiveEmployeeIndex] = useState<number | null>(
-    null
-  )
 
   const data = dashboardQuery.data
   const totals = data?.totals
@@ -108,108 +106,6 @@ export function DashboardPage() {
     data?.charts.license_status_distribution ?? []
   const licensesByEnvironment = data?.charts.licenses_by_environment ?? []
   const recentActivity = data?.recent_activity ?? []
-
-  const employeesChartData = useMemo(
-    () =>
-      employeesPerApplication.map((item, index) => {
-        const key = toChartKey(item, index)
-        return {
-          key,
-          name: localizeChartName(item, isArabic),
-          count: item.count,
-          fill: `var(--color-${key})`,
-        }
-      }),
-    [employeesPerApplication, isArabic]
-  )
-
-  const employeesConfig = useMemo(
-    () =>
-      buildNamedChartConfig(
-        employeesPerApplication,
-        t("dashboard.charts.employeesLabel"),
-        isArabic
-      ),
-    [employeesPerApplication, isArabic, t]
-  )
-
-  const employeesTotal = useMemo(
-    () => employeesChartData.reduce((sum, item) => sum + item.count, 0),
-    [employeesChartData]
-  )
-
-  const activeEmployee = useMemo(() => {
-    if (activeEmployeeIndex === null) {
-      return null
-    }
-    return employeesChartData[activeEmployeeIndex] ?? null
-  }, [activeEmployeeIndex, employeesChartData])
-
-  const activeEmployeeShare = useMemo(() => {
-    if (!activeEmployee || employeesTotal === 0) {
-      return 0
-    }
-    return Math.round((activeEmployee.count / employeesTotal) * 100)
-  }, [activeEmployee, employeesTotal])
-
-  function renderEmployeeSector(props: {
-    cx?: number
-    cy?: number
-    innerRadius?: number
-    outerRadius?: number
-    startAngle?: number
-    endAngle?: number
-    fill?: string
-    isActive?: boolean
-  }) {
-    const {
-      cx = 0,
-      cy = 0,
-      innerRadius = 0,
-      outerRadius = 0,
-      startAngle = 0,
-      endAngle = 0,
-      fill,
-      isActive = false,
-    } = props
-
-    if (!isActive) {
-      return (
-        <Sector
-          cx={cx}
-          cy={cy}
-          innerRadius={innerRadius}
-          outerRadius={outerRadius}
-          startAngle={startAngle}
-          endAngle={endAngle}
-          fill={fill}
-        />
-      )
-    }
-
-    return (
-      <g>
-        <Sector
-          cx={cx}
-          cy={cy}
-          innerRadius={innerRadius}
-          outerRadius={outerRadius + 10}
-          startAngle={startAngle}
-          endAngle={endAngle}
-          fill={fill}
-        />
-        <Sector
-          cx={cx}
-          cy={cy}
-          startAngle={startAngle}
-          endAngle={endAngle}
-          innerRadius={outerRadius + 14}
-          outerRadius={outerRadius + 18}
-          fill={fill}
-        />
-      </g>
-    )
-  }
 
   const technologiesRadarData = useMemo(
     () =>
@@ -258,66 +154,6 @@ export function DashboardPage() {
         isArabic
       ),
     [applicationsByStatus, isArabic, t]
-  )
-
-  const departmentChartData = useMemo(
-    () => withLocalizedColors(applicationsByDepartment, isArabic),
-    [applicationsByDepartment, isArabic]
-  )
-
-  const departmentConfig = useMemo(
-    () =>
-      buildNamedChartConfig(
-        applicationsByDepartment,
-        t("dashboard.charts.applicationsLabel"),
-        isArabic
-      ),
-    [applicationsByDepartment, isArabic, t]
-  )
-
-  const licenseUsageData = useMemo(
-    () => withLocalizedColors(licenseUsage, isArabic),
-    [isArabic, licenseUsage]
-  )
-
-  const licenseUsageConfig = useMemo(
-    () =>
-      buildNamedChartConfig(
-        licenseUsage,
-        t("dashboard.kpi.licenses"),
-        isArabic
-      ),
-    [isArabic, licenseUsage, t]
-  )
-
-  const licenseStatusData = useMemo(
-    () => withLocalizedColors(licenseStatusDistribution, isArabic),
-    [isArabic, licenseStatusDistribution]
-  )
-
-  const licenseStatusConfig = useMemo(
-    () =>
-      buildNamedChartConfig(
-        licenseStatusDistribution,
-        t("dashboard.kpi.licenses"),
-        isArabic
-      ),
-    [isArabic, licenseStatusDistribution, t]
-  )
-
-  const licensesByEnvironmentData = useMemo(
-    () => withLocalizedColors(licensesByEnvironment, isArabic),
-    [isArabic, licensesByEnvironment]
-  )
-
-  const licensesByEnvironmentConfig = useMemo(
-    () =>
-      buildNamedChartConfig(
-        licensesByEnvironment,
-        t("dashboard.kpi.licenses"),
-        isArabic
-      ),
-    [isArabic, licensesByEnvironment, t]
   )
 
   if (dashboardQuery.isLoading) {
@@ -401,153 +237,61 @@ export function DashboardPage() {
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
-        <Card className="py-0">
-          <CardHeader className="items-center pb-0 pt-6">
-            <CardTitle>{t("dashboard.charts.topTechnologies")}</CardTitle>
-            <CardDescription>
-              {t("dashboard.charts.topTechnologiesDesc")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pb-6">
-            {technologiesRadarData.length === 0 ? (
-              <EmptyState
-                title={t("dashboard.charts.emptyTitle")}
-                description={t("dashboard.charts.emptyTechnologies")}
-              />
-            ) : (
-              <ChartContainer
-                config={technologiesConfig}
-                className="mx-auto aspect-square max-h-[320px]"
-              >
-                <RadarChart data={technologiesRadarData}>
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent />}
-                  />
-                  <PolarGrid
-                    gridType="circle"
-                    radialLines={false}
-                    stroke="var(--border)"
-                  />
-                  <PolarAngleAxis
-                    dataKey="technology"
-                    tick={CHART_TICK_STYLE}
-                  />
-                  <Radar
-                    dataKey="count"
-                    fill="var(--color-count)"
-                    fillOpacity={0.45}
-                    stroke="var(--color-count)"
-                    strokeWidth={2}
-                    {...CHART_ANIMATION}
-                  />
-                </RadarChart>
-              </ChartContainer>
-            )}
-          </CardContent>
-        </Card>
+        <DashboardChartCard
+          title={t("dashboard.charts.topTechnologies")}
+          description={t("dashboard.charts.topTechnologiesDesc")}
+          icon={Cpu}
+          accentClassName="from-violet-500/12 via-transparent to-transparent"
+        >
+          {technologiesRadarData.length === 0 ? (
+            <EmptyState
+              title={t("dashboard.charts.emptyTitle")}
+              description={t("dashboard.charts.emptyTechnologies")}
+            />
+          ) : (
+            <ChartContainer
+              config={technologiesConfig}
+              className="mx-auto aspect-square max-h-[320px]"
+            >
+              <RadarChart data={technologiesRadarData}>
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent />}
+                />
+                <PolarGrid
+                  gridType="circle"
+                  radialLines={false}
+                  stroke="var(--border)"
+                />
+                <PolarAngleAxis dataKey="technology" tick={CHART_TICK_STYLE} />
+                <Radar
+                  dataKey="count"
+                  fill="var(--color-count)"
+                  fillOpacity={0.45}
+                  stroke="var(--color-count)"
+                  strokeWidth={2}
+                  {...CHART_ANIMATION}
+                />
+              </RadarChart>
+            </ChartContainer>
+          )}
+        </DashboardChartCard>
 
-        <Card className="flex flex-col py-0">
-          <CardHeader className="items-center pb-0 pt-6">
-            <CardTitle>{t("dashboard.charts.employeesPerApplication")}</CardTitle>
-            <CardDescription>
-              {t("dashboard.charts.employeesPerApplicationDesc")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex-1 pb-6">
-            {employeesChartData.length === 0 ? (
-              <EmptyState
-                title={t("dashboard.charts.emptyTitle")}
-                description={t("dashboard.charts.emptyEmployees")}
-              />
-            ) : (
-              <div className="space-y-3">
-                <ChartContainer
-                  config={employeesConfig}
-                  className="mx-auto aspect-square max-h-[300px]"
-                >
-                  <PieChart>
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent hideLabel nameKey="name" />}
-                    />
-                    <Pie
-                      data={employeesChartData}
-                      dataKey="count"
-                      nameKey="name"
-                      innerRadius={68}
-                      strokeWidth={4}
-                      shape={renderEmployeeSector}
-                      onMouseEnter={(_, index) => setActiveEmployeeIndex(index)}
-                      onMouseLeave={() => setActiveEmployeeIndex(null)}
-                      className="cursor-pointer outline-none"
-                      {...CHART_ANIMATION}
-                    >
-                      <Label
-                        content={({ viewBox }) => {
-                          if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                            return (
-                              <text
-                                x={viewBox.cx}
-                                y={viewBox.cy}
-                                textAnchor="middle"
-                                dominantBaseline="middle"
-                              >
-                                <tspan
-                                  x={viewBox.cx}
-                                  y={(viewBox.cy ?? 0) - 6}
-                                  className="fill-foreground text-2xl font-bold"
-                                >
-                                  {activeEmployee
-                                    ? activeEmployee.count.toLocaleString()
-                                    : employeesTotal.toLocaleString()}
-                                </tspan>
-                                <tspan
-                                  x={viewBox.cx}
-                                  y={(viewBox.cy ?? 0) + 16}
-                                  className="fill-muted-foreground text-xs"
-                                >
-                                  {activeEmployee
-                                    ? `${activeEmployeeShare}% · ${truncateLabel(activeEmployee.name, 14)}`
-                                    : t("dashboard.charts.employeesLabel")}
-                                </tspan>
-                              </text>
-                            )
-                          }
-                          return null
-                        }}
-                      />
-                    </Pie>
-                  </PieChart>
-                </ChartContainer>
-
-                {activeEmployee ? (
-                  <div className="mx-auto max-w-sm rounded-xl border border-stroke/80 bg-muted/30 px-3 py-2 text-center text-sm transition-all duration-300 animate-in fade-in-0 zoom-in-95">
-                    <p className="font-medium">{activeEmployee.name}</p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      {t("dashboard.charts.employeesHoverDetail", {
-                        count: activeEmployee.count.toLocaleString(),
-                        percent: activeEmployeeShare,
-                      })}
-                    </p>
-                  </div>
-                ) : (
-                  <p className="text-center text-xs text-muted-foreground">
-                    {t("dashboard.charts.employeesHoverHint")}
-                  </p>
-                )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <EmployeesDonutChart items={employeesPerApplication} />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
-        <Card className="py-0">
-          <CardHeader className="flex flex-col items-stretch border-b border-stroke p-0 sm:flex-row">
-            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-              <CardTitle>{t("dashboard.charts.applicationsByStatus")}</CardTitle>
-              <CardDescription>
+        <Card className="relative overflow-hidden border-stroke/80 py-0 shadow-sm transition-shadow duration-300 hover:shadow-md">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-sky-500/10 via-transparent to-transparent"
+          />
+          <CardHeader className="relative z-10 flex flex-col items-stretch border-b border-stroke/60 bg-card/40 p-0 backdrop-blur-sm sm:flex-row">
+            <div className="flex flex-1 flex-col justify-center gap-1 px-5 py-5 sm:py-6">
+              <CardTitle className="text-base">
+                {t("dashboard.charts.applicationsByStatus")}
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 {t("dashboard.charts.applicationsByStatusDesc")}
               </CardDescription>
             </div>
@@ -555,7 +299,7 @@ export function DashboardPage() {
               <button
                 type="button"
                 data-active={activeStatus === "all"}
-                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t border-stroke px-6 py-4 text-start even:border-s data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-s sm:px-8 sm:py-6"
+                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t border-stroke px-5 py-4 text-start even:border-s data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-s sm:px-6 sm:py-6"
                 onClick={() => setActiveStatus("all")}
               >
                 <span className="text-xs text-muted-foreground">
@@ -572,7 +316,7 @@ export function DashboardPage() {
                     key={filterKey}
                     type="button"
                     data-active={activeStatus === filterKey}
-                    className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t border-stroke px-6 py-4 text-start even:border-s data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-s sm:px-8 sm:py-6"
+                    className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t border-stroke px-5 py-4 text-start even:border-s data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-s sm:px-6 sm:py-6"
                     onClick={() => setActiveStatus(filterKey)}
                   >
                     <span className="text-xs text-muted-foreground">
@@ -586,7 +330,7 @@ export function DashboardPage() {
               })}
             </div>
           </CardHeader>
-          <CardContent className="px-2 sm:p-6">
+          <CardContent className="relative z-10 px-2 pb-5 sm:p-5">
             {statusChartData.length === 0 ? (
               <EmptyState
                 title={t("dashboard.charts.emptyTitle")}
@@ -602,7 +346,26 @@ export function DashboardPage() {
                   data={statusChartData}
                   margin={{ left: 12, right: 12 }}
                 >
-                  <CartesianGrid vertical={false} />
+                  <defs>
+                    {statusChartData.map((entry) => (
+                      <linearGradient
+                        key={`grad-${entry.key}`}
+                        id={`status-grad-${entry.key}`}
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop offset="0%" stopColor={entry.fill} stopOpacity={1} />
+                        <stop
+                          offset="100%"
+                          stopColor={entry.fill}
+                          stopOpacity={0.35}
+                        />
+                      </linearGradient>
+                    ))}
+                  </defs>
+                  <CartesianGrid vertical={false} strokeDasharray="3 6" />
                   <XAxis
                     dataKey="name"
                     tickLine={false}
@@ -618,19 +381,21 @@ export function DashboardPage() {
                   />
                   <ChartTooltip
                     content={
-                      <ChartTooltipContent className="w-[150px]" nameKey="count" />
+                      <ChartTooltipContent
+                        className="w-[150px]"
+                        nameKey="count"
+                      />
                     }
                   />
                   <Bar
                     dataKey="count"
-                    radius={[6, 6, 0, 0]}
+                    radius={[10, 10, 4, 4]}
                     {...CHART_ANIMATION}
                   >
                     {statusChartData.map((entry) => (
                       <Cell
                         key={entry.key}
-                        fill={entry.fill}
-                        stroke={entry.fill}
+                        fill={`url(#status-grad-${entry.key})`}
                       />
                     ))}
                   </Bar>
@@ -640,266 +405,26 @@ export function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="py-0">
-          <CardHeader className="pt-6">
-            <CardTitle>
-              {t("dashboard.charts.applicationsByDepartment")}
-            </CardTitle>
-            <CardDescription>
-              {t("dashboard.charts.applicationsByDepartmentDesc")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pb-6">
-            {applicationsByDepartment.length === 0 ? (
-              <EmptyState
-                title={t("dashboard.charts.emptyTitle")}
-                description={t("dashboard.charts.emptyDepartments")}
-              />
-            ) : (
-              <ChartContainer
-                config={departmentConfig}
-                className="aspect-auto h-[280px] w-full"
-              >
-                <BarChart
-                  accessibilityLayer
-                  data={departmentChartData}
-                  layout="vertical"
-                  margin={{ left: 8, right: 16 }}
-                >
-                  <CartesianGrid horizontal={false} />
-                  <XAxis
-                    type="number"
-                    allowDecimals={false}
-                    hide
-                    tick={CHART_TICK_STYLE}
-                  />
-                  <YAxis
-                    dataKey="name"
-                    type="category"
-                    tickLine={false}
-                    axisLine={false}
-                    width={isArabic ? 140 : 120}
-                    tickMargin={8}
-                    tick={CHART_TICK_STYLE}
-                  />
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent hideLabel />}
-                  />
-                  <Bar
-                    dataKey="count"
-                    radius={[0, 6, 6, 0]}
-                    {...CHART_ANIMATION}
-                  >
-                    {departmentChartData.map((entry) => (
-                      <Cell
-                        key={entry.key}
-                        fill={entry.fill}
-                        stroke={entry.fill}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ChartContainer>
-            )}
-          </CardContent>
-        </Card>
+        <DepartmentRankingChart items={applicationsByDepartment} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-        <Card className="py-0">
-          <CardHeader className="pt-6">
-            <CardTitle>{t("dashboard.charts.licenseUsage")}</CardTitle>
-            <CardDescription>
-              {t("dashboard.charts.licenseUsageDesc")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pb-6">
-            {licenseUsageData.length === 0 ? (
-              <EmptyState
-                title={t("dashboard.charts.emptyTitle")}
-                description={t("dashboard.charts.emptyLicenses")}
-              />
-            ) : (
-              <ChartContainer
-                config={licenseUsageConfig}
-                className="aspect-auto h-[280px] w-full"
-              >
-                <BarChart
-                  accessibilityLayer
-                  data={licenseUsageData}
-                  margin={{ left: 12, right: 12 }}
-                >
-                  <CartesianGrid vertical={false} />
-                  <XAxis
-                    dataKey="name"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    tick={CHART_TICK_STYLE}
-                  />
-                  <YAxis
-                    allowDecimals={false}
-                    tickLine={false}
-                    axisLine={false}
-                    tick={CHART_TICK_STYLE}
-                  />
-                  <ChartTooltip
-                    content={
-                      <ChartTooltipContent className="w-[150px]" nameKey="count" />
-                    }
-                  />
-                  <Bar
-                    dataKey="count"
-                    radius={[6, 6, 0, 0]}
-                    {...CHART_ANIMATION}
-                  >
-                    {licenseUsageData.map((entry) => (
-                      <Cell
-                        key={entry.key}
-                        fill={entry.fill}
-                        stroke={entry.fill}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ChartContainer>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="py-0">
-          <CardHeader className="pt-6">
-            <CardTitle>{t("dashboard.charts.licenseStatus")}</CardTitle>
-            <CardDescription>
-              {t("dashboard.charts.licenseStatusDesc")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pb-6">
-            {licenseStatusData.length === 0 ? (
-              <EmptyState
-                title={t("dashboard.charts.emptyTitle")}
-                description={t("dashboard.charts.emptyLicenses")}
-              />
-            ) : (
-              <ChartContainer
-                config={licenseStatusConfig}
-                className="aspect-auto h-[280px] w-full"
-              >
-                <BarChart
-                  accessibilityLayer
-                  data={licenseStatusData}
-                  margin={{ left: 12, right: 12 }}
-                >
-                  <CartesianGrid vertical={false} />
-                  <XAxis
-                    dataKey="name"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    tick={CHART_TICK_STYLE}
-                  />
-                  <YAxis
-                    allowDecimals={false}
-                    tickLine={false}
-                    axisLine={false}
-                    tick={CHART_TICK_STYLE}
-                  />
-                  <ChartTooltip
-                    content={
-                      <ChartTooltipContent className="w-[150px]" nameKey="count" />
-                    }
-                  />
-                  <Bar
-                    dataKey="count"
-                    radius={[6, 6, 0, 0]}
-                    {...CHART_ANIMATION}
-                  >
-                    {licenseStatusData.map((entry) => (
-                      <Cell
-                        key={entry.key}
-                        fill={entry.fill}
-                        stroke={entry.fill}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ChartContainer>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="py-0 lg:col-span-2 xl:col-span-1">
-          <CardHeader className="pt-6">
-            <CardTitle>{t("dashboard.charts.licensesByEnvironment")}</CardTitle>
-            <CardDescription>
-              {t("dashboard.charts.licensesByEnvironmentDesc")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pb-6">
-            {licensesByEnvironmentData.length === 0 ? (
-              <EmptyState
-                title={t("dashboard.charts.emptyTitle")}
-                description={t("dashboard.charts.emptyLicenses")}
-              />
-            ) : (
-              <ChartContainer
-                config={licensesByEnvironmentConfig}
-                className="aspect-auto h-[280px] w-full"
-              >
-                <BarChart
-                  accessibilityLayer
-                  data={licensesByEnvironmentData}
-                  layout="vertical"
-                  margin={{ left: 8, right: 16 }}
-                >
-                  <CartesianGrid horizontal={false} />
-                  <XAxis
-                    type="number"
-                    allowDecimals={false}
-                    hide
-                    tick={CHART_TICK_STYLE}
-                  />
-                  <YAxis
-                    dataKey="name"
-                    type="category"
-                    tickLine={false}
-                    axisLine={false}
-                    width={isArabic ? 140 : 120}
-                    tickMargin={8}
-                    tick={CHART_TICK_STYLE}
-                  />
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent hideLabel />}
-                  />
-                  <Bar
-                    dataKey="count"
-                    radius={[0, 6, 6, 0]}
-                    {...CHART_ANIMATION}
-                  >
-                    {licensesByEnvironmentData.map((entry) => (
-                      <Cell
-                        key={entry.key}
-                        fill={entry.fill}
-                        stroke={entry.fill}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ChartContainer>
-            )}
-          </CardContent>
-        </Card>
+        <LicenseUsageRadialChart items={licenseUsage} />
+        <LicenseStatusDonutChart items={licenseStatusDistribution} />
+        <LicenseEnvironmentBars items={licensesByEnvironment} />
       </div>
 
-      <Card>
+      <Card className="border-stroke/80 shadow-sm">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Activity className="size-4 text-sky-600" />
+            <span className="flex size-8 items-center justify-center rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-300">
+              <Activity className="size-4" />
+            </span>
             <div>
               <CardTitle>{t("dashboard.recentTitle")}</CardTitle>
-              <CardDescription>{t("dashboard.recentDescription")}</CardDescription>
+              <CardDescription>
+                {t("dashboard.recentDescription")}
+              </CardDescription>
             </div>
           </div>
         </CardHeader>
