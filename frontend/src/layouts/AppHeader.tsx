@@ -30,12 +30,12 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
   const logoVariant = theme === "dark" ? "onDark" : "default"
 
   return (
-    <header className="sticky top-0 z-30 grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-stroke bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:gap-3 md:px-6">
-      <div className="flex min-w-0 items-center gap-2 justify-self-start">
+    <header className="sticky top-0 z-30 relative flex h-16 items-center justify-between gap-2 border-b border-stroke bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:gap-3 md:px-6">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
         <Button
           variant="ghost"
           size="icon"
-          className="lg:hidden"
+          className="shrink-0 lg:hidden"
           onClick={toggleMobile}
           aria-label={t("common.openSidebar")}
         >
@@ -44,7 +44,7 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="hidden lg:inline-flex"
+          className="hidden shrink-0 lg:inline-flex"
           onClick={toggleExpanded}
           aria-label={
             isExpanded
@@ -64,15 +64,15 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
         </div>
       </div>
 
-      <div className="hidden justify-self-center lg:flex">
+      <div className="pointer-events-none absolute inset-x-0 hidden justify-center lg:flex">
         <AppLogo
-          className="justify-center"
+          className="pointer-events-auto justify-center"
           imgClassName="h-8 max-w-[8.5rem] shrink-0 sm:h-9 sm:max-w-[10rem]"
           variant={logoVariant}
         />
       </div>
 
-      <div className="flex items-center gap-2 justify-self-end sm:gap-3">
+      <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
         {onOpenSearch ? (
           <Button
             type="button"
@@ -114,6 +114,7 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
         <Button
           variant="outline"
           size="sm"
+          className="shrink-0"
           onClick={() => void handleLogout()}
           aria-label={t("common.signOut")}
         >
