@@ -64,7 +64,7 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
         </div>
       </div>
 
-      <div className="flex justify-self-center">
+      <div className="hidden justify-self-center lg:flex">
         <AppLogo
           className="justify-center"
           imgClassName="h-8 max-w-[8.5rem] shrink-0 sm:h-9 sm:max-w-[10rem]"
