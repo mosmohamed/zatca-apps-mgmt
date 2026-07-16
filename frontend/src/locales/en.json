@@ -97,6 +97,7 @@
     "statusRequired": "Status is required.",
     "criticalityRequired": "Criticality is required.",
     "supportTypeRequired": "Support type is required.",
+    "haModelInvalid": "Select a valid High Availability (HA) Model.",
     "categoryRequired": "Category is required.",
     "passwordConfirmationRequired": "Password confirmation is required.",
     "passwordConfirmationMismatch": "Password confirmation does not match."
@@ -234,9 +235,16 @@
       "code": "Code",
       "status": "Status",
       "criticality": "Criticality",
+      "haModel": "High Availability (HA) Model",
       "department": "Department",
       "type": "Type",
       "created": "Created"
+    },
+    "haModels": {
+      "Active/Active": "Active/Active",
+      "Active/Passive": "Active/Passive",
+      "Hot Standby": "Hot Standby",
+      "Cold Standby": "Cold Standby"
     },
     "form": {
       "createTitle": "New application",
@@ -253,6 +261,8 @@
       "businessOwner": "ZATCA Management",
       "technicalOwner": "Technical owner",
       "supportType": "Support type",
+      "haModel": "High Availability (HA) Model",
+      "haModelNone": "Not specified",
       "technologies": "Technologies",
       "technologiesPlaceholder": "Select technologies",
       "technologiesSearch": "Search technologies...",
@@ -881,6 +891,8 @@
       "allStatuses": "All statuses",
       "allDepartments": "All departments",
       "allCategories": "All categories",
+      "haModel": "HA Model",
+      "allHaModels": "All HA models",
       "allStaffing": "All staffing",
       "staffed": "Has assigned users",
       "unstaffed": "No assigned users",
@@ -896,6 +908,7 @@
     "fields": {
       "type": "Application type",
       "supportType": "Support type",
+      "haModel": "High Availability (HA) Model",
       "businessOwner": "ZATCA Management",
       "technicalOwner": "Technical owner",
       "documentationUrl": "Documentation URL",

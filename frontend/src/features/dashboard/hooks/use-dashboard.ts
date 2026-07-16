@@ -11,7 +11,6 @@ export function useDashboard() {
   return useQuery({
     queryKey: dashboardKeys.summary(),
     queryFn: () => dashboardService.get(),
-    staleTime: 0,
-    refetchOnMount: "always",
+    staleTime: 60_000,
   })
 }

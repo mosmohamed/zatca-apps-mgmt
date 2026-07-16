@@ -233,6 +233,16 @@ export function ApplicationDetailPage() {
                 value={supportTypeName}
               />
               <DetailItem
+                label={t("applicationsDetails.fields.haModel")}
+                value={
+                  application.ha_model
+                    ? t(`applications.haModels.${application.ha_model}`, {
+                        defaultValue: application.ha_model,
+                      })
+                    : "—"
+                }
+              />
+              <DetailItem
                 label={t("applicationsDetails.fields.businessOwner")}
                 value={application.business_owner || "—"}
               />

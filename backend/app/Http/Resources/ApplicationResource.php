@@ -31,6 +31,7 @@ class ApplicationResource extends JsonResource
             'status_id' => $this->status_id,
             'criticality_id' => $this->criticality_id,
             'support_type_id' => $this->support_type_id,
+            'ha_model' => $this->ha_model?->value,
             'business_owner' => $this->business_owner,
             'technical_owner' => $this->technical_owner,
             'documentation_url' => $this->documentation_url,

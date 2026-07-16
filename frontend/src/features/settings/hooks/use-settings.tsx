@@ -71,15 +71,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true
     }
-  }, [])
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      return
-    }
-
-    void refreshSettings()
-  }, [isAuthenticated, refreshSettings])
+  }, [isAuthenticated])
 
   const updateSettings = useCallback(async (payload: UpdateSettingsPayload) => {
     setIsSaving(true)

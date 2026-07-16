@@ -101,6 +101,13 @@ final class ApplicationsExportDefinition implements ExportDefinitionInterface
                 18,
             ),
             ExportColumn::make(
+                'ha_model',
+                'High Availability (HA) Model',
+                static fn (Application $m): string => (string) ($m->ha_model?->value ?? '-'),
+                22,
+                'center',
+            ),
+            ExportColumn::make(
                 'business_owner',
                 'ZATCA Management',
                 static fn (Application $m): string => (string) ($m->business_owner ?? '-'),

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\HaModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +33,7 @@ class Application extends Model
         'business_owner',
         'technical_owner',
         'support_type_id',
+        'ha_model',
         'documentation_url',
         'repository_url',
         'created_by',
@@ -49,6 +51,7 @@ class Application extends Model
             'status_id' => 'integer',
             'criticality_id' => 'integer',
             'support_type_id' => 'integer',
+            'ha_model' => HaModel::class,
             'created_by' => 'integer',
             'updated_by' => 'integer',
         ];

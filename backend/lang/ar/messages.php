@@ -46,6 +46,7 @@ return [
         'status_id' => 'الحالة',
         'criticality_id' => 'مستوى الأهمية',
         'support_type_id' => 'نوع الدعم',
+        'ha_model' => 'نموذج التوافر العالي (HA)',
         'description' => 'الوصف',
         'sort_order' => 'ترتيب العرض',
         'teams' => 'Teams',

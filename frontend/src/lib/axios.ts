@@ -25,14 +25,22 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+let isRedirectingToLogin = false
+
 api.interceptors.response.use(
   (response) => response,
   (error: unknown) => {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
-      authStorage.clear()
+      const requestUrl = String(error.config?.url ?? "")
+      const isLoginRequest = requestUrl.includes("/auth/login")
 
-      if (window.location.pathname !== "/login") {
-        window.location.assign("/login")
+      if (!isLoginRequest && !isRedirectingToLogin) {
+        isRedirectingToLogin = true
+        authStorage.clear()
+
+        if (window.location.pathname !== "/login") {
+          window.location.assign("/login")
+        }
       }
     }
 

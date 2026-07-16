@@ -10,17 +10,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('app_roles', function (Blueprint $table) {
-            $table->text('description')->nullable()->after('name');
-            $table->boolean('is_active')->default(true)->index()->after('description');
-            $table->integer('sort_order')->default(0)->index()->after('is_active');
+        Schema::table('app_roles', function (Blueprint $table): void {
+            $table->text('description')->nullable();
+            $table->boolean('is_active')->default(true)->index();
+            $table->integer('sort_order')->default(0)->index();
             $table->softDeletes();
         });
     }
 
     public function down(): void
     {
-        Schema::table('app_roles', function (Blueprint $table) {
+        Schema::table('app_roles', function (Blueprint $table): void {
             $table->dropSoftDeletes();
             $table->dropColumn(['description', 'is_active', 'sort_order']);
         });

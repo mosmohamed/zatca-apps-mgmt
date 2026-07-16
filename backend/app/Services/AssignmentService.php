@@ -167,21 +167,50 @@ class AssignmentService
     public function assignMultiple(int $applicationId, array $usersData, User $actor): array
     {
         return DB::transaction(function () use ($applicationId, $usersData, $actor): array {
+            $userIds = array_values(array_unique(array_map(
+                static fn (array $row): int => (int) $row['user_id'],
+                $usersData,
+            )));
+
+            if ($userIds !== []) {
+                ApplicationAssignment::query()
+                    ->where('application_id', $applicationId)
+                    ->whereIn('user_id', $userIds)
+                    ->open()
+                    ->lockForUpdate()
+                    ->update(['ended_at' => now()]);
+            }
+
             $assignments = [];
 
             foreach ($usersData as $userData) {
-                $assignments[] = $this->createAssignmentRecord(
-                    $applicationId,
-                    (int) $userData['user_id'],
-                    (int) $userData['app_role_id'],
-                    $actor,
-                    (bool) ($userData['is_primary'] ?? false),
-                    $userData['remarks'] ?? null,
-                    now(),
-                );
+                /** @var ApplicationAssignment $assignment */
+                $assignment = ApplicationAssignment::query()->create([
+                    'application_id' => $applicationId,
+                    'user_id' => (int) $userData['user_id'],
+                    'app_role_id' => (int) $userData['app_role_id'],
+                    'assigned_by' => $actor->id,
+                    'assigned_at' => now(),
+                    'ended_at' => null,
+                    'is_primary' => (bool) ($userData['is_primary'] ?? false),
+                    'remarks' => $userData['remarks'] ?? null,
+                ]);
+
+                $assignments[] = $assignment;
             }
 
-            return $assignments;
+            $assignmentIds = array_map(static fn (ApplicationAssignment $item): int => $item->id, $assignments);
+
+            $loaded = ApplicationAssignment::query()
+                ->with(['application', 'user.vendor', 'appRole', 'assignedBy'])
+                ->whereIn('id', $assignmentIds)
+                ->get()
+                ->keyBy('id');
+
+            return array_values(array_filter(array_map(
+                static fn (int $id): ?ApplicationAssignment => $loaded->get($id),
+                $assignmentIds,
+            )));
         });
     }
 

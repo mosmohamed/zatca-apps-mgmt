@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Application;
 
 use App\Http\Requests\Concerns\HasLocalizedValidationMessages;
+use App\Enums\HaModel;
 use App\Models\Application;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -34,6 +35,7 @@ class StoreApplicationRequest extends FormRequest
             'business_owner' => ['nullable', 'string', 'max:255'],
             'technical_owner' => ['nullable', 'string', 'max:255'],
             'support_type_id' => ['required', 'integer', Rule::exists('support_types', 'id')],
+            'ha_model' => ['nullable', 'string', Rule::in(HaModel::values())],
             'documentation_url' => ['nullable', 'url', 'max:2048'],
             'repository_url' => ['nullable', 'url', 'max:2048'],
             'technologies' => ['sometimes', 'array'],

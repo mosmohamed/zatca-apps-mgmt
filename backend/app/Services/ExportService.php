@@ -26,6 +26,10 @@ class ExportService
 
     private const int CHUNK_SIZE = 500;
 
+    private const int MAX_EXPORT_ROWS = 10_000;
+
+    private const int MAX_SELECTED_IDS = 5_000;
+
     public function __construct(
         private readonly SettingsService $settingsService,
     ) {
@@ -106,6 +110,8 @@ class ExportService
             return [];
         }
 
+        $ids = array_slice(array_values(array_unique(array_map('intval', $ids))), 0, self::MAX_SELECTED_IDS);
+
         $query = $definition->query();
 
         return $query->whereIn($query->getModel()->getQualifiedKeyName(), $ids)->get()->all();
@@ -139,8 +145,15 @@ class ExportService
         $this->applyColumnSearch($query, $payload['search'] ?? null, $definition->searchColumns());
         $this->applyColumnSort($query, $payload['sort'] ?? null, $definition->sortableColumns(), $definition->defaultSort());
 
+        $yielded = 0;
+
         foreach ($query->cursor() as $model) {
             yield $model;
+            $yielded++;
+
+            if ($yielded >= self::MAX_EXPORT_ROWS) {
+                break;
+            }
         }
     }
 
@@ -156,6 +169,7 @@ class ExportService
         $keyName = $definition->query()->getModel()->getQualifiedKeyName();
 
         $lastId = 0;
+        $yielded = 0;
 
         do {
             /** @var Builder<Model> $chunkQuery */
@@ -169,6 +183,11 @@ class ExportService
             foreach ($chunk as $chunkModel) {
                 yield $chunkModel;
                 $lastId = $chunkModel->getKey();
+                $yielded++;
+
+                if ($yielded >= self::MAX_EXPORT_ROWS) {
+                    return;
+                }
             }
         } while ($chunk->count() === self::CHUNK_SIZE);
     }

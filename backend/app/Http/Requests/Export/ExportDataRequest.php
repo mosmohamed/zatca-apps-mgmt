@@ -25,7 +25,7 @@ class ExportDataRequest extends FormRequest
         return [
             'format' => ['required', 'string', Rule::in(['xlsx', 'json'])],
             'scope' => ['required', 'string', Rule::in(['current_page', 'selected', 'filtered', 'all'])],
-            'ids' => ['required_if:scope,selected', 'array'],
+            'ids' => ['required_if:scope,selected', 'array', 'max:5000'],
             'ids.*' => ['integer', 'min:1'],
             'search' => ['nullable', 'string', 'max:255'],
             'sort' => ['nullable', 'string', 'max:100'],

@@ -11,11 +11,14 @@ use App\Models\License;
 use App\Models\Technology;
 use App\Models\User;
 use App\Models\Vendor;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Models\Activity;
 
 class DashboardService
 {
+    private const int CACHE_TTL_SECONDS = 60;
+
     /**
      * @return array{
      *     totals: array{
@@ -41,6 +44,16 @@ class DashboardService
      * }
      */
     public function index(): array
+    {
+        return Cache::remember('dashboard.summary', self::CACHE_TTL_SECONDS, function (): array {
+            return $this->buildSummary();
+        });
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildSummary(): array
     {
         $applicationsByStatus = Application::query()
             ->select(
@@ -99,19 +112,16 @@ class DashboardService
             ->values()
             ->all();
 
-        $employeesPerApplication = Application::query()
+        $employeesPerApplication = ApplicationAssignment::query()
             ->select(
-                'applications.id',
                 'applications.name_en',
                 'applications.name_ar',
                 DB::raw('COUNT(DISTINCT application_assignments.user_id) as count'),
             )
-            ->leftJoin('application_assignments', static function ($join): void {
-                $join->on('application_assignments.application_id', '=', 'applications.id')
-                    ->whereNull('application_assignments.ended_at');
-            })
+            ->join('applications', 'application_assignments.application_id', '=', 'applications.id')
+            ->whereNull('application_assignments.ended_at')
+            ->whereNull('applications.deleted_at')
             ->groupBy('applications.id', 'applications.name_en', 'applications.name_ar')
-            ->havingRaw('COUNT(DISTINCT application_assignments.user_id) > 0')
             ->orderByDesc('count')
             ->orderBy('applications.name_en')
             ->limit(10)
@@ -177,41 +187,39 @@ class DashboardService
         $today = now()->toDateString();
         $within30 = now()->addDays(30)->toDateString();
 
-        $expiredCount = License::query()
-            ->whereNotNull('end_date')
-            ->whereDate('end_date', '<', $today)
-            ->count();
-        $expiringSoonCount = License::query()
-            ->whereNotNull('end_date')
-            ->whereDate('end_date', '>=', $today)
-            ->whereDate('end_date', '<=', $within30)
-            ->count();
-        $activeCount = License::query()
-            ->where(static function ($query) use ($within30): void {
-                $query
-                    ->whereNull('end_date')
-                    ->orWhereDate('end_date', '>', $within30);
-            })
-            ->count();
+        $licenseStatusCounts = License::query()
+            ->selectRaw(
+                'SUM(CASE WHEN end_date IS NOT NULL AND end_date < ? THEN 1 ELSE 0 END) as expired_count',
+                [$today],
+            )
+            ->selectRaw(
+                'SUM(CASE WHEN end_date IS NOT NULL AND end_date >= ? AND end_date <= ? THEN 1 ELSE 0 END) as expiring_soon_count',
+                [$today, $within30],
+            )
+            ->selectRaw(
+                'SUM(CASE WHEN end_date IS NULL OR end_date > ? THEN 1 ELSE 0 END) as active_count',
+                [$within30],
+            )
+            ->first();
 
         $licenseStatusDistribution = [
             [
                 'key' => 'active',
                 'name_en' => 'Active',
                 'name_ar' => 'نشط',
-                'count' => $activeCount,
+                'count' => (int) ($licenseStatusCounts?->active_count ?? 0),
             ],
             [
                 'key' => 'expiring_soon',
                 'name_en' => 'Expiring Soon',
                 'name_ar' => 'ينتهي قريباً',
-                'count' => $expiringSoonCount,
+                'count' => (int) ($licenseStatusCounts?->expiring_soon_count ?? 0),
             ],
             [
                 'key' => 'expired',
                 'name_en' => 'Expired',
                 'name_ar' => 'منتهي',
-                'count' => $expiredCount,
+                'count' => (int) ($licenseStatusCounts?->expired_count ?? 0),
             ],
         ];
 

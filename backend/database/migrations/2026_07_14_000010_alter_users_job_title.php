@@ -10,16 +10,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table): void {
             $table->dropColumn(['slack', 'job_title']);
-            $table->foreignId('job_title_id')->nullable()->after('extension')->constrained('job_titles')->nullOnDelete();
-            $table->index('job_title_id');
+            $table->foreignId('job_title_id')->nullable()->constrained('job_titles')->nullOnDelete();
         });
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table): void {
             $table->dropConstrainedForeignId('job_title_id');
             $table->string('slack')->nullable();
             $table->string('job_title')->nullable();

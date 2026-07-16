@@ -156,6 +156,17 @@ export function ApplicationsPage() {
         label: t("applications.columns.criticality"),
         cell: (row) => row.criticality?.name_en ?? "—",
       },
+      {
+        id: "ha_model",
+        header: t("applications.columns.haModel"),
+        label: t("applications.columns.haModel"),
+        cell: (row) =>
+          row.ha_model
+            ? t(`applications.haModels.${row.ha_model}`, {
+                defaultValue: row.ha_model,
+              })
+            : "—",
+      },
     ]
 
     if (canUpdate || canDelete) {
@@ -209,6 +220,7 @@ export function ApplicationsPage() {
       { key: "application_type", label: t("applications.columns.type") },
       { key: "status", label: t("applications.columns.status") },
       { key: "criticality", label: t("applications.columns.criticality") },
+      { key: "ha_model", label: t("applications.columns.haModel") },
     ],
     getContext: () => ({
       search: debouncedSearch,

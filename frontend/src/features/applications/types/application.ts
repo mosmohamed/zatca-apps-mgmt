@@ -5,6 +5,15 @@ export type LookupItem = {
   code?: string
 }
 
+export const HA_MODELS = [
+  "Active/Active",
+  "Active/Passive",
+  "Hot Standby",
+  "Cold Standby",
+] as const
+
+export type HaModel = (typeof HA_MODELS)[number]
+
 export type DepartmentSummary = {
   id: number
   name_ar: string
@@ -28,6 +37,7 @@ export type Application = {
   status_id: number
   criticality_id: number
   support_type_id: number
+  ha_model: HaModel | null
   business_owner: string | null
   technical_owner: string | null
   documentation_url: string | null
@@ -64,6 +74,7 @@ export type ApplicationPayload = {
   business_owner?: string | null
   technical_owner?: string | null
   support_type_id: number
+  ha_model?: HaModel | null
   documentation_url?: string | null
   repository_url?: string | null
   technologies?: number[]

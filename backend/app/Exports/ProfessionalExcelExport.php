@@ -170,29 +170,39 @@ final class ProfessionalExcelExport implements FromGenerator, WithCustomStartCel
             return;
         }
 
+        $dataRange = sprintf('A%d:%s%d', $firstDataRow, $lastColumn, $highestRow);
+        $sheet->getStyle($dataRange)->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['rgb' => 'E2E8F0'],
+                ],
+            ],
+        ]);
+
         $altColor = (string) config('export.row_alt_fill_color', 'F5F7FA');
 
-        for ($rowNumber = $firstDataRow; $rowNumber <= $highestRow; $rowNumber++) {
-            $range = sprintf('A%d:%s%d', $rowNumber, $lastColumn, $rowNumber);
+        for ($rowNumber = $firstDataRow + 1; $rowNumber <= $highestRow; $rowNumber += 2) {
+            $sheet->getStyle(sprintf('A%d:%s%d', $rowNumber, $lastColumn, $rowNumber))
+                ->getFill()
+                ->setFillType(Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setRGB($altColor);
+        }
 
-            $isAlt = ($rowNumber - $firstDataRow) % 2 === 1;
-
-            $style = $sheet->getStyle($range);
-            $style->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN)->getColor()->setRGB('E2E8F0');
-
-            if ($isAlt) {
-                $style->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB($altColor);
+        foreach ($this->columns as $index => $column) {
+            if ($column->align === 'left') {
+                continue;
             }
 
-            foreach ($this->columns as $index => $column) {
-                if ($column->align === 'left') {
-                    continue;
-                }
+            $columnLetter = Coordinate::stringFromColumnIndex($index + 1);
+            $alignment = $column->align === 'center'
+                ? Alignment::HORIZONTAL_CENTER
+                : Alignment::HORIZONTAL_RIGHT;
 
-                $columnLetter = Coordinate::stringFromColumnIndex($index + 1);
-                $alignment = $column->align === 'center' ? Alignment::HORIZONTAL_CENTER : Alignment::HORIZONTAL_RIGHT;
-                $sheet->getStyle($columnLetter.$rowNumber)->getAlignment()->setHorizontal($alignment);
-            }
+            $sheet->getStyle(sprintf('%s%d:%s%d', $columnLetter, $firstDataRow, $columnLetter, $highestRow))
+                ->getAlignment()
+                ->setHorizontal($alignment);
         }
     }
 

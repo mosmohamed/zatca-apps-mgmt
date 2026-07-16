@@ -38,7 +38,10 @@ import {
   useTechnologiesLookup,
   useUpdateApplication,
 } from "@/features/applications/hooks/use-applications"
-import type { Application } from "@/features/applications/types/application"
+import {
+  HA_MODELS,
+  type Application,
+} from "@/features/applications/types/application"
 import {
   createApplicationFormSchema,
   type ApplicationFormValues,
@@ -64,6 +67,7 @@ const emptyValues: ApplicationFormValues = {
   business_owner: "",
   technical_owner: "",
   support_type_id: 0,
+  ha_model: null,
   documentation_url: "",
   repository_url: "",
   technologies: [],
@@ -85,6 +89,7 @@ function toFormValues(application?: Application | null): ApplicationFormValues {
     business_owner: application.business_owner ?? "",
     technical_owner: application.technical_owner ?? "",
     support_type_id: application.support_type_id,
+    ha_model: application.ha_model,
     documentation_url: application.documentation_url ?? "",
     repository_url: application.repository_url ?? "",
     technologies: application.technologies?.map((item) => item.id) ?? [],
@@ -103,6 +108,7 @@ function toPayload(values: ApplicationFormValues) {
     business_owner: values.business_owner || null,
     technical_owner: values.technical_owner || null,
     support_type_id: values.support_type_id,
+    ha_model: values.ha_model || null,
     documentation_url: values.documentation_url || null,
     repository_url: values.repository_url || null,
     technologies: values.technologies,
@@ -383,6 +389,43 @@ export function ApplicationFormDialog({
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="ha_model"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("applications.form.haModel")}</FormLabel>
+                  <Select
+                    value={field.value ?? "none"}
+                    onValueChange={(value) =>
+                      field.onChange(value === "none" ? null : value)
+                    }
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={t("applications.form.haModel")}
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="none">
+                        {t("applications.form.haModelNone")}
+                      </SelectItem>
+                      {HA_MODELS.map((model) => (
+                        <SelectItem key={model} value={model}>
+                          {t(`applications.haModels.${model}`, {
+                            defaultValue: model,
+                          })}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField

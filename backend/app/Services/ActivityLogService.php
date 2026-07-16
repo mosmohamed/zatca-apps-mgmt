@@ -58,24 +58,38 @@ class ActivityLogService
         }
 
         if (! empty($filters['date_from'])) {
-            $query->whereDate('created_at', '>=', (string) $filters['date_from']);
+            $query->where('created_at', '>=', (string) $filters['date_from'].' 00:00:00');
         }
 
         if (! empty($filters['date_to'])) {
-            $query->whereDate('created_at', '<=', (string) $filters['date_to']);
+            $query->where('created_at', '<=', (string) $filters['date_to'].' 23:59:59');
         }
 
         if (! empty($filters['search'])) {
-            $term = '%'.trim((string) $filters['search']).'%';
-            $query->where(static function ($builder) use ($term): void {
-                $builder
-                    ->where('description', 'like', $term)
-                    ->orWhereHasMorph('causer', [User::class], static function ($causerQuery) use ($term): void {
-                        $causerQuery
-                            ->where('first_name', 'like', $term)
-                            ->orWhere('last_name', 'like', $term)
-                            ->orWhere('email', 'like', $term);
+            $term = trim((string) $filters['search']);
+            $like = '%'.$term.'%';
+
+            $matchingUserIds = User::query()
+                ->where(static function ($userQuery) use ($like): void {
+                    $userQuery
+                        ->where('first_name', 'like', $like)
+                        ->orWhere('last_name', 'like', $like)
+                        ->orWhere('email', 'like', $like);
+                })
+                ->limit(200)
+                ->pluck('id')
+                ->all();
+
+            $query->where(static function ($builder) use ($like, $matchingUserIds): void {
+                $builder->where('description', 'like', $like);
+
+                if ($matchingUserIds !== []) {
+                    $builder->orWhere(static function ($causerBuilder) use ($matchingUserIds): void {
+                        $causerBuilder
+                            ->where('causer_type', User::class)
+                            ->whereIn('causer_id', $matchingUserIds);
                     });
+                }
             });
         }
 
@@ -106,11 +120,14 @@ class ActivityLogService
      */
     private function mostActiveCausers(): array
     {
+        $since = now()->subDays(90);
+
         /** @var Collection<int, object{causer_id: int, activity_count: int}> $rows */
         $rows = Activity::query()
             ->selectRaw('causer_id, count(*) as activity_count')
             ->whereNotNull('causer_id')
             ->where('causer_type', User::class)
+            ->where('created_at', '>=', $since)
             ->groupBy('causer_id')
             ->orderByDesc('activity_count')
             ->limit(5)
@@ -138,11 +155,14 @@ class ActivityLogService
      */
     private function mostModifiedSubjects(string $subjectType, callable $labelResolver): array
     {
+        $since = now()->subDays(90);
+
         /** @var Collection<int, object{subject_id: int, activity_count: int}> $rows */
         $rows = Activity::query()
             ->selectRaw('subject_id, count(*) as activity_count')
             ->where('subject_type', $subjectType)
             ->whereNotNull('subject_id')
+            ->where('created_at', '>=', $since)
             ->groupBy('subject_id')
             ->orderByDesc('activity_count')
             ->limit(5)

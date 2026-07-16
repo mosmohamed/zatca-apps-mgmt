@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ApplicationDetailsCard } from "@/features/applications/components/ApplicationDetailsCard"
+import { HA_MODELS } from "@/features/applications/types/application"
 import {
   useApplicationStatusesLookup,
   useApplicationTypesLookup,
@@ -36,6 +37,7 @@ export function ApplicationsDetailsPage() {
   const [statusId, setStatusId] = useState(ALL)
   const [departmentId, setDepartmentId] = useState(ALL)
   const [typeId, setTypeId] = useState(ALL)
+  const [haModel, setHaModel] = useState(ALL)
   const [staffing, setStaffing] = useState<StaffingFilter>("all")
 
   const debouncedSearch = useDebouncedValue(search, 200)
@@ -77,6 +79,9 @@ export function ApplicationsDetailsPage() {
         if (typeId !== ALL && String(app.application_type_id) !== typeId) {
           return false
         }
+        if (haModel !== ALL && app.ha_model !== haModel) {
+          return false
+        }
 
         const users = userCountByAppId.get(app.id) ?? 0
         if (staffing === "staffed" && users === 0) {
@@ -94,6 +99,7 @@ export function ApplicationsDetailsPage() {
           app.name_en,
           app.name_ar,
           app.code,
+          app.ha_model,
           app.business_owner,
           app.technical_owner,
           app.department?.name_en,
@@ -130,6 +136,11 @@ export function ApplicationsDetailsPage() {
               ? app.application_type.name_ar
               : app.application_type.name_en
             : t("applicationsDetails.unknownType"),
+          haModelName: app.ha_model
+            ? t(`applications.haModels.${app.ha_model}`, {
+                defaultValue: app.ha_model,
+              })
+            : null,
           techCount: app.technologies?.length ?? 0,
           activeUsers: userCountByAppId.get(app.id) ?? 0,
           accentIndex: index,
@@ -139,6 +150,7 @@ export function ApplicationsDetailsPage() {
     applicationsQuery.data?.items,
     debouncedSearch,
     departmentId,
+    haModel,
     isArabic,
     staffing,
     statusId,
@@ -152,6 +164,7 @@ export function ApplicationsDetailsPage() {
     statusId !== ALL ||
     departmentId !== ALL ||
     typeId !== ALL ||
+    haModel !== ALL ||
     staffing !== "all" ||
     search.trim() !== ""
 
@@ -160,6 +173,7 @@ export function ApplicationsDetailsPage() {
     setStatusId(ALL)
     setDepartmentId(ALL)
     setTypeId(ALL)
+    setHaModel(ALL)
     setStaffing("all")
   }
 
@@ -193,7 +207,7 @@ export function ApplicationsDetailsPage() {
           {t("applicationsDetails.filters.title")}
         </div>
 
-        <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-6">
+        <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-7">
           <div className="relative xl:col-span-2">
             <Search className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -253,6 +267,24 @@ export function ApplicationsDetailsPage() {
               {(typesQuery.data ?? []).map((type) => (
                 <SelectItem key={type.id} value={String(type.id)}>
                   {isArabic ? type.name_ar : type.name_en}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={haModel} onValueChange={setHaModel}>
+            <SelectTrigger className="h-9 w-full min-w-0">
+              <SelectValue
+                placeholder={t("applicationsDetails.filters.haModel")}
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL}>
+                {t("applicationsDetails.filters.allHaModels")}
+              </SelectItem>
+              {HA_MODELS.map((model) => (
+                <SelectItem key={model} value={model}>
+                  {t(`applications.haModels.${model}`, { defaultValue: model })}
                 </SelectItem>
               ))}
             </SelectContent>

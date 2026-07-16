@@ -1,3 +1,4 @@
+import { Suspense, lazy } from "react"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { Toaster } from "sonner"
@@ -13,27 +14,118 @@ import { GuestRoute } from "@/features/auth/components/GuestRoute"
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute"
 import { AuthProvider } from "@/features/auth/hooks/use-auth"
 import { LoginPage } from "@/features/auth/pages/LoginPage"
-import { ApplicationStatusesPage } from "@/features/application-statuses/pages/ApplicationStatusesPage"
-import { ApplicationsPage } from "@/features/applications/pages/ApplicationsPage"
-import { ApplicationDetailPage } from "@/features/applications/pages/ApplicationDetailPage"
-import { ApplicationsDetailsPage } from "@/features/applications/pages/ApplicationsDetailsPage"
-import { AppRolesPage } from "@/features/app-roles/pages/AppRolesPage"
-import { AssignmentsPage } from "@/features/assignments/pages/AssignmentsPage"
-import { ActivityLogPage } from "@/features/activity-log/pages/ActivityLogPage"
-import { CriticalitiesPage } from "@/features/criticalities/pages/CriticalitiesPage"
-import { DashboardPage } from "@/features/dashboard/pages/DashboardPage"
-import { DepartmentsPage } from "@/features/departments/pages/DepartmentsPage"
-import { JobTitlesPage } from "@/features/job-titles/pages/JobTitlesPage"
-import { RolesPage } from "@/features/roles/pages/RolesPage"
 import { SettingsProvider } from "@/features/settings/hooks/use-settings"
-import { SettingsPage } from "@/features/settings/pages/SettingsPage"
-import { SupportTypesPage } from "@/features/support-types/pages/SupportTypesPage"
-import { LicenseDetailPage } from "@/features/licenses/pages/LicenseDetailPage"
-import { LicensesPage } from "@/features/licenses/pages/LicensesPage"
-import { TechnologiesPage } from "@/features/technologies/pages/TechnologiesPage"
-import { UsersPage } from "@/features/users/pages/UsersPage"
-import { VendorsPage } from "@/features/vendors/pages/VendorsPage"
 import { DefaultLayout } from "@/layouts/DefaultLayout"
+
+const DashboardPage = lazy(() =>
+  import("@/features/dashboard/pages/DashboardPage").then((module) => ({
+    default: module.DashboardPage,
+  }))
+)
+const AssignmentsPage = lazy(() =>
+  import("@/features/assignments/pages/AssignmentsPage").then((module) => ({
+    default: module.AssignmentsPage,
+  }))
+)
+const ApplicationsDetailsPage = lazy(() =>
+  import("@/features/applications/pages/ApplicationsDetailsPage").then(
+    (module) => ({
+      default: module.ApplicationsDetailsPage,
+    })
+  )
+)
+const ApplicationDetailPage = lazy(() =>
+  import("@/features/applications/pages/ApplicationDetailPage").then(
+    (module) => ({
+      default: module.ApplicationDetailPage,
+    })
+  )
+)
+const ApplicationsPage = lazy(() =>
+  import("@/features/applications/pages/ApplicationsPage").then((module) => ({
+    default: module.ApplicationsPage,
+  }))
+)
+const VendorsPage = lazy(() =>
+  import("@/features/vendors/pages/VendorsPage").then((module) => ({
+    default: module.VendorsPage,
+  }))
+)
+const UsersPage = lazy(() =>
+  import("@/features/users/pages/UsersPage").then((module) => ({
+    default: module.UsersPage,
+  }))
+)
+const DepartmentsPage = lazy(() =>
+  import("@/features/departments/pages/DepartmentsPage").then((module) => ({
+    default: module.DepartmentsPage,
+  }))
+)
+const JobTitlesPage = lazy(() =>
+  import("@/features/job-titles/pages/JobTitlesPage").then((module) => ({
+    default: module.JobTitlesPage,
+  }))
+)
+const AppRolesPage = lazy(() =>
+  import("@/features/app-roles/pages/AppRolesPage").then((module) => ({
+    default: module.AppRolesPage,
+  }))
+)
+const SupportTypesPage = lazy(() =>
+  import("@/features/support-types/pages/SupportTypesPage").then((module) => ({
+    default: module.SupportTypesPage,
+  }))
+)
+const CriticalitiesPage = lazy(() =>
+  import("@/features/criticalities/pages/CriticalitiesPage").then((module) => ({
+    default: module.CriticalitiesPage,
+  }))
+)
+const ApplicationStatusesPage = lazy(() =>
+  import("@/features/application-statuses/pages/ApplicationStatusesPage").then(
+    (module) => ({
+      default: module.ApplicationStatusesPage,
+    })
+  )
+)
+const TechnologiesPage = lazy(() =>
+  import("@/features/technologies/pages/TechnologiesPage").then((module) => ({
+    default: module.TechnologiesPage,
+  }))
+)
+const LicensesPage = lazy(() =>
+  import("@/features/licenses/pages/LicensesPage").then((module) => ({
+    default: module.LicensesPage,
+  }))
+)
+const LicenseDetailPage = lazy(() =>
+  import("@/features/licenses/pages/LicenseDetailPage").then((module) => ({
+    default: module.LicenseDetailPage,
+  }))
+)
+const RolesPage = lazy(() =>
+  import("@/features/roles/pages/RolesPage").then((module) => ({
+    default: module.RolesPage,
+  }))
+)
+const ActivityLogPage = lazy(() =>
+  import("@/features/activity-log/pages/ActivityLogPage").then((module) => ({
+    default: module.ActivityLogPage,
+  }))
+)
+const SettingsPage = lazy(() =>
+  import("@/features/settings/pages/SettingsPage").then((module) => ({
+    default: module.SettingsPage,
+  }))
+)
+
+function RouteFallback() {
+  return (
+    <div className="flex min-h-[40vh] items-center justify-center text-sm text-muted-foreground">
+      Loading...
+    </div>
+  )
+}
 
 function AppRoutes() {
   const { t, i18n } = useTranslation()
@@ -43,54 +135,56 @@ function AppRoutes() {
     <>
       <ErrorBoundary fallbackTitle={t("errors.appError")}>
         <BrowserRouter>
-          <Routes>
-            <Route
-              path="/login"
-              element={
-                <GuestRoute>
-                  <LoginPage />
-                </GuestRoute>
-              }
-            />
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              <Route
+                path="/login"
+                element={
+                  <GuestRoute>
+                    <LoginPage />
+                  </GuestRoute>
+                }
+              />
 
-            <Route element={<ProtectedRoute />}>
-              <Route element={<DefaultLayout />}>
-                <Route index element={<DashboardPage />} />
-                <Route path="assignments" element={<AssignmentsPage />} />
-                <Route
-                  path="applications-details"
-                  element={<ApplicationsDetailsPage />}
-                />
-                <Route
-                  path="applications-details/:id"
-                  element={<ApplicationDetailPage />}
-                />
-                <Route path="applications" element={<ApplicationsPage />} />
-                <Route path="vendors" element={<VendorsPage />} />
-                <Route path="users" element={<UsersPage />} />
-                <Route path="departments" element={<DepartmentsPage />} />
-                <Route path="job-titles" element={<JobTitlesPage />} />
-                <Route path="app-roles" element={<AppRolesPage />} />
-                <Route path="support-types" element={<SupportTypesPage />} />
-                <Route path="criticalities" element={<CriticalitiesPage />} />
-                <Route
-                  path="application-statuses"
-                  element={<ApplicationStatusesPage />}
-                />
-                <Route path="technologies" element={<TechnologiesPage />} />
-                <Route path="licenses" element={<LicensesPage />} />
-                <Route path="licenses/:id" element={<LicenseDetailPage />} />
-                <Route path="roles" element={<RolesPage />} />
-                <Route path="activity-log" element={<ActivityLogPage />} />
-                <Route path="settings" element={<SettingsPage />} />
-                <Route path="403" element={<ForbiddenPage />} />
-                <Route path="500" element={<ServerErrorPage />} />
-                <Route path="404" element={<NotFoundPage />} />
+              <Route element={<ProtectedRoute />}>
+                <Route element={<DefaultLayout />}>
+                  <Route index element={<DashboardPage />} />
+                  <Route path="assignments" element={<AssignmentsPage />} />
+                  <Route
+                    path="applications-details"
+                    element={<ApplicationsDetailsPage />}
+                  />
+                  <Route
+                    path="applications-details/:id"
+                    element={<ApplicationDetailPage />}
+                  />
+                  <Route path="applications" element={<ApplicationsPage />} />
+                  <Route path="vendors" element={<VendorsPage />} />
+                  <Route path="users" element={<UsersPage />} />
+                  <Route path="departments" element={<DepartmentsPage />} />
+                  <Route path="job-titles" element={<JobTitlesPage />} />
+                  <Route path="app-roles" element={<AppRolesPage />} />
+                  <Route path="support-types" element={<SupportTypesPage />} />
+                  <Route path="criticalities" element={<CriticalitiesPage />} />
+                  <Route
+                    path="application-statuses"
+                    element={<ApplicationStatusesPage />}
+                  />
+                  <Route path="technologies" element={<TechnologiesPage />} />
+                  <Route path="licenses" element={<LicensesPage />} />
+                  <Route path="licenses/:id" element={<LicenseDetailPage />} />
+                  <Route path="roles" element={<RolesPage />} />
+                  <Route path="activity-log" element={<ActivityLogPage />} />
+                  <Route path="settings" element={<SettingsPage />} />
+                  <Route path="403" element={<ForbiddenPage />} />
+                  <Route path="500" element={<ServerErrorPage />} />
+                  <Route path="404" element={<NotFoundPage />} />
+                </Route>
               </Route>
-            </Route>
 
-            <Route path="*" element={<Navigate to="/404" replace />} />
-          </Routes>
+              <Route path="*" element={<Navigate to="/404" replace />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </ErrorBoundary>
       <Toaster richColors closeButton position={toasterPosition} />

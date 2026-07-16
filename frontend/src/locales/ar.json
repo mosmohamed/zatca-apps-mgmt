@@ -93,7 +93,8 @@
     "applicationRequired": "التطبيق مطلوب.",
     "userRequired": "المستخدم مطلوب.",
     "appRoleRequired": "دور التطبيق مطلوب.",
-    "categoryRequired": "الفئة مطلوبة."
+    "categoryRequired": "الفئة مطلوبة.",
+    "haModelInvalid": "اختر نموذج توافر عالٍ (HA) صالحاً."
   },
   "auth": {
     "signIn": "تسجيل الدخول",
@@ -228,9 +229,16 @@
       "code": "الرمز",
       "status": "الحالة",
       "criticality": "الأهمية",
+      "haModel": "نموذج التوافر العالي (HA)",
       "department": "القسم",
       "type": "النوع",
       "created": "تاريخ الإنشاء"
+    },
+    "haModels": {
+      "Active/Active": "نشط/نشط",
+      "Active/Passive": "نشط/خامل",
+      "Hot Standby": "استعداد ساخن",
+      "Cold Standby": "استعداد بارد"
     },
     "form": {
       "createTitle": "تطبيق جديد",
@@ -247,6 +255,8 @@
       "businessOwner": "إدارة هيئة الزكاة والضريبة والجمارك",
       "technicalOwner": "المالك التقني",
       "supportType": "نوع الدعم",
+      "haModel": "نموذج التوافر العالي (HA)",
+      "haModelNone": "غير محدد",
       "technologies": "التقنيات",
       "technologiesPlaceholder": "اختر التقنيات",
       "technologiesSearch": "ابحث عن التقنيات...",
@@ -876,6 +886,8 @@
       "allStatuses": "كل الحالات",
       "allDepartments": "كل الأقسام",
       "allCategories": "كل التصنيفات",
+      "haModel": "نموذج HA",
+      "allHaModels": "كل نماذج HA",
       "allStaffing": "كل حالات التعيين",
       "staffed": "يوجد مستخدمون معيّنون",
       "unstaffed": "بدون مستخدمين معيّنين",
@@ -891,6 +903,7 @@
     "fields": {
       "type": "نوع التطبيق",
       "supportType": "نوع الدعم",
+      "haModel": "نموذج التوافر العالي (HA)",
       "businessOwner": "إدارة هيئة الزكاة والضريبة والجمارك",
       "technicalOwner": "المالك التقني",
       "documentationUrl": "رابط التوثيق",

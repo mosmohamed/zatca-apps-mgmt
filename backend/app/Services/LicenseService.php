@@ -127,6 +127,14 @@ class LicenseService
             ->selectRaw('COALESCE(SUM(licensed), 0) as total_licensed')
             ->selectRaw('COALESCE(SUM(used), 0) as total_used')
             ->selectRaw('COALESCE(SUM(available), 0) as total_available')
+            ->selectRaw(
+                'SUM(CASE WHEN end_date IS NOT NULL AND end_date >= ? AND end_date <= ? THEN 1 ELSE 0 END) as expiring_within_30_days',
+                [$today, $within30],
+            )
+            ->selectRaw(
+                'SUM(CASE WHEN end_date IS NOT NULL AND end_date < ? THEN 1 ELSE 0 END) as expired',
+                [$today],
+            )
             ->first();
 
         return [
@@ -134,15 +142,8 @@ class LicenseService
             'total_licensed' => (int) ($totals?->total_licensed ?? 0),
             'total_used' => (int) ($totals?->total_used ?? 0),
             'total_available' => (int) ($totals?->total_available ?? 0),
-            'expiring_within_30_days' => License::query()
-                ->whereNotNull('end_date')
-                ->whereDate('end_date', '>=', $today)
-                ->whereDate('end_date', '<=', $within30)
-                ->count(),
-            'expired' => License::query()
-                ->whereNotNull('end_date')
-                ->whereDate('end_date', '<', $today)
-                ->count(),
+            'expiring_within_30_days' => (int) ($totals?->expiring_within_30_days ?? 0),
+            'expired' => (int) ($totals?->expired ?? 0),
         ];
     }
 
@@ -157,15 +158,15 @@ class LicenseService
         match ($status) {
             'expired' => $query
                 ->whereNotNull('end_date')
-                ->whereDate('end_date', '<', $today),
+                ->where('end_date', '<', $today),
             'expiring_soon' => $query
                 ->whereNotNull('end_date')
-                ->whereDate('end_date', '>=', $today)
-                ->whereDate('end_date', '<=', $within30),
+                ->where('end_date', '>=', $today)
+                ->where('end_date', '<=', $within30),
             'active' => $query->where(static function (Builder $builder) use ($within30): void {
                 $builder
                     ->whereNull('end_date')
-                    ->orWhereDate('end_date', '>', $within30);
+                    ->orWhere('end_date', '>', $within30);
             }),
             default => null,
         };

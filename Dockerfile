@@ -56,6 +56,8 @@ ENV APP_ENV=production \
 # System packages + PHP extensions
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl \
+        gnupg \
+        apt-transport-https \
         git \
         unzip \
         nginx \
@@ -67,6 +69,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libfreetype6-dev \
         libonig-dev \
         libxml2-dev \
+        unixodbc-dev \
+    && curl -fsSL https://packages.microsoft.com/keys/microsoft.asc \
+        | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-prod.gpg] https://packages.microsoft.com/debian/12/prod bookworm main" \
+        > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update \
+    && ACCEPT_EULA=Y apt-get install -y --no-install-recommends msodbcsql18 \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(nproc)" \
         bcmath \
@@ -78,8 +87,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pcntl \
         pdo_mysql \
         zip \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
+    && pecl install redis sqlsrv pdo_sqlsrv \
+    && docker-php-ext-enable redis sqlsrv pdo_sqlsrv \
     && rm -rf /var/lib/apt/lists/* \
     && rm -f /etc/nginx/sites-enabled/default
 

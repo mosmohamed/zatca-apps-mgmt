@@ -46,6 +46,7 @@ return [
         'status_id' => 'status',
         'criticality_id' => 'criticality',
         'support_type_id' => 'support type',
+        'ha_model' => 'High Availability (HA) Model',
         'description' => 'description',
         'sort_order' => 'sort order',
         'teams' => 'Teams',

@@ -34,11 +34,11 @@ return new class extends Migration
         ], $now);
 
         if (! Schema::hasColumn('applications', 'status_id')) {
-            Schema::table('applications', function (Blueprint $table) {
-                // Nullable + restrict: MySQL forbids SET NULL on columns that later become NOT NULL.
-                $table->foreignId('status_id')->nullable()->after('code')->constrained('application_statuses')->restrictOnDelete();
-                $table->foreignId('criticality_id')->nullable()->after('status_id')->constrained('criticalities')->restrictOnDelete();
-                $table->foreignId('support_type_id')->nullable()->after('technical_owner')->constrained('support_types')->restrictOnDelete();
+            Schema::table('applications', function (Blueprint $table): void {
+                // Nullable + restrict: engines forbid SET NULL on columns that later become NOT NULL.
+                $table->foreignId('status_id')->nullable()->constrained('application_statuses')->restrictOnDelete();
+                $table->foreignId('criticality_id')->nullable()->constrained('criticalities')->restrictOnDelete();
+                $table->foreignId('support_type_id')->nullable()->constrained('support_types')->restrictOnDelete();
             });
         }
 
@@ -82,7 +82,8 @@ return new class extends Migration
             // Drop FKs first — MySQL error 1830 if SET NULL FKs remain while changing to NOT NULL.
             $this->dropApplicationMasterForeignKeys();
 
-            Schema::table('applications', function (Blueprint $table) {
+            Schema::table('applications', function (Blueprint $table): void {
+                // Keep unsignedBigInteger to match id() on MySQL. SQL Server maps UNSIGNED to signed bigint.
                 $table->unsignedBigInteger('status_id')->nullable(false)->change();
                 $table->unsignedBigInteger('criticality_id')->nullable(false)->change();
                 $table->unsignedBigInteger('support_type_id')->nullable(false)->change();
@@ -99,10 +100,10 @@ return new class extends Migration
     public function down(): void
     {
         if (! Schema::hasColumn('applications', 'status')) {
-            Schema::table('applications', function (Blueprint $table) {
-                $table->string('status')->default('Active')->after('code');
-                $table->string('criticality')->default('Medium')->after('status');
-                $table->string('support_type')->default('Business Hours')->after('technical_owner');
+            Schema::table('applications', function (Blueprint $table): void {
+                $table->string('status')->default('Active');
+                $table->string('criticality')->default('Medium');
+                $table->string('support_type')->default('Business Hours');
             });
         }
 

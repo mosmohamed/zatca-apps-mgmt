@@ -1,6 +1,8 @@
 import type { TFunction } from "i18next"
 import { z } from "zod"
 
+import { HA_MODELS } from "@/features/applications/types/application"
+
 export function createApplicationFormSchema(t: TFunction) {
   return z.object({
     department_id: z
@@ -33,6 +35,12 @@ export function createApplicationFormSchema(t: TFunction) {
       .number()
       .int()
       .positive(t("validation.supportTypeRequired")),
+    ha_model: z
+      .enum(HA_MODELS, {
+        error: t("validation.haModelInvalid"),
+      })
+      .nullable()
+      .optional(),
     documentation_url: z
       .string()
       .trim()

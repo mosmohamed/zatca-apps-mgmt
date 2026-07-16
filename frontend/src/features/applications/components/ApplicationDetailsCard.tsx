@@ -45,6 +45,7 @@ export type ApplicationDetailsCardModel = {
   statusName: string
   departmentName: string
   typeName: string
+  haModelName?: string | null
   techCount: number
   activeUsers: number
   accentIndex: number
@@ -106,6 +107,7 @@ export function ApplicationDetailsCard({
 
         <p className="mt-3 truncate text-xs text-muted-foreground">
           {card.typeName}
+          {card.haModelName ? ` · ${card.haModelName}` : ""}
         </p>
 
         <div className="mt-4 grid grid-cols-3 gap-2">

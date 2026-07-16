@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('version')->nullable();
             $table->text('description')->nullable();
             $table->string('environment')->index();
+            // unsignedInteger maps to signed INT on SQL Server (no UNSIGNED type).
+            // Non-negative values are enforced by application validation rules.
             $table->unsignedInteger('licensed')->default(0);
             $table->unsignedInteger('used')->default(0);
             $table->unsignedInteger('available')->default(0);

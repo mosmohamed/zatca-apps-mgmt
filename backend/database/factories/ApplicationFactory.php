@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\HaModel;
 use App\Models\Application;
 use App\Models\ApplicationStatus;
 use App\Models\ApplicationType;
@@ -35,6 +36,7 @@ class ApplicationFactory extends Factory
             'status_id' => fn (): int => $this->resolveStatusId(),
             'criticality_id' => fn (): int => $this->resolveCriticalityId(),
             'support_type_id' => fn (): int => $this->resolveSupportTypeId(),
+            'ha_model' => fake()->optional()->randomElement(HaModel::values()),
             'business_owner' => fake()->optional()->name(),
             'technical_owner' => fake()->optional()->name(),
             'documentation_url' => fake()->optional()->url(),
