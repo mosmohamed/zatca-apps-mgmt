@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\HaModel;
 use App\Models\Application;
 use App\Models\ApplicationAssignment;
 use App\Models\Department;
@@ -36,6 +37,7 @@ class DashboardService
      *         technologies_usage: list<array{name: string, name_en: string, name_ar: string, count: int}>,
      *         employees_per_application: list<array{name_en: string, name_ar: string, count: int}>,
      *         applications_by_department: list<array{name_en: string, name_ar: string, count: int}>,
+     *         applications_by_ha_model: list<array{key: string, name_en: string, name_ar: string, count: int}>,
      *         license_usage: list<array{key: string, name_en: string, name_ar: string, count: int}>,
      *         license_status_distribution: list<array{key: string, name_en: string, name_ar: string, count: int}>,
      *         licenses_by_environment: list<array{key: string, name_en: string, name_ar: string, count: int}>
@@ -156,6 +158,37 @@ class DashboardService
             ])
             ->values()
             ->all();
+
+        $haModelCounts = Application::query()
+            ->select('ha_model', DB::raw('COUNT(*) as count'))
+            ->whereNotNull('ha_model')
+            ->groupBy('ha_model')
+            ->get()
+            ->mapWithKeys(static function ($row): array {
+                $key = $row->ha_model instanceof HaModel
+                    ? $row->ha_model->value
+                    : (string) $row->ha_model;
+
+                return [$key => (int) $row->count];
+            })
+            ->all();
+
+        $haModelLabels = [
+            HaModel::ActiveActive->value => ['name_en' => 'Active/Active', 'name_ar' => 'نشط/نشط'],
+            HaModel::ActivePassive->value => ['name_en' => 'Active/Passive', 'name_ar' => 'نشط/خامل'],
+            HaModel::HotStandby->value => ['name_en' => 'Hot Standby', 'name_ar' => 'استعداد ساخن'],
+            HaModel::ColdStandby->value => ['name_en' => 'Cold Standby', 'name_ar' => 'استعداد بارد'],
+        ];
+
+        $applicationsByHaModel = [];
+        foreach ($haModelLabels as $key => $labels) {
+            $applicationsByHaModel[] = [
+                'key' => $key,
+                'name_en' => $labels['name_en'],
+                'name_ar' => $labels['name_ar'],
+                'count' => (int) ($haModelCounts[$key] ?? 0),
+            ];
+        }
 
         $licenseTotals = License::query()
             ->selectRaw('COALESCE(SUM(licensed), 0) as total_licensed')
@@ -287,6 +320,7 @@ class DashboardService
                 'technologies_usage' => $technologiesUsage,
                 'employees_per_application' => $employeesPerApplication,
                 'applications_by_department' => $applicationsByDepartment,
+                'applications_by_ha_model' => $applicationsByHaModel,
                 'license_usage' => $licenseUsage,
                 'license_status_distribution' => $licenseStatusDistribution,
                 'licenses_by_environment' => $licensesByEnvironment,

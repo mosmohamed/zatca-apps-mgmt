@@ -185,6 +185,8 @@
       "licenseStatusDesc": "Breakdown of licenses by lifecycle status.",
       "licensesByEnvironment": "Licenses by environment",
       "licensesByEnvironmentDesc": "How licenses are distributed across environments.",
+      "applicationsByHaModel": "Applications by HA Model",
+      "applicationsByHaModelDesc": "Distribution of applications across High Availability models.",
       "allStatuses": "All statuses",
       "employeesLabel": "Employees",
       "applicationsLabel": "Applications",
@@ -195,7 +197,8 @@
       "emptyEmployees": "Assign users to applications to see headcount per app.",
       "emptyStatus": "Add applications to visualize status mix.",
       "emptyDepartments": "Create departments and applications to populate this chart.",
-      "emptyLicenses": "Add licenses to populate these charts."
+      "emptyLicenses": "Add licenses to populate these charts.",
+      "emptyHaModel": "Assign High Availability models to applications to populate this chart."
     }
   },
   "errors": {
@@ -1089,7 +1092,9 @@
     "saving": "Saving...",
     "tabs": {
       "general": "General",
+      "branding": "Branding",
       "preferences": "Preferences",
+      "dashboard": "Dashboard",
       "security": "Security"
     },
     "general": {
@@ -1098,11 +1103,45 @@
       "companyName": "Company name",
       "timezone": "Default timezone"
     },
+    "branding": {
+      "title": "Interface text",
+      "description": "Customize the sidebar tagline and header subtitle for English and Arabic.",
+      "sidebarTaglineEn": "Sidebar tagline (English)",
+      "sidebarTaglineAr": "Sidebar tagline (Arabic)",
+      "headerSubtitleEn": "Header subtitle (English)",
+      "headerSubtitleAr": "Header subtitle (Arabic)"
+    },
     "preferences": {
       "title": "Preferences",
       "description": "Default behavior for lists and pagination.",
       "paginationSize": "Default pagination size",
       "paginationSizeHint": "Number of rows shown per page by default (5–100)."
+    },
+    "dashboard": {
+      "title": "Dashboard widgets",
+      "description": "Choose which dashboard charts and panels are visible. New widgets appear here automatically.",
+      "widgets": {
+        "top_technologies": "Top technologies",
+        "employees_per_application": "Employees per application",
+        "applications_by_status": "Application status mix",
+        "applications_by_department": "Applications by department",
+        "applications_by_ha_model": "Applications by HA Model",
+        "license_usage": "License usage",
+        "license_status_distribution": "License status distribution",
+        "licenses_by_environment": "Licenses by environment",
+        "recent_activity": "Recent activity"
+      },
+      "widgetHints": {
+        "top_technologies": "Radar chart of the most used technologies.",
+        "employees_per_application": "Donut chart of staffing by application.",
+        "applications_by_status": "Interactive application lifecycle status chart.",
+        "applications_by_department": "Department ownership ranking.",
+        "applications_by_ha_model": "High Availability model distribution.",
+        "license_usage": "Radial chart of licensed vs used seats.",
+        "license_status_distribution": "Active, expiring, and expired licenses.",
+        "licenses_by_environment": "License counts by environment.",
+        "recent_activity": "Latest audited activity feed."
+      }
     },
     "security": {
       "title": "Security",

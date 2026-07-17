@@ -97,17 +97,26 @@ export function ApplicationDetailsCard({
               {card.code}
             </p>
           </div>
-          <Badge
-            variant="secondary"
-            className="shrink-0 rounded-full px-2.5"
-          >
-            {card.statusName}
-          </Badge>
+          <div className="flex shrink-0 flex-col items-end gap-1.5">
+            <Badge
+              variant="secondary"
+              className="rounded-full px-2.5"
+            >
+              {card.statusName}
+            </Badge>
+            {card.haModelName ? (
+              <Badge
+                variant="outline"
+                className={cn("rounded-full px-2.5", accent.text)}
+              >
+                {card.haModelName}
+              </Badge>
+            ) : null}
+          </div>
         </div>
 
         <p className="mt-3 truncate text-xs text-muted-foreground">
           {card.typeName}
-          {card.haModelName ? ` · ${card.haModelName}` : ""}
         </p>
 
         <div className="mt-4 grid grid-cols-3 gap-2">

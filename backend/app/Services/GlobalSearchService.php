@@ -52,17 +52,24 @@ class GlobalSearchService
                 $builder
                     ->where('name_en', 'like', $like)
                     ->orWhere('name_ar', 'like', $like)
-                    ->orWhere('code', 'like', $like);
+                    ->orWhere('code', 'like', $like)
+                    ->orWhere('ha_model', 'like', $like);
             })
             ->orderBy('name_en')
             ->limit(self::LIMIT)
-            ->get(['id', 'name_en', 'code'])
-            ->map(static fn (Application $application): array => [
-                'id' => $application->id,
-                'title' => $application->name_en,
-                'subtitle' => $application->code,
-                'url' => '/applications?id='.$application->id,
-            ])
+            ->get(['id', 'name_en', 'code', 'ha_model'])
+            ->map(static function (Application $application): array {
+                $haModel = $application->ha_model?->value;
+
+                return [
+                    'id' => $application->id,
+                    'title' => $application->name_en,
+                    'subtitle' => $haModel !== null
+                        ? $application->code.' · '.$haModel
+                        : $application->code,
+                    'url' => '/applications-details/'.$application->id,
+                ];
+            })
             ->all();
     }
 

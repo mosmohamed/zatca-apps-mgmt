@@ -179,6 +179,8 @@
       "licenseStatusDesc": "تفصيل التراخيص حسب حالة دورة الحياة.",
       "licensesByEnvironment": "التراخيص حسب البيئة",
       "licensesByEnvironmentDesc": "كيف تتوزع التراخيص عبر البيئات.",
+      "applicationsByHaModel": "التطبيقات حسب نموذج التوافر العالي",
+      "applicationsByHaModelDesc": "توزيع التطبيقات عبر نماذج التوافر العالي (HA).",
       "allStatuses": "كل الحالات",
       "employeesLabel": "الموظفون",
       "applicationsLabel": "التطبيقات",
@@ -189,7 +191,8 @@
       "emptyEmployees": "عيّن مستخدمين على التطبيقات لعرض العدد لكل تطبيق.",
       "emptyStatus": "أضف تطبيقات لعرض مزيج الحالات.",
       "emptyDepartments": "أنشئ الأقسام والتطبيقات لملء هذا الرسم.",
-      "emptyLicenses": "أضف تراخيص لملء هذه الرسوم."
+      "emptyLicenses": "أضف تراخيص لملء هذه الرسوم.",
+      "emptyHaModel": "عيّن نماذج التوافر العالي للتطبيقات لملء هذا الرسم."
     }
   },
   "errors": {
@@ -1084,7 +1087,9 @@
     "saving": "جاري الحفظ...",
     "tabs": {
       "general": "عام",
+      "branding": "الهوية والنصوص",
       "preferences": "التفضيلات",
+      "dashboard": "لوحة التحكم",
       "security": "الأمان"
     },
     "general": {
@@ -1093,11 +1098,45 @@
       "companyName": "اسم الشركة",
       "timezone": "المنطقة الزمنية الافتراضية"
     },
+    "branding": {
+      "title": "نصوص الواجهة",
+      "description": "تخصيص النص الجانبي والوصف في رأس الصفحة باللغتين العربية والإنجليزية.",
+      "sidebarTaglineEn": "النص الجانبي (بالإنجليزية)",
+      "sidebarTaglineAr": "النص الجانبي (بالعربية)",
+      "headerSubtitleEn": "وصف رأس الصفحة (بالإنجليزية)",
+      "headerSubtitleAr": "وصف رأس الصفحة (بالعربية)"
+    },
     "preferences": {
       "title": "التفضيلات",
       "description": "السلوك الافتراضي للقوائم والتصفح.",
       "paginationSize": "حجم الصفحة الافتراضي",
       "paginationSizeHint": "عدد الصفوف المعروضة لكل صفحة افتراضياً (5–100)."
+    },
+    "dashboard": {
+      "title": "عناصر لوحة التحكم",
+      "description": "اختر الرسوم ولوحات المعلومات الظاهرة في لوحة التحكم. تظهر العناصر الجديدة هنا تلقائياً.",
+      "widgets": {
+        "top_technologies": "أبرز التقنيات",
+        "employees_per_application": "الموظفون لكل تطبيق",
+        "applications_by_status": "مزيج حالات التطبيقات",
+        "applications_by_department": "التطبيقات حسب القسم",
+        "applications_by_ha_model": "التطبيقات حسب نموذج التوافر العالي",
+        "license_usage": "استخدام التراخيص",
+        "license_status_distribution": "توزيع حالات التراخيص",
+        "licenses_by_environment": "التراخيص حسب البيئة",
+        "recent_activity": "النشاط الأخير"
+      },
+      "widgetHints": {
+        "top_technologies": "رسم راداري لأكثر التقنيات استخداماً.",
+        "employees_per_application": "رسم دائري للتعيينات حسب التطبيق.",
+        "applications_by_status": "رسم تفاعلي لحالات دورة حياة التطبيقات.",
+        "applications_by_department": "ترتيب ملكية الأقسام.",
+        "applications_by_ha_model": "توزيع نماذج التوافر العالي.",
+        "license_usage": "رسم شعاعي للمقاعد المرخصة مقابل المستخدمة.",
+        "license_status_distribution": "التراخيص النشطة والمنتهية والقريبة من الانتهاء.",
+        "licenses_by_environment": "عدد التراخيص حسب البيئة.",
+        "recent_activity": "أحدث سجل النشاطات المدققة."
+      }
     },
     "security": {
       "title": "الأمان",

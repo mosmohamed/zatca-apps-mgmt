@@ -44,6 +44,7 @@ export type DashboardData = {
     technologies_usage: DashboardChartItem[]
     employees_per_application: DashboardChartItem[]
     applications_by_department: DashboardChartItem[]
+    applications_by_ha_model: DashboardChartItem[]
     license_usage: DashboardChartItem[]
     license_status_distribution: DashboardChartItem[]
     licenses_by_environment: DashboardChartItem[]

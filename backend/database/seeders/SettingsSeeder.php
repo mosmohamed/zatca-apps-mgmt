@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\Setting;
+use App\Support\DashboardWidgets;
 use Illuminate\Database\Seeder;
 
 class SettingsSeeder extends Seeder
@@ -29,6 +30,38 @@ class SettingsSeeder extends Seeder
                 'is_public' => true,
             ],
             [
+                'key' => 'sidebar_tagline_en',
+                'value' => 'Access Management',
+                'type' => 'string',
+                'group' => 'branding',
+                'label' => 'Sidebar Tagline (English)',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'sidebar_tagline_ar',
+                'value' => 'إدارة الصلاحيات',
+                'type' => 'string',
+                'group' => 'branding',
+                'label' => 'Sidebar Tagline (Arabic)',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'header_subtitle_en',
+                'value' => 'ZATCA Applications Operations & Access Management',
+                'type' => 'string',
+                'group' => 'branding',
+                'label' => 'Header Subtitle (English)',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'header_subtitle_ar',
+                'value' => 'نظام ادارة التطبيقات وإدارة الصلاحيات في هيئة الزكاة والضريبة والجمارك',
+                'type' => 'string',
+                'group' => 'branding',
+                'label' => 'Header Subtitle (Arabic)',
+                'is_public' => true,
+            ],
+            [
                 'key' => 'default_timezone',
                 'value' => 'Asia/Riyadh',
                 'type' => 'string',
@@ -50,6 +83,14 @@ class SettingsSeeder extends Seeder
                 'type' => 'integer',
                 'group' => 'security',
                 'label' => 'Session Timeout (Minutes)',
+                'is_public' => true,
+            ],
+            [
+                'key' => DashboardWidgets::SETTING_KEY,
+                'value' => json_encode(DashboardWidgets::defaults(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                'type' => 'json',
+                'group' => 'dashboard',
+                'label' => 'Dashboard Widgets Visibility',
                 'is_public' => true,
             ],
             [

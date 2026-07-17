@@ -7,6 +7,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/features/auth/hooks/use-auth"
+import { useSettings } from "@/features/settings/hooks/use-settings"
 import { useTheme } from "@/hooks/use-theme"
 import { useSidebar } from "@/layouts/SidebarContext"
 
@@ -16,9 +17,10 @@ type AppHeaderProps = {
 }
 
 export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { isExpanded, toggleExpanded, toggleMobile } = useSidebar()
   const { user, logout, isSuperAdmin } = useAuth()
+  const { settings } = useSettings()
   const { theme } = useTheme()
   const navigate = useNavigate()
 
@@ -28,6 +30,9 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
   }
 
   const logoVariant = theme === "dark" ? "onDark" : "default"
+  const headerSubtitle = i18n.language.startsWith("ar")
+    ? settings.header_subtitle_ar
+    : settings.header_subtitle_en
 
   return (
     <header className="sticky top-0 z-30 relative flex h-16 items-center justify-between gap-2 border-b border-stroke bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:gap-3 md:px-6">
@@ -59,7 +64,7 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
             {title ?? t("nav.dashboard")}
           </h1>
           <p className="hidden truncate text-xs text-muted-foreground sm:block">
-            {t("app.subtitle")}
+            {headerSubtitle}
           </p>
         </div>
       </div>

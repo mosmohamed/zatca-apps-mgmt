@@ -39,7 +39,7 @@ class ApplicationService
         $this->applyColumnSearch(
             $query,
             $filters['search'] ?? null,
-            ['name_ar', 'name_en', 'code', 'business_owner', 'technical_owner'],
+            ['name_ar', 'name_en', 'code', 'business_owner', 'technical_owner', 'ha_model'],
         );
         $this->applyColumnSort(
             $query,

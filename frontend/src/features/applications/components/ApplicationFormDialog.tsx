@@ -390,43 +390,6 @@ export function ApplicationFormDialog({
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="ha_model"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("applications.form.haModel")}</FormLabel>
-                  <Select
-                    value={field.value ?? "none"}
-                    onValueChange={(value) =>
-                      field.onChange(value === "none" ? null : value)
-                    }
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          placeholder={t("applications.form.haModel")}
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="none">
-                        {t("applications.form.haModelNone")}
-                      </SelectItem>
-                      {HA_MODELS.map((model) => (
-                        <SelectItem key={model} value={model}>
-                          {t(`applications.haModels.${model}`, {
-                            defaultValue: model,
-                          })}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
@@ -495,6 +458,45 @@ export function ApplicationFormDialog({
                         value={field.value ?? ""}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="ha_model"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("applications.form.haModel")}</FormLabel>
+                    <Select
+                      value={field.value ?? "none"}
+                      onValueChange={(value) =>
+                        field.onChange(value === "none" ? null : value)
+                      }
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            placeholder={t("applications.form.haModel")}
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="none">
+                          {t("applications.form.haModelNone")}
+                        </SelectItem>
+                        {HA_MODELS.map((model) => (
+                          <SelectItem key={model} value={model}>
+                            {t(`applications.haModels.${model}`, {
+                              defaultValue: model,
+                            })}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

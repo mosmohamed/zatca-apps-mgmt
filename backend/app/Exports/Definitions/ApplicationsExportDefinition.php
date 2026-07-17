@@ -42,7 +42,7 @@ final class ApplicationsExportDefinition implements ExportDefinitionInterface
      */
     public function searchColumns(): array
     {
-        return ['name_ar', 'name_en', 'code', 'business_owner', 'technical_owner'];
+        return ['name_ar', 'name_en', 'code', 'business_owner', 'technical_owner', 'ha_model'];
     }
 
     /**

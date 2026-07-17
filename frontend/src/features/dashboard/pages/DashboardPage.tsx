@@ -40,6 +40,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import { useAuth } from "@/features/auth/hooks/use-auth"
+import { ApplicationsHaModelChart } from "@/features/dashboard/components/ApplicationsHaModelChart"
 import { DashboardChartCard } from "@/features/dashboard/components/DashboardChartCard"
 import { DashboardKpiCard } from "@/features/dashboard/components/DashboardKpiCard"
 import { DashboardLiveHeader } from "@/features/dashboard/components/DashboardLiveHeader"
@@ -57,6 +58,7 @@ import {
   toChartKey,
   withLocalizedColors,
 } from "@/features/dashboard/utils/chart-labels"
+import { useSettings } from "@/features/settings/hooks/use-settings"
 import { formatDateTime } from "@/utils/format"
 
 const CHART_ANIMATION = {
@@ -88,9 +90,11 @@ export function DashboardPage() {
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language.startsWith("ar")
   const { isSuperAdmin } = useAuth()
+  const { settings } = useSettings()
   const navigate = useNavigate()
   const dashboardQuery = useDashboard()
   const [activeStatus, setActiveStatus] = useState<string>("all")
+  const widgets = settings.dashboard_widgets
 
   const data = dashboardQuery.data
   const totals = data?.totals
@@ -101,11 +105,34 @@ export function DashboardPage() {
   const applicationsByStatus = data?.charts.applications_by_status ?? []
   const applicationsByDepartment =
     data?.charts.applications_by_department ?? []
+  const applicationsByHaModel = data?.charts.applications_by_ha_model ?? []
   const licenseUsage = data?.charts.license_usage ?? []
   const licenseStatusDistribution =
     data?.charts.license_status_distribution ?? []
   const licensesByEnvironment = data?.charts.licenses_by_environment ?? []
   const recentActivity = data?.recent_activity ?? []
+
+  const showTopRow =
+    widgets.top_technologies || widgets.employees_per_application
+  const showStatusRow =
+    widgets.applications_by_status || widgets.applications_by_department
+  const showInfrastructureRow =
+    widgets.applications_by_ha_model ||
+    widgets.license_usage ||
+    widgets.license_status_distribution ||
+    widgets.licenses_by_environment
+  const infrastructureWidgetCount = [
+    widgets.applications_by_ha_model,
+    widgets.license_usage,
+    widgets.license_status_distribution,
+    widgets.licenses_by_environment,
+  ].filter(Boolean).length
+  const infrastructureGridClass =
+    infrastructureWidgetCount >= 3
+      ? "grid gap-4 lg:grid-cols-2 xl:grid-cols-3"
+      : infrastructureWidgetCount === 2
+        ? "grid gap-4 lg:grid-cols-2"
+        : "grid gap-4"
 
   const technologiesRadarData = useMemo(
     () =>
@@ -236,226 +263,258 @@ export function DashboardPage() {
         ))}
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-2">
-        <DashboardChartCard
-          title={t("dashboard.charts.topTechnologies")}
-          description={t("dashboard.charts.topTechnologiesDesc")}
-          icon={Cpu}
-          accentClassName="from-violet-500/12 via-transparent to-transparent"
-        >
-          {technologiesRadarData.length === 0 ? (
-            <EmptyState
-              title={t("dashboard.charts.emptyTitle")}
-              description={t("dashboard.charts.emptyTechnologies")}
-            />
-          ) : (
-            <ChartContainer
-              config={technologiesConfig}
-              className="mx-auto aspect-square max-h-[320px]"
+      {showTopRow ? (
+        <div className="grid gap-4 xl:grid-cols-2">
+          {widgets.top_technologies ? (
+            <DashboardChartCard
+              title={t("dashboard.charts.topTechnologies")}
+              description={t("dashboard.charts.topTechnologiesDesc")}
+              icon={Cpu}
+              accentClassName="from-violet-500/12 via-transparent to-transparent"
             >
-              <RadarChart data={technologiesRadarData}>
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent />}
+              {technologiesRadarData.length === 0 ? (
+                <EmptyState
+                  title={t("dashboard.charts.emptyTitle")}
+                  description={t("dashboard.charts.emptyTechnologies")}
                 />
-                <PolarGrid
-                  gridType="circle"
-                  radialLines={false}
-                  stroke="var(--border)"
-                />
-                <PolarAngleAxis dataKey="technology" tick={CHART_TICK_STYLE} />
-                <Radar
-                  dataKey="count"
-                  fill="var(--color-count)"
-                  fillOpacity={0.45}
-                  stroke="var(--color-count)"
-                  strokeWidth={2}
-                  {...CHART_ANIMATION}
-                />
-              </RadarChart>
-            </ChartContainer>
-          )}
-        </DashboardChartCard>
+              ) : (
+                <ChartContainer
+                  config={technologiesConfig}
+                  className="mx-auto aspect-square max-h-[320px]"
+                >
+                  <RadarChart data={technologiesRadarData}>
+                    <ChartTooltip
+                      cursor={false}
+                      content={<ChartTooltipContent />}
+                    />
+                    <PolarGrid
+                      gridType="circle"
+                      radialLines={false}
+                      stroke="var(--border)"
+                    />
+                    <PolarAngleAxis
+                      dataKey="technology"
+                      tick={CHART_TICK_STYLE}
+                    />
+                    <Radar
+                      dataKey="count"
+                      fill="var(--color-count)"
+                      fillOpacity={0.45}
+                      stroke="var(--color-count)"
+                      strokeWidth={2}
+                      {...CHART_ANIMATION}
+                    />
+                  </RadarChart>
+                </ChartContainer>
+              )}
+            </DashboardChartCard>
+          ) : null}
 
-        <EmployeesDonutChart items={employeesPerApplication} />
-      </div>
+          {widgets.employees_per_application ? (
+            <EmployeesDonutChart items={employeesPerApplication} />
+          ) : null}
+        </div>
+      ) : null}
 
-      <div className="grid gap-4 xl:grid-cols-2">
-        <Card className="relative overflow-hidden border-stroke/80 py-0 shadow-sm transition-shadow duration-300 hover:shadow-md">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-sky-500/10 via-transparent to-transparent"
-          />
-          <CardHeader className="relative z-10 flex flex-col items-stretch border-b border-stroke/60 bg-card/40 p-0 backdrop-blur-sm sm:flex-row">
-            <div className="flex flex-1 flex-col justify-center gap-1 px-5 py-5 sm:py-6">
-              <CardTitle className="text-base">
-                {t("dashboard.charts.applicationsByStatus")}
-              </CardTitle>
-              <CardDescription className="text-xs sm:text-sm">
-                {t("dashboard.charts.applicationsByStatusDesc")}
-              </CardDescription>
-            </div>
-            <div className="flex flex-wrap">
-              <button
-                type="button"
-                data-active={activeStatus === "all"}
-                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t border-stroke px-5 py-4 text-start even:border-s data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-s sm:px-6 sm:py-6"
-                onClick={() => setActiveStatus("all")}
-              >
-                <span className="text-xs text-muted-foreground">
-                  {t("dashboard.charts.allStatuses")}
-                </span>
-                <span className="text-lg font-bold leading-none sm:text-2xl">
-                  {statusTotal.toLocaleString()}
-                </span>
-              </button>
-              {statusSourceData.map((status) => {
-                const filterKey = status.key ?? status.name
-                return (
+      {showStatusRow ? (
+        <div className="grid gap-4 xl:grid-cols-2">
+          {widgets.applications_by_status ? (
+            <Card className="relative overflow-hidden border-stroke/80 py-0 shadow-sm transition-shadow duration-300 hover:shadow-md">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-gradient-to-br from-sky-500/10 via-transparent to-transparent"
+              />
+              <CardHeader className="relative z-10 flex flex-col items-stretch border-b border-stroke/60 bg-card/40 p-0 backdrop-blur-sm sm:flex-row">
+                <div className="flex flex-1 flex-col justify-center gap-1 px-5 py-5 sm:py-6">
+                  <CardTitle className="text-base">
+                    {t("dashboard.charts.applicationsByStatus")}
+                  </CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">
+                    {t("dashboard.charts.applicationsByStatusDesc")}
+                  </CardDescription>
+                </div>
+                <div className="flex flex-wrap">
                   <button
-                    key={filterKey}
                     type="button"
-                    data-active={activeStatus === filterKey}
+                    data-active={activeStatus === "all"}
                     className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t border-stroke px-5 py-4 text-start even:border-s data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-s sm:px-6 sm:py-6"
-                    onClick={() => setActiveStatus(filterKey)}
+                    onClick={() => setActiveStatus("all")}
                   >
                     <span className="text-xs text-muted-foreground">
-                      {status.name}
+                      {t("dashboard.charts.allStatuses")}
                     </span>
                     <span className="text-lg font-bold leading-none sm:text-2xl">
-                      {status.count.toLocaleString()}
+                      {statusTotal.toLocaleString()}
                     </span>
                   </button>
-                )
-              })}
+                  {statusSourceData.map((status) => {
+                    const filterKey = status.key ?? status.name
+                    return (
+                      <button
+                        key={filterKey}
+                        type="button"
+                        data-active={activeStatus === filterKey}
+                        className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t border-stroke px-5 py-4 text-start even:border-s data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-s sm:px-6 sm:py-6"
+                        onClick={() => setActiveStatus(filterKey)}
+                      >
+                        <span className="text-xs text-muted-foreground">
+                          {status.name}
+                        </span>
+                        <span className="text-lg font-bold leading-none sm:text-2xl">
+                          {status.count.toLocaleString()}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </CardHeader>
+              <CardContent className="relative z-10 px-2 pb-5 sm:p-5">
+                {statusChartData.length === 0 ? (
+                  <EmptyState
+                    title={t("dashboard.charts.emptyTitle")}
+                    description={t("dashboard.charts.emptyStatus")}
+                  />
+                ) : (
+                  <ChartContainer
+                    config={statusConfig}
+                    className="aspect-auto h-[280px] w-full"
+                  >
+                    <BarChart
+                      accessibilityLayer
+                      data={statusChartData}
+                      margin={{ left: 12, right: 12 }}
+                    >
+                      <defs>
+                        {statusChartData.map((entry) => (
+                          <linearGradient
+                            key={`grad-${entry.key}`}
+                            id={`status-grad-${entry.key}`}
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                          >
+                            <stop
+                              offset="0%"
+                              stopColor={entry.fill}
+                              stopOpacity={1}
+                            />
+                            <stop
+                              offset="100%"
+                              stopColor={entry.fill}
+                              stopOpacity={0.35}
+                            />
+                          </linearGradient>
+                        ))}
+                      </defs>
+                      <CartesianGrid vertical={false} strokeDasharray="3 6" />
+                      <XAxis
+                        dataKey="name"
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
+                        tick={CHART_TICK_STYLE}
+                      />
+                      <YAxis
+                        allowDecimals={false}
+                        tickLine={false}
+                        axisLine={false}
+                        tick={CHART_TICK_STYLE}
+                      />
+                      <ChartTooltip
+                        content={
+                          <ChartTooltipContent
+                            className="w-[150px]"
+                            nameKey="count"
+                          />
+                        }
+                      />
+                      <Bar
+                        dataKey="count"
+                        radius={[10, 10, 4, 4]}
+                        {...CHART_ANIMATION}
+                      >
+                        {statusChartData.map((entry) => (
+                          <Cell
+                            key={entry.key}
+                            fill={`url(#status-grad-${entry.key})`}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ChartContainer>
+                )}
+              </CardContent>
+            </Card>
+          ) : null}
+
+          {widgets.applications_by_department ? (
+            <DepartmentRankingChart items={applicationsByDepartment} />
+          ) : null}
+        </div>
+      ) : null}
+
+      {showInfrastructureRow ? (
+        <div className={infrastructureGridClass}>
+          {widgets.applications_by_ha_model ? (
+            <ApplicationsHaModelChart items={applicationsByHaModel} />
+          ) : null}
+          {widgets.license_usage ? (
+            <LicenseUsageRadialChart items={licenseUsage} />
+          ) : null}
+          {widgets.license_status_distribution ? (
+            <LicenseStatusDonutChart items={licenseStatusDistribution} />
+          ) : null}
+          {widgets.licenses_by_environment ? (
+            <LicenseEnvironmentBars items={licensesByEnvironment} />
+          ) : null}
+        </div>
+      ) : null}
+
+      {widgets.recent_activity ? (
+        <Card className="border-stroke/80 shadow-sm">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <span className="flex size-8 items-center justify-center rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-300">
+                <Activity className="size-4" />
+              </span>
+              <div>
+                <CardTitle>{t("dashboard.recentTitle")}</CardTitle>
+                <CardDescription>
+                  {t("dashboard.recentDescription")}
+                </CardDescription>
+              </div>
             </div>
           </CardHeader>
-          <CardContent className="relative z-10 px-2 pb-5 sm:p-5">
-            {statusChartData.length === 0 ? (
+          <CardContent>
+            {recentActivity.length === 0 ? (
               <EmptyState
-                title={t("dashboard.charts.emptyTitle")}
-                description={t("dashboard.charts.emptyStatus")}
+                title={t("dashboard.recentEmptyTitle")}
+                description={t("dashboard.recentEmptyDescription")}
               />
             ) : (
-              <ChartContainer
-                config={statusConfig}
-                className="aspect-auto h-[280px] w-full"
-              >
-                <BarChart
-                  accessibilityLayer
-                  data={statusChartData}
-                  margin={{ left: 12, right: 12 }}
-                >
-                  <defs>
-                    {statusChartData.map((entry) => (
-                      <linearGradient
-                        key={`grad-${entry.key}`}
-                        id={`status-grad-${entry.key}`}
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop offset="0%" stopColor={entry.fill} stopOpacity={1} />
-                        <stop
-                          offset="100%"
-                          stopColor={entry.fill}
-                          stopOpacity={0.35}
-                        />
-                      </linearGradient>
-                    ))}
-                  </defs>
-                  <CartesianGrid vertical={false} strokeDasharray="3 6" />
-                  <XAxis
-                    dataKey="name"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    tick={CHART_TICK_STYLE}
-                  />
-                  <YAxis
-                    allowDecimals={false}
-                    tickLine={false}
-                    axisLine={false}
-                    tick={CHART_TICK_STYLE}
-                  />
-                  <ChartTooltip
-                    content={
-                      <ChartTooltipContent
-                        className="w-[150px]"
-                        nameKey="count"
-                      />
-                    }
-                  />
-                  <Bar
-                    dataKey="count"
-                    radius={[10, 10, 4, 4]}
-                    {...CHART_ANIMATION}
+              <ul className="max-h-72 space-y-0 overflow-y-auto pe-1">
+                {recentActivity.map((activity) => (
+                  <li
+                    key={activity.id}
+                    className="border-b border-stroke py-3 last:border-b-0"
                   >
-                    {statusChartData.map((entry) => (
-                      <Cell
-                        key={entry.key}
-                        fill={`url(#status-grad-${entry.key})`}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ChartContainer>
+                    <p className="text-sm font-medium leading-snug">
+                      {activity.description}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {activity.causer?.name ?? t("common.user")}
+                      {activity.created_at
+                        ? ` · ${formatDateTime(activity.created_at)}`
+                        : ""}
+                    </p>
+                  </li>
+                ))}
+              </ul>
             )}
           </CardContent>
         </Card>
-
-        <DepartmentRankingChart items={applicationsByDepartment} />
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-        <LicenseUsageRadialChart items={licenseUsage} />
-        <LicenseStatusDonutChart items={licenseStatusDistribution} />
-        <LicenseEnvironmentBars items={licensesByEnvironment} />
-      </div>
-
-      <Card className="border-stroke/80 shadow-sm">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-300">
-              <Activity className="size-4" />
-            </span>
-            <div>
-              <CardTitle>{t("dashboard.recentTitle")}</CardTitle>
-              <CardDescription>
-                {t("dashboard.recentDescription")}
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {recentActivity.length === 0 ? (
-            <EmptyState
-              title={t("dashboard.recentEmptyTitle")}
-              description={t("dashboard.recentEmptyDescription")}
-            />
-          ) : (
-            <ul className="max-h-72 space-y-0 overflow-y-auto pe-1">
-              {recentActivity.map((activity) => (
-                <li
-                  key={activity.id}
-                  className="border-b border-stroke py-3 last:border-b-0"
-                >
-                  <p className="text-sm font-medium leading-snug">
-                    {activity.description}
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {activity.causer?.name ?? t("common.user")}
-                    {activity.created_at
-                      ? ` · ${formatDateTime(activity.created_at)}`
-                      : ""}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </CardContent>
-      </Card>
+      ) : null}
 
       <div className="flex flex-wrap gap-2">
         {isSuperAdmin ? (

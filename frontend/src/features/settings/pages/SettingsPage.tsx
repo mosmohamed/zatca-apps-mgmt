@@ -23,6 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
@@ -31,6 +32,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Checkbox } from "@/components/ui/checkbox"
+import { DASHBOARD_WIDGET_KEYS } from "@/features/dashboard/types/dashboard-widgets"
 import { useSettings } from "@/features/settings/hooks/use-settings"
 import {
   createSettingsFormSchema,
@@ -61,8 +64,13 @@ export function SettingsPage() {
     resolver: zodResolver(settingsFormSchema),
     defaultValues: {
       company_name: settings.company_name,
+      sidebar_tagline_en: settings.sidebar_tagline_en,
+      sidebar_tagline_ar: settings.sidebar_tagline_ar,
+      header_subtitle_en: settings.header_subtitle_en,
+      header_subtitle_ar: settings.header_subtitle_ar,
       default_timezone: settings.default_timezone,
       default_pagination_size: settings.default_pagination_size,
+      dashboard_widgets: settings.dashboard_widgets,
     },
   })
 
@@ -70,8 +78,13 @@ export function SettingsPage() {
     if (!isLoading) {
       form.reset({
         company_name: settings.company_name,
+        sidebar_tagline_en: settings.sidebar_tagline_en,
+        sidebar_tagline_ar: settings.sidebar_tagline_ar,
+        header_subtitle_en: settings.header_subtitle_en,
+        header_subtitle_ar: settings.header_subtitle_ar,
         default_timezone: settings.default_timezone,
         default_pagination_size: settings.default_pagination_size,
+        dashboard_widgets: settings.dashboard_widgets,
       })
     }
   }, [isLoading, settings, form])
@@ -115,8 +128,14 @@ export function SettingsPage() {
           <Tabs defaultValue="general">
             <TabsList>
               <TabsTrigger value="general">{t("settings.tabs.general")}</TabsTrigger>
+              <TabsTrigger value="branding">
+                {t("settings.tabs.branding")}
+              </TabsTrigger>
               <TabsTrigger value="preferences">
                 {t("settings.tabs.preferences")}
+              </TabsTrigger>
+              <TabsTrigger value="dashboard">
+                {t("settings.tabs.dashboard")}
               </TabsTrigger>
               <TabsTrigger value="security">
                 {t("settings.tabs.security")}
@@ -145,6 +164,84 @@ export function SettingsPage() {
                       </FormItem>
                     )}
                   />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="branding">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t("settings.branding.title")}</CardTitle>
+                  <CardDescription>
+                    {t("settings.branding.description")}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-5">
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="sidebar_tagline_en"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {t("settings.branding.sidebarTaglineEn")}
+                          </FormLabel>
+                          <FormControl>
+                            <Input dir="ltr" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="sidebar_tagline_ar"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {t("settings.branding.sidebarTaglineAr")}
+                          </FormLabel>
+                          <FormControl>
+                            <Input dir="rtl" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="header_subtitle_en"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {t("settings.branding.headerSubtitleEn")}
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea dir="ltr" rows={3} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="header_subtitle_ar"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {t("settings.branding.headerSubtitleAr")}
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea dir="rtl" rows={3} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -212,6 +309,56 @@ export function SettingsPage() {
                       </FormItem>
                     )}
                   />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="dashboard">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t("settings.dashboard.title")}</CardTitle>
+                  <CardDescription>
+                    {t("settings.dashboard.description")}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {DASHBOARD_WIDGET_KEYS.map((widgetKey) => (
+                    <FormField
+                      key={widgetKey}
+                      control={form.control}
+                      name={`dashboard_widgets.${widgetKey}`}
+                      render={({ field }) => (
+                        <FormItem
+                          data-enabled={field.value}
+                          className="flex flex-row items-start gap-3 rounded-xl border border-stroke/80 p-3 transition-colors data-[enabled=true]:border-primary/30 data-[enabled=true]:bg-primary/[0.03]"
+                        >
+                          <FormControl>
+                            <Checkbox
+                              id={`dashboard-widget-${widgetKey}`}
+                              checked={field.value}
+                              onCheckedChange={(checked) =>
+                                field.onChange(checked === true)
+                              }
+                              className="mt-0.5"
+                            />
+                          </FormControl>
+                          <div className="min-w-0 space-y-1">
+                            <FormLabel
+                              htmlFor={`dashboard-widget-${widgetKey}`}
+                              className="cursor-pointer font-medium leading-none"
+                            >
+                              {t(`settings.dashboard.widgets.${widgetKey}`)}
+                            </FormLabel>
+                            <FormDescription>
+                              {t(
+                                `settings.dashboard.widgetHints.${widgetKey}`
+                              )}
+                            </FormDescription>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  ))}
                 </CardContent>
               </Card>
             </TabsContent>

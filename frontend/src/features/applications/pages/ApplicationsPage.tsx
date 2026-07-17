@@ -26,6 +26,7 @@ const ALL_COLUMN_IDS = [
   "type",
   "status",
   "criticality",
+  "ha_model",
   "actions",
 ]
 

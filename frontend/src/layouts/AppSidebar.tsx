@@ -88,11 +88,14 @@ const secondaryNavItems: NavItem[] = [
 ]
 
 export function AppSidebar() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { can } = useAuth()
   const { settings } = useSettings()
   const { isExpanded, isMobileOpen, closeMobile } = useSidebar()
   const [masterDataOpen, setMasterDataOpen] = useState(true)
+  const sidebarTagline = i18n.language.startsWith("ar")
+    ? settings.sidebar_tagline_ar
+    : settings.sidebar_tagline_en
 
   const visibleMasterDataNavItems = masterDataNavItems.filter(
     (item) => !item.permission || can(item.permission)
@@ -136,7 +139,7 @@ export function AppSidebar() {
                 {settings.company_name}
               </p>
               <p className="truncate text-xs text-sidebar-foreground/70">
-                {t("app.tagline")}
+                {sidebarTagline}
               </p>
             </div>
           ) : (

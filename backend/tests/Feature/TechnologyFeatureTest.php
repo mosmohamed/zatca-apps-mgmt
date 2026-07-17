@@ -165,6 +165,7 @@ class TechnologyFeatureTest extends TestCase
                         'employees_per_application',
                         'applications_by_department',
                         'applications_by_status',
+                        'applications_by_ha_model',
                     ],
                     'recent_activity',
                 ],

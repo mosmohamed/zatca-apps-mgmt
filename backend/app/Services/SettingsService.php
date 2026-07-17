@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Setting;
+use App\Support\DashboardWidgets;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -47,11 +48,17 @@ class SettingsService
      */
     public function publicSettings(): array
     {
-        return Setting::query()
+        $settings = Setting::query()
             ->where('is_public', true)
             ->get()
             ->mapWithKeys(static fn (Setting $setting): array => [$setting->key => $setting->castValue()])
             ->all();
+
+        $settings[DashboardWidgets::SETTING_KEY] = DashboardWidgets::normalize(
+            $settings[DashboardWidgets::SETTING_KEY] ?? null
+        );
+
+        return $settings;
     }
 
     /**
@@ -63,6 +70,17 @@ class SettingsService
         return DB::transaction(function () use ($values): Collection {
             foreach ($values as $key => $value) {
                 $setting = Setting::query()->where('key', $key)->first();
+
+                if ($setting === null && $key === DashboardWidgets::SETTING_KEY) {
+                    $setting = Setting::query()->create([
+                        'key' => DashboardWidgets::SETTING_KEY,
+                        'value' => $this->stringifyValue(DashboardWidgets::defaults(), 'json'),
+                        'type' => 'json',
+                        'group' => 'dashboard',
+                        'label' => 'Dashboard Widgets Visibility',
+                        'is_public' => true,
+                    ]);
+                }
 
                 if ($setting === null) {
                     continue;

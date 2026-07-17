@@ -17,6 +17,10 @@ import type {
 } from "@/features/settings/types/settings"
 import { getApiErrorMessage } from "@/lib/api-errors"
 import i18n from "@/lib/i18n"
+import {
+  DEFAULT_DASHBOARD_WIDGETS,
+  normalizeDashboardWidgets,
+} from "@/features/dashboard/types/dashboard-widgets"
 
 type SettingsContextValue = {
   settings: PublicSettings
@@ -28,9 +32,15 @@ type SettingsContextValue = {
 
 export const DEFAULT_SETTINGS: PublicSettings = {
   company_name: "IT Portfolio System",
+  sidebar_tagline_en: "Access Management",
+  sidebar_tagline_ar: "إدارة الصلاحيات",
+  header_subtitle_en: "ZATCA Applications Operations & Access Management",
+  header_subtitle_ar:
+    "نظام ادارة التطبيقات وإدارة الصلاحيات في هيئة الزكاة والضريبة والجمارك",
   default_timezone: "Asia/Riyadh",
   default_pagination_size: 15,
   session_timeout_minutes: 120,
+  dashboard_widgets: DEFAULT_DASHBOARD_WIDGETS,
 }
 
 const SettingsContext = createContext<SettingsContextValue | null>(null)
@@ -77,7 +87,13 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setIsSaving(true)
     try {
       const updated = await settingsService.update(payload)
-      setSettings(updated)
+      setSettings({
+        ...updated,
+        dashboard_widgets:
+          payload.dashboard_widgets !== undefined
+            ? normalizeDashboardWidgets(payload.dashboard_widgets)
+            : updated.dashboard_widgets,
+      })
       toast.success(i18n.t("settings.toast.updated"))
     } catch (error) {
       toast.error(
