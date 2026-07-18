@@ -31,6 +31,7 @@ type SettingsContextValue = {
 }
 
 export const DEFAULT_SETTINGS: PublicSettings = {
+  authentication_mode: "hybrid",
   company_name: "IT Portfolio System",
   sidebar_tagline_en: "Access Management",
   sidebar_tagline_ar: "إدارة الصلاحيات",
@@ -41,6 +42,29 @@ export const DEFAULT_SETTINGS: PublicSettings = {
   default_pagination_size: 15,
   session_timeout_minutes: 120,
   dashboard_widgets: DEFAULT_DASHBOARD_WIDGETS,
+  authentication_role_mapping: {
+    enabled: false,
+    auto_provisioning: false,
+    allow_email_account_linking: false,
+    require_verified_email_for_linking: true,
+    automatic_department_mapping: false,
+    department_claim: "department",
+    default_role_id: null,
+    default_user_status: "active",
+    update_roles_on_login: true,
+    update_user_information_on_login: true,
+    multi_match_strategy: "multiple",
+    sync_fields: {
+      first_name: true,
+      last_name: true,
+      email: true,
+      username: true,
+      employee_id: true,
+      department: true,
+      job_title: true,
+      profile_picture: true,
+    },
+  },
 }
 
 const SettingsContext = createContext<SettingsContextValue | null>(null)
@@ -52,9 +76,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [isSaving, setIsSaving] = useState(false)
 
   const refreshSettings = useCallback(async () => {
-    const data = await settingsService.get()
+    const data = await settingsService.get(isAuthenticated)
     setSettings(data)
-  }, [])
+  }, [isAuthenticated])
 
   useEffect(() => {
     let cancelled = false
@@ -63,7 +87,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
     async function bootstrap() {
       try {
-        const data = await settingsService.get()
+        const data = await settingsService.get(isAuthenticated)
         if (!cancelled) {
           setSettings(data)
         }

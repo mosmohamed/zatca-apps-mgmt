@@ -17,8 +17,7 @@ class SupportTypeController extends BaseApiController
 {
     public function __construct(
         private readonly SupportTypeService $supportTypeService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {

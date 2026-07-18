@@ -14,6 +14,7 @@ import { GuestRoute } from "@/features/auth/components/GuestRoute"
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute"
 import { AuthProvider } from "@/features/auth/hooks/use-auth"
 import { LoginPage } from "@/features/auth/pages/LoginPage"
+import { SsoCallbackPage } from "@/features/auth/pages/SsoCallbackPage"
 import { SettingsProvider } from "@/features/settings/hooks/use-settings"
 import { DefaultLayout } from "@/layouts/DefaultLayout"
 
@@ -119,6 +120,17 @@ const SettingsPage = lazy(() =>
   }))
 )
 
+const AccountSecurityPage = lazy(() =>
+  import("@/features/account/pages/AccountSecurityPage").then((module) => ({
+    default: module.AccountSecurityPage,
+  }))
+)
+const LinkConfirmPage = lazy(() =>
+  import("@/features/account/pages/LinkConfirmPage").then((module) => ({
+    default: module.LinkConfirmPage,
+  }))
+)
+
 function RouteFallback() {
   return (
     <div className="flex min-h-[40vh] items-center justify-center text-sm text-muted-foreground">
@@ -145,10 +157,13 @@ function AppRoutes() {
                   </GuestRoute>
                 }
               />
+              <Route path="/auth/sso/callback" element={<SsoCallbackPage />} />
 
               <Route element={<ProtectedRoute />}>
+                <Route path="/auth/link/confirm" element={<LinkConfirmPage />} />
                 <Route element={<DefaultLayout />}>
                   <Route index element={<DashboardPage />} />
+                  <Route path="account/security" element={<AccountSecurityPage />} />
                   <Route path="assignments" element={<AssignmentsPage />} />
                   <Route
                     path="applications-details"

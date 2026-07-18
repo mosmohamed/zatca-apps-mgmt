@@ -23,6 +23,8 @@ import {
   useAuth,
 } from "@/features/auth/hooks/use-auth"
 import { useSettings } from "@/features/settings/hooks/use-settings"
+import { usePublicIdentityProviders } from "@/features/authentication-settings/hooks/use-authentication-settings"
+import { authenticationSettingsService } from "@/features/authentication-settings/services/authentication-settings-service"
 
 type LoginFormValues = {
   email: string
@@ -36,6 +38,9 @@ export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const [formError, setFormError] = useState<string | null>(null)
+  const providersQuery = usePublicIdentityProviders()
+  const showLocalLogin = settings.authentication_mode !== "sso"
+  const showSsoLogin = settings.authentication_mode !== "local"
 
   useEffect(() => {
     document.title = settings.company_name
@@ -56,8 +61,8 @@ export function LoginPage() {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "admin@zatca.sa",
-      password: "password",
+      email: "",
+      password: "",
     },
   })
 
@@ -111,8 +116,9 @@ export function LoginPage() {
           </div>
         </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        {showLocalLogin ? (
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
               control={form.control}
               name="email"
@@ -123,7 +129,7 @@ export function LoginPage() {
                     <Input
                       type="email"
                       autoComplete="username"
-                      placeholder="admin@zatca.sa"
+                      placeholder="name@example.com"
                       {...field}
                     />
                   </FormControl>
@@ -166,8 +172,48 @@ export function LoginPage() {
                 ? t("auth.signingIn")
                 : t("auth.signIn")}
             </Button>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        ) : null}
+        {showSsoLogin && providersQuery.data && providersQuery.data.length > 0 ? (
+          <div className={showLocalLogin ? "mt-6 space-y-3" : "space-y-3"}>
+            {showLocalLogin ? <div className="flex items-center gap-3" aria-hidden="true">
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-xs text-muted-foreground">{t("auth.sso.or")}</span>
+              <div className="h-px flex-1 bg-border" />
+            </div> : null}
+            {providersQuery.data.map((provider) => (
+              <Button
+                key={provider.id}
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={() =>
+                  window.location.assign(
+                    authenticationSettingsService.redirectUrl(provider.slug)
+                  )
+                }
+              >
+                {t("auth.sso.continueWith", { provider: provider.name })}
+              </Button>
+            ))}
+          </div>
+        ) : null}
+        {showSsoLogin && !showLocalLogin && providersQuery.isLoading ? (
+          <p className="text-center text-sm text-muted-foreground" role="status">
+            {t("common.loading")}
+          </p>
+        ) : null}
+        {showSsoLogin && providersQuery.isSuccess && providersQuery.data.length === 0 ? (
+          <p className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
+            {t("auth.sso.noProviders")}
+          </p>
+        ) : null}
+        {showSsoLogin && providersQuery.isError ? (
+          <p className="mt-4 text-center text-xs text-muted-foreground">
+            {t("auth.sso.providersUnavailable")}
+          </p>
+        ) : null}
       </div>
     </div>
   )

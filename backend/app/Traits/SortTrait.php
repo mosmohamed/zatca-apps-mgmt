@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 trait SortTrait
 {
     /**
      * Apply whitelist-safe sorting. Prefix column with `-` for DESC.
      *
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
+     * @param  Builder<Model>  $query
      * @param  list<string>  $allowed
      */
     protected function applyColumnSort(

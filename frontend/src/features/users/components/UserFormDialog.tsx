@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Combobox } from "@/components/ui/combobox"
 import { MultiCombobox } from "@/components/ui/multi-combobox"
@@ -249,6 +250,14 @@ function UserFormFields({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {user?.authentication_type ? (
+          <div className="flex items-center justify-between rounded-lg border border-stroke p-3">
+            <span className="text-sm font-medium">{t("users.form.authenticationType")}</span>
+            <Badge variant="outline">
+              {t(`users.authenticationTypes.${user.authentication_type}`)}
+            </Badge>
+          </div>
+        ) : null}
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
             control={form.control}

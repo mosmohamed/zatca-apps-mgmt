@@ -27,15 +27,42 @@ class UserResource extends JsonResource
             'last_name' => $this->last_name,
             'full_name' => $this->full_name,
             'email' => $this->email,
+            'authentication_type' => $this->authentication_type,
+            'identity_provider_id' => $this->identity_provider_id,
+            'username' => $this->username,
+            'employee_id' => $this->employee_id,
             'vendor_id' => $this->vendor_id,
+            'department_id' => $this->department_id,
+            'profile_picture_url' => $this->profile_picture_url,
+            'last_sso_login_at' => $this->formatDate($this->last_sso_login_at),
             'phone' => $this->phone,
             'teams' => $this->teams,
             'whatsapp' => $this->whatsapp,
             'extension' => $this->extension,
             'job_title_id' => $this->job_title_id,
             'is_active' => $this->is_active,
-            'vendor' => new VendorResource($this->whenLoaded('vendor')),
-            'job_title' => new JobTitleResource($this->whenLoaded('jobTitle')),
+            'vendor' => $this->whenLoaded(
+                'vendor',
+                fn () => $this->vendor === null ? null : new VendorResource($this->vendor),
+            ),
+            'department' => $this->whenLoaded(
+                'department',
+                fn () => $this->department === null ? null : new DepartmentResource($this->department),
+            ),
+            'identity_provider' => $this->whenLoaded(
+                'identityProvider',
+                fn () => $this->identityProvider === null
+                    ? null
+                    : new IdentityProviderResource($this->identityProvider),
+            ),
+            'external_identities' => $this->whenLoaded(
+                'externalIdentities',
+                fn () => ExternalIdentityResource::collection($this->externalIdentities)->resolve(),
+            ),
+            'job_title' => $this->whenLoaded(
+                'jobTitle',
+                fn () => $this->jobTitle === null ? null : new JobTitleResource($this->jobTitle),
+            ),
             'roles' => $this->when(
                 $this->relationLoaded('roles'),
                 fn () => $this->roles->pluck('name')->values()->all(),

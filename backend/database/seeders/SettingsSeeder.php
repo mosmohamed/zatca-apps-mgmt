@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\Setting;
+use App\Support\AuthenticationMode;
+use App\Support\AuthenticationRoleMappingSettings;
 use App\Support\DashboardWidgets;
 use Illuminate\Database\Seeder;
 
@@ -92,6 +94,25 @@ class SettingsSeeder extends Seeder
                 'group' => 'dashboard',
                 'label' => 'Dashboard Widgets Visibility',
                 'is_public' => true,
+            ],
+            [
+                'key' => AuthenticationMode::KEY,
+                'value' => AuthenticationMode::defaults(),
+                'type' => 'string',
+                'group' => 'authentication',
+                'label' => 'Authentication Mode',
+                'is_public' => true,
+            ],
+            [
+                'key' => AuthenticationRoleMappingSettings::KEY,
+                'value' => json_encode(
+                    AuthenticationRoleMappingSettings::defaults(),
+                    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
+                ),
+                'type' => 'json',
+                'group' => 'authentication',
+                'label' => 'External Authentication Role Mapping',
+                'is_public' => false,
             ],
             [
                 'key' => 'export_header_color',

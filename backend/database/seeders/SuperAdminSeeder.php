@@ -25,6 +25,7 @@ class SuperAdminSeeder extends Seeder
                 'first_name' => 'Super',
                 'last_name' => 'Admin',
                 'password' => $password,
+                'authentication_type' => 'local',
                 'phone' => null,
                 'teams' => null,
                 'whatsapp' => null,

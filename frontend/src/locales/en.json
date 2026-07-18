@@ -1,4 +1,24 @@
 {
+  "account": {
+    "securityTitle": "Account security",
+    "securityDescription": "Manage authentication type and linked identity providers.",
+    "authenticationType": "Authentication type",
+    "authenticationTypeHint": "How this account is allowed to sign in.",
+    "linkedIdentities": "Linked identities",
+    "linkedIdentitiesHint": "External identities connected to your account.",
+    "linkExternalIdentity": "Link External Identity",
+    "linkingDisabled": "Identity linking is disabled by an administrator.",
+    "noLinkedIdentities": "No external identities are linked yet.",
+    "unknownProvider": "Unknown provider",
+    "chooseProvider": "Choose an identity provider to continue.",
+    "confirmLinkTitle": "Confirm identity link",
+    "confirmLinkDescription": "Review the external identity before linking it to your account.",
+    "confirmLink": "Confirm link",
+    "willBecomeBoth": "Your authentication type will change from local to both.",
+    "invalidLinkCode": "This link confirmation is invalid or has expired.",
+    "linkConfirmed": "External identity linked successfully.",
+    "linkFailed": "Unable to link the external identity."
+  },
   "app": {
     "name": "ZATCA OPS",
     "tagline": "Access Management",
@@ -107,7 +127,19 @@
     "signingIn": "Signing in...",
     "email": "Email",
     "password": "Password",
-    "unableToSignIn": "Unable to sign in."
+    "unableToSignIn": "Unable to sign in.",
+    "sso": {
+      "or": "OR",
+      "continueWith": "Continue with {{provider}}",
+      "noProviders": "No single sign-on providers are currently available. Contact your administrator.",
+      "providersUnavailable": "Single sign-on providers are temporarily unavailable.",
+      "completing": "Completing sign in",
+      "wait": "Please wait while your identity is verified.",
+      "failedTitle": "Single sign-on failed",
+      "missingCode": "The sign-in response did not include a valid one-time code.",
+      "exchangeFailed": "The one-time sign-in code could not be verified.",
+      "backToLogin": "Back to sign in"
+    }
   },
   "dashboard": {
     "welcomeBack": "Welcome back",
@@ -380,11 +412,17 @@
     "columns": {
       "name": "Name",
       "email": "Email",
+      "authenticationType": "Authentication",
       "roles": "Roles",
       "jobTitle": "Job title",
       "vendor": "Vendor",
       "active": "Active",
       "created": "Created"
+    },
+    "authenticationTypes": {
+      "local": "Local",
+      "sso": "SSO",
+      "both": "Local + SSO"
     },
     "form": {
       "createTitle": "New user",
@@ -394,6 +432,7 @@
       "firstName": "First name",
       "lastName": "Last name",
       "email": "Email",
+      "authenticationType": "Authentication method",
       "password": "Password",
       "passwordHint": "Leave blank to keep the current password.",
       "vendor": "Vendor",
@@ -1086,6 +1125,153 @@
       "after": "After"
     }
   },
+  "authentication": {
+    "tabs": {
+      "methods": "Methods",
+      "provisioning": "Role Mapping / Provisioning",
+      "providers": "Identity Providers",
+      "mappings": "Role Mapping Rules"
+    },
+    "permissionDenied": "You do not have permission to view {{resource}}.",
+    "loadFailed": "Authentication configuration could not be loaded.",
+    "validation": {
+      "required": "This field is required.",
+      "slug": "Use lowercase letters, numbers, and single hyphens only."
+    },
+    "fields": {
+      "name": "Provider name",
+      "slug": "URL slug",
+      "protocol": "Protocol",
+      "enabled": "Enabled",
+      "issuer": "Issuer URL",
+      "discoveryUrl": "Discovery URL",
+      "authorizationEndpoint": "Authorization endpoint",
+      "tokenEndpoint": "Token endpoint",
+      "userinfoEndpoint": "UserInfo endpoint",
+      "jwksUri": "JWKS URI",
+      "clientId": "Client ID",
+      "clientSecret": "Client secret",
+      "scopes": "Scopes",
+      "idpEntityId": "Identity provider entity ID",
+      "ssoUrl": "SSO URL",
+      "sloUrl": "SLO URL",
+      "certificate": "X.509 certificate",
+      "spEntityId": "Service provider entity ID",
+      "acsUrl": "ACS URL",
+      "provider": "Identity provider",
+      "claimName": "Claim name",
+      "externalSubject": "External subject",
+      "externalSubjectHint": "Immutable IdP identifier (OIDC sub claim or SAML NameID).",
+      "externalValue": "External group/value",
+      "role": "Internal role",
+      "priority": "Priority",
+      "departmentClaim": "Department claim",
+      "defaultRole": "Default role",
+      "defaultStatus": "Default user status",
+      "multiMatch": "Multiple-match behavior",
+      "lastSuccessfulAuth": "Last successful sign-in"
+    },
+    "general": {
+      "title": "Authentication and provisioning",
+      "description": "Control account provisioning, role assignment, and profile synchronization for external identities.",
+      "enabled": "Enable role mapping",
+      "enabledHint": "Evaluate mapping rules during external sign-in.",
+      "auto_provisioning": "Automatically provision users",
+      "autoProvisioningHint": "Create an account after a successful first sign-in.",
+      "allow_email_account_linking": "Allow account linking by email",
+      "allowEmailAccountLinkingHint": "Allow signed-in users to explicitly link an IdP identity (Link External Identity). Blind email matching during SSO login remains disabled.",
+      "require_verified_email_for_linking": "Require verified email for linking",
+      "requireVerifiedEmailForLinkingHint": "Reject email-based linking unless the identity provider explicitly verifies the address.",
+      "automatic_department_mapping": "Map departments automatically",
+      "departmentMappingHint": "Use the configured claim to match a department.",
+      "update_roles_on_login": "Update roles on every sign-in",
+      "updateRolesHint": "Keep application roles synchronized with identity provider groups.",
+      "update_user_information_on_login": "Update profile on every sign-in",
+      "updateInformationHint": "Refresh selected user fields from external claims.",
+      "noDefaultRole": "No default role",
+      "multipleRoles": "Assign all matching roles",
+      "highestPriority": "Assign highest-priority role",
+      "syncFields": "Synchronized profile fields",
+      "syncFieldsHint": "Select fields that may be refreshed from identity provider claims."
+    },
+    "methods": {
+      "title": "Authentication Methods",
+      "description": "Choose how users are allowed to sign in to this system.",
+      "local": {
+        "title": "Local Only",
+        "description": "Users sign in with their application email and password. SSO is unavailable."
+      },
+      "sso": {
+        "title": "SSO Only",
+        "description": "Users must sign in through a configured identity provider. The local form is hidden."
+      },
+      "hybrid": {
+        "title": "Hybrid",
+        "description": "Allow both local credentials and configured single sign-on providers."
+      }
+    },
+    "syncFields": {
+      "first_name": "First name",
+      "last_name": "Last name",
+      "email": "Email",
+      "username": "Username",
+      "employee_id": "Employee ID",
+      "department": "Department",
+      "job_title": "Job title",
+      "profile_picture": "Profile picture"
+    },
+    "providers": {
+      "create": "Add provider",
+      "edit": "Edit identity provider",
+      "search": "Search identity providers...",
+      "empty": "No identity providers configured",
+      "test": "Test connection",
+      "testResults": "Connection test results",
+      "formDescription": "Configure a complete OIDC or SAML connection. Endpoint fields marked optional may be discovered by the server.",
+      "presetType": "Provider template",
+      "tenantId": "Tenant ID",
+      "auth0Domain": "Auth0 domain",
+      "applyPreset": "Apply template defaults",
+      "secretPreserve": "Leave blank to preserve the existing protected value. Existing secrets are never displayed.",
+      "claimMap": "Claim map",
+      "claimMapDescription": "Map application profile fields to claims returned by this provider.",
+      "oidc": {
+        "title": "OpenID Connect configuration",
+        "description": "Issuer and client credentials are required. Discovery can supply the remaining endpoints."
+      },
+      "saml": {
+        "title": "SAML 2.0 configuration",
+        "description": "Provide IdP metadata endpoints, the signing certificate, and this application's SP identifiers."
+      },
+      "deleteTitle": "Delete identity provider",
+      "deleteConfirm": "Delete {{name}}? Users will no longer be able to sign in through it."
+    },
+    "mappings": {
+      "create": "Add mapping",
+      "edit": "Edit role mapping",
+      "search": "Search role mappings...",
+      "empty": "No role mappings configured",
+      "formDescription": "Match an external claim value to an internal role. Higher priority numbers are evaluated first.",
+      "deleteTitle": "Delete role mapping",
+      "deleteConfirm": "Delete the mapping for {{value}}?"
+    },
+    "toast": {
+      "providercreate": "Identity provider created.",
+      "providerupdate": "Identity provider updated.",
+      "providerdelete": "Identity provider deleted.",
+      "providercreateFailed": "Failed to create identity provider.",
+      "providerupdateFailed": "Failed to update identity provider.",
+      "providerdeleteFailed": "Failed to delete identity provider.",
+      "testSuccess": "Identity provider connection succeeded.",
+      "testFailed": "Identity provider connection failed.",
+      "mappingcreate": "Role mapping created.",
+      "mappingupdate": "Role mapping updated.",
+      "mappingdelete": "Role mapping deleted.",
+      "mappingcreateFailed": "Failed to create role mapping.",
+      "mappingupdateFailed": "Failed to update role mapping.",
+      "mappingdeleteFailed": "Failed to delete role mapping."
+    }
+  },
   "settings": {
     "title": "Settings",
     "description": "Configure company-wide preferences and security notices.",
@@ -1095,7 +1281,8 @@
       "branding": "Branding",
       "preferences": "Preferences",
       "dashboard": "Dashboard",
-      "security": "Security"
+      "security": "Security",
+      "authentication": "Authentication"
     },
     "general": {
       "title": "General",

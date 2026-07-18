@@ -17,8 +17,7 @@ class UserController extends BaseApiController
 {
     public function __construct(
         private readonly UserService $userService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {

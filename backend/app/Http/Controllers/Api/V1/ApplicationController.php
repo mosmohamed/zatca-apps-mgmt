@@ -18,8 +18,7 @@ class ApplicationController extends BaseApiController
 {
     public function __construct(
         private readonly ApplicationService $applicationService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {

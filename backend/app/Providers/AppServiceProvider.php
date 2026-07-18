@@ -10,8 +10,10 @@ use App\Models\ApplicationStatus;
 use App\Models\AppRole;
 use App\Models\Criticality;
 use App\Models\Department;
+use App\Models\IdentityProvider;
 use App\Models\JobTitle;
 use App\Models\License;
+use App\Models\RoleMappingRule;
 use App\Models\Setting;
 use App\Models\SupportType;
 use App\Models\Technology;
@@ -23,13 +25,16 @@ use App\Policies\ApplicationStatusPolicy;
 use App\Policies\AppRolePolicy;
 use App\Policies\CriticalityPolicy;
 use App\Policies\DepartmentPolicy;
+use App\Policies\IdentityProviderPolicy;
 use App\Policies\JobTitlePolicy;
 use App\Policies\LicensePolicy;
+use App\Policies\RoleMappingRulePolicy;
 use App\Policies\SettingPolicy;
 use App\Policies\SupportTypePolicy;
 use App\Policies\TechnologyPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\VendorPolicy;
+use Firebase\JWT\JWT;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -51,6 +56,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::shouldBeStrict(! $this->app->isProduction());
         Model::preventLazyLoading(! $this->app->isProduction());
+        JWT::$leeway = 120;
 
         Gate::policy(Application::class, ApplicationPolicy::class);
         Gate::policy(Vendor::class, VendorPolicy::class);
@@ -65,5 +71,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Technology::class, TechnologyPolicy::class);
         Gate::policy(License::class, LicensePolicy::class);
         Gate::policy(Setting::class, SettingPolicy::class);
+        Gate::policy(IdentityProvider::class, IdentityProviderPolicy::class);
+        Gate::policy(RoleMappingRule::class, RoleMappingRulePolicy::class);
     }
 }

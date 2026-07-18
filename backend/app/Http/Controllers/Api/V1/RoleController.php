@@ -23,8 +23,7 @@ class RoleController extends BaseApiController
 {
     public function __construct(
         private readonly RoleService $roleService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {

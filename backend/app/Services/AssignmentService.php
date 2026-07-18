@@ -12,6 +12,7 @@ use App\Traits\SearchTrait;
 use App\Traits\SortTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AssignmentService
@@ -137,7 +138,7 @@ class AssignmentService
      *     app_role_id: int,
      *     is_primary?: bool,
      *     remarks?: string|null,
-     *     assigned_at?: \Illuminate\Support\Carbon|string|null
+     *     assigned_at?: Carbon|string|null
      * }  $data
      */
     public function assign(array $data, User $actor): ApplicationAssignment
@@ -263,7 +264,7 @@ class AssignmentService
         User $actor,
         bool $isPrimary,
         ?string $remarks,
-        \Illuminate\Support\Carbon|string $assignedAt,
+        Carbon|string $assignedAt,
     ): ApplicationAssignment {
         $openAssignment = ApplicationAssignment::query()
             ->where('application_id', $applicationId)

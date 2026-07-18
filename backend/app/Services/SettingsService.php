@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Setting;
+use App\Support\AuthenticationMode;
+use App\Support\AuthenticationRoleMappingSettings;
 use App\Support\DashboardWidgets;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +16,18 @@ class SettingsService
     public function get(string $key, mixed $default = null): mixed
     {
         $setting = Setting::query()->where('key', $key)->first();
+
+        if ($key === AuthenticationMode::KEY) {
+            return AuthenticationMode::normalize($setting?->castValue() ?? $default);
+        }
+
+        if ($key === AuthenticationRoleMappingSettings::KEY) {
+            if ($setting === null) {
+                $setting = $this->createAuthenticationRoleMappingSetting();
+            }
+
+            return AuthenticationRoleMappingSettings::normalize($setting->castValue());
+        }
 
         return $setting?->castValue() ?? $default;
     }
@@ -30,9 +44,23 @@ class SettingsService
             $query->whereIn('key', $keys);
         }
 
-        return $query->get()
+        $values = $query->get()
             ->mapWithKeys(static fn (Setting $setting): array => [$setting->key => $setting->castValue()])
             ->all();
+
+        if ($keys === [] || in_array(AuthenticationRoleMappingSettings::KEY, $keys, true)) {
+            $values[AuthenticationRoleMappingSettings::KEY] = AuthenticationRoleMappingSettings::normalize(
+                $values[AuthenticationRoleMappingSettings::KEY] ?? null,
+            );
+        }
+
+        if ($keys === [] || in_array(AuthenticationMode::KEY, $keys, true)) {
+            $values[AuthenticationMode::KEY] = AuthenticationMode::normalize(
+                $values[AuthenticationMode::KEY] ?? null,
+            );
+        }
+
+        return $values;
     }
 
     /**
@@ -57,6 +85,9 @@ class SettingsService
         $settings[DashboardWidgets::SETTING_KEY] = DashboardWidgets::normalize(
             $settings[DashboardWidgets::SETTING_KEY] ?? null
         );
+        $settings[AuthenticationMode::KEY] = AuthenticationMode::normalize(
+            $settings[AuthenticationMode::KEY] ?? null,
+        );
 
         return $settings;
     }
@@ -78,6 +109,21 @@ class SettingsService
                         'type' => 'json',
                         'group' => 'dashboard',
                         'label' => 'Dashboard Widgets Visibility',
+                        'is_public' => true,
+                    ]);
+                }
+
+                if ($setting === null && $key === AuthenticationRoleMappingSettings::KEY) {
+                    $setting = $this->createAuthenticationRoleMappingSetting();
+                }
+
+                if ($setting === null && $key === AuthenticationMode::KEY) {
+                    $setting = Setting::query()->create([
+                        'key' => AuthenticationMode::KEY,
+                        'value' => AuthenticationMode::defaults(),
+                        'type' => 'string',
+                        'group' => 'authentication',
+                        'label' => 'Authentication Mode',
                         'is_public' => true,
                     ]);
                 }
@@ -106,5 +152,19 @@ class SettingsService
             'json' => json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
             default => (string) $value,
         };
+    }
+
+    private function createAuthenticationRoleMappingSetting(): Setting
+    {
+        return Setting::query()->firstOrCreate(
+            ['key' => AuthenticationRoleMappingSettings::KEY],
+            [
+                'value' => $this->stringifyValue(AuthenticationRoleMappingSettings::defaults(), 'json'),
+                'type' => 'json',
+                'group' => 'authentication',
+                'label' => 'External Authentication Role Mapping',
+                'is_public' => false,
+            ],
+        );
     }
 }

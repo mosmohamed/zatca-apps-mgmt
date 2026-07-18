@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Application;
 
-use App\Http\Requests\Concerns\HasLocalizedValidationMessages;
 use App\Enums\HaModel;
+use App\Http\Requests\Concerns\HasLocalizedValidationMessages;
 use App\Models\Application;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

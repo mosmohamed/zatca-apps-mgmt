@@ -13,7 +13,7 @@ class DepartmentSeeder extends Seeder
     {
         $departments = [
             ['name_en' => 'Customes', 'name_ar' => 'ادارة الجمارك'],
-            ['name_en' => 'taxation and Zakat Department', 'name_ar' => 'ادارة الضرائب والزكاة']
+            ['name_en' => 'taxation and Zakat Department', 'name_ar' => 'ادارة الضرائب والزكاة'],
         ];
 
         foreach ($departments as $department) {

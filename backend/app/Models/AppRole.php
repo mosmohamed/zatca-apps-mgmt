@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\AppRoleFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AppRole extends Model
 {
-    /** @use HasFactory<\Database\Factories\AppRoleFactory> */
+    /** @use HasFactory<AppRoleFactory> */
     use HasFactory, SoftDeletes;
 
     /**

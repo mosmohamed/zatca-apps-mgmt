@@ -48,7 +48,6 @@ final class DashboardWidgets
     }
 
     /**
-     * @param  mixed  $value
      * @return WidgetMap
      */
     public static function normalize(mixed $value): array

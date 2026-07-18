@@ -17,8 +17,7 @@ class CriticalityController extends BaseApiController
 {
     public function __construct(
         private readonly CriticalityService $criticalityService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {

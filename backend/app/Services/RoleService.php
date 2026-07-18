@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -96,9 +97,9 @@ class RoleService
 
     /**
      * @param  array{search?: string|null, page?: int|null, per_page?: int|null}  $filters
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, User>
+     * @return LengthAwarePaginator<int, User>
      */
-    public function listUsers(Role $role, array $filters = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function listUsers(Role $role, array $filters = []): LengthAwarePaginator
     {
         $perPage = max(1, min((int) ($filters['per_page'] ?? 15), 100));
         $page = max(1, (int) ($filters['page'] ?? 1));

@@ -23,6 +23,7 @@ export type ManagedUser = {
   extension: string | null
   job_title_id: number | null
   is_active: boolean
+  authentication_type?: "local" | "sso" | "both"
   vendor?: UserVendor | null
   job_title?: JobTitleSummary | null
   roles?: string[]

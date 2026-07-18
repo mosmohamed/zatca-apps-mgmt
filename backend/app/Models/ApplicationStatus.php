@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\ApplicationStatusFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ApplicationStatus extends Model
 {
-    /** @use HasFactory<\Database\Factories\ApplicationStatusFactory> */
+    /** @use HasFactory<ApplicationStatusFactory> */
     use HasFactory;
 
     protected $table = 'application_statuses';

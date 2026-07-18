@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'external_auth' => [
+        'frontend_url' => env('FRONTEND_URL'),
+    ],
+
 ];

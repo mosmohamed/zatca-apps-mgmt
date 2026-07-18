@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
+import { AuthenticationSettings } from "@/features/authentication-settings/components/AuthenticationSettings"
 import { DASHBOARD_WIDGET_KEYS } from "@/features/dashboard/types/dashboard-widgets"
 import { useSettings } from "@/features/settings/hooks/use-settings"
 import {
@@ -63,6 +64,7 @@ export function SettingsPage() {
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsFormSchema),
     defaultValues: {
+      authentication_mode: settings.authentication_mode,
       company_name: settings.company_name,
       sidebar_tagline_en: settings.sidebar_tagline_en,
       sidebar_tagline_ar: settings.sidebar_tagline_ar,
@@ -71,12 +73,14 @@ export function SettingsPage() {
       default_timezone: settings.default_timezone,
       default_pagination_size: settings.default_pagination_size,
       dashboard_widgets: settings.dashboard_widgets,
+      authentication_role_mapping: settings.authentication_role_mapping,
     },
   })
 
   useEffect(() => {
     if (!isLoading) {
       form.reset({
+        authentication_mode: settings.authentication_mode,
         company_name: settings.company_name,
         sidebar_tagline_en: settings.sidebar_tagline_en,
         sidebar_tagline_ar: settings.sidebar_tagline_ar,
@@ -85,6 +89,7 @@ export function SettingsPage() {
         default_timezone: settings.default_timezone,
         default_pagination_size: settings.default_pagination_size,
         dashboard_widgets: settings.dashboard_widgets,
+        authentication_role_mapping: settings.authentication_role_mapping,
       })
     }
   }, [isLoading, settings, form])
@@ -126,7 +131,7 @@ export function SettingsPage() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <Tabs defaultValue="general">
-            <TabsList>
+            <TabsList className="h-auto w-full justify-start overflow-x-auto">
               <TabsTrigger value="general">{t("settings.tabs.general")}</TabsTrigger>
               <TabsTrigger value="branding">
                 {t("settings.tabs.branding")}
@@ -139,6 +144,9 @@ export function SettingsPage() {
               </TabsTrigger>
               <TabsTrigger value="security">
                 {t("settings.tabs.security")}
+              </TabsTrigger>
+              <TabsTrigger value="authentication">
+                {t("settings.tabs.authentication")}
               </TabsTrigger>
             </TabsList>
 
@@ -387,6 +395,10 @@ export function SettingsPage() {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="authentication">
+              <AuthenticationSettings />
             </TabsContent>
           </Tabs>
 

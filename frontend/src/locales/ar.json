@@ -101,7 +101,19 @@
     "signingIn": "جاري تسجيل الدخول...",
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور",
-    "unableToSignIn": "تعذر تسجيل الدخول."
+    "unableToSignIn": "تعذر تسجيل الدخول.",
+    "sso": {
+      "or": "أو",
+      "continueWith": "المتابعة باستخدام {{provider}}",
+      "noProviders": "لا يوجد موفرو تسجيل دخول موحد متاحون حالياً. تواصل مع مدير النظام.",
+      "providersUnavailable": "موفرو تسجيل الدخول الموحد غير متاحين مؤقتاً.",
+      "completing": "جاري إكمال تسجيل الدخول",
+      "wait": "يرجى الانتظار أثناء التحقق من هويتك.",
+      "failedTitle": "فشل تسجيل الدخول الموحد",
+      "missingCode": "لم تتضمن استجابة تسجيل الدخول رمزاً صالحاً للاستخدام مرة واحدة.",
+      "exchangeFailed": "تعذر التحقق من رمز تسجيل الدخول.",
+      "backToLogin": "العودة لتسجيل الدخول"
+    }
   },
   "dashboard": {
     "welcomeBack": "مرحباً بعودتك",
@@ -374,11 +386,17 @@
     "columns": {
       "name": "الاسم",
       "email": "البريد الإلكتروني",
+      "authenticationType": "المصادقة",
       "roles": "الأدوار",
       "jobTitle": "المسمى الوظيفي",
       "vendor": "المورد",
       "active": "نشط",
       "created": "تاريخ الإنشاء"
+    },
+    "authenticationTypes": {
+      "local": "محلي",
+      "sso": "دخول موحد",
+      "both": "محلي + دخول موحد"
     },
     "form": {
       "createTitle": "مستخدم جديد",
@@ -388,6 +406,7 @@
       "firstName": "الاسم الأول",
       "lastName": "اسم العائلة",
       "email": "البريد الإلكتروني",
+      "authenticationType": "طريقة المصادقة",
       "password": "كلمة المرور",
       "passwordHint": "اتركه فارغاً للإبقاء على كلمة المرور الحالية.",
       "vendor": "المورد",
@@ -1081,6 +1100,153 @@
       "after": "بعد"
     }
   },
+  "authentication": {
+    "tabs": {
+      "methods": "الطرق",
+      "provisioning": "ربط الأدوار وإنشاء الحسابات",
+      "providers": "موفرو الهوية",
+      "mappings": "قواعد ربط الأدوار"
+    },
+    "permissionDenied": "ليس لديك صلاحية لعرض {{resource}}.",
+    "loadFailed": "تعذر تحميل إعدادات المصادقة.",
+    "validation": {
+      "required": "هذا الحقل مطلوب.",
+      "slug": "استخدم أحرفاً إنجليزية صغيرة وأرقاماً وشرطات مفردة فقط."
+    },
+    "fields": {
+      "name": "اسم الموفر",
+      "slug": "المعرّف في الرابط",
+      "protocol": "البروتوكول",
+      "enabled": "مفعّل",
+      "issuer": "رابط جهة الإصدار",
+      "discoveryUrl": "رابط الاكتشاف",
+      "authorizationEndpoint": "نقطة نهاية التفويض",
+      "tokenEndpoint": "نقطة نهاية الرمز",
+      "userinfoEndpoint": "نقطة معلومات المستخدم",
+      "jwksUri": "رابط JWKS",
+      "clientId": "معرّف العميل",
+      "clientSecret": "سر العميل",
+      "scopes": "النطاقات",
+      "idpEntityId": "معرّف كيان موفر الهوية",
+      "ssoUrl": "رابط تسجيل الدخول الموحد",
+      "sloUrl": "رابط تسجيل الخروج الموحد",
+      "certificate": "شهادة X.509",
+      "spEntityId": "معرّف كيان مزود الخدمة",
+      "acsUrl": "رابط ACS",
+      "provider": "موفر الهوية",
+      "claimName": "اسم المطالبة",
+      "externalSubject": "المعرف الخارجي",
+      "externalSubjectHint": "معرّف ثابت من موفر الهوية (مطالبة sub في OIDC أو NameID في SAML).",
+      "externalValue": "المجموعة أو القيمة الخارجية",
+      "role": "الدور الداخلي",
+      "priority": "الأولوية",
+      "departmentClaim": "مطالبة القسم",
+      "defaultRole": "الدور الافتراضي",
+      "defaultStatus": "حالة المستخدم الافتراضية",
+      "multiMatch": "سلوك التطابق المتعدد",
+      "lastSuccessfulAuth": "آخر تسجيل دخول ناجح"
+    },
+    "general": {
+      "title": "المصادقة وإنشاء الحسابات",
+      "description": "التحكم في إنشاء الحسابات وتعيين الأدوار ومزامنة ملفات الهويات الخارجية.",
+      "enabled": "تفعيل ربط الأدوار",
+      "enabledHint": "تقييم قواعد الربط أثناء تسجيل الدخول الخارجي.",
+      "auto_provisioning": "إنشاء المستخدمين تلقائياً",
+      "autoProvisioningHint": "إنشاء حساب بعد أول تسجيل دخول ناجح.",
+      "allow_email_account_linking": "السماح بربط الحساب عبر البريد الإلكتروني",
+      "allowEmailAccountLinkingHint": "السماح للمستخدمين المسجلين بربط هوية موفر بشكل صريح. المطابقة العمياء عبر البريد أثناء SSO تبقى معطلة.",
+      "require_verified_email_for_linking": "اشتراط بريد موثق للربط",
+      "requireVerifiedEmailForLinkingHint": "رفض الربط عبر البريد ما لم يؤكد موفر الهوية صراحةً توثيق العنوان.",
+      "automatic_department_mapping": "ربط الأقسام تلقائياً",
+      "departmentMappingHint": "استخدام المطالبة المحددة لمطابقة القسم.",
+      "update_roles_on_login": "تحديث الأدوار عند كل دخول",
+      "updateRolesHint": "إبقاء أدوار التطبيق متزامنة مع مجموعات موفر الهوية.",
+      "update_user_information_on_login": "تحديث الملف عند كل دخول",
+      "updateInformationHint": "تحديث حقول المستخدم المحددة من المطالبات الخارجية.",
+      "noDefaultRole": "بدون دور افتراضي",
+      "multipleRoles": "تعيين جميع الأدوار المتطابقة",
+      "highestPriority": "تعيين الدور الأعلى أولوية",
+      "syncFields": "حقول الملف المتزامنة",
+      "syncFieldsHint": "حدد الحقول التي يمكن تحديثها من مطالبات موفر الهوية."
+    },
+    "methods": {
+      "title": "طرق المصادقة",
+      "description": "اختر الطرق المسموح للمستخدمين بتسجيل الدخول من خلالها.",
+      "local": {
+        "title": "محلي فقط",
+        "description": "يسجل المستخدمون الدخول ببريد التطبيق وكلمة المرور، ولا يتوفر الدخول الموحد."
+      },
+      "sso": {
+        "title": "الدخول الموحد فقط",
+        "description": "يجب تسجيل الدخول عبر موفر هوية مُعد، ويُخفى نموذج الدخول المحلي."
+      },
+      "hybrid": {
+        "title": "مختلط",
+        "description": "السماح ببيانات الدخول المحلية وموفري تسجيل الدخول الموحد معاً."
+      }
+    },
+    "syncFields": {
+      "first_name": "الاسم الأول",
+      "last_name": "اسم العائلة",
+      "email": "البريد الإلكتروني",
+      "username": "اسم المستخدم",
+      "employee_id": "الرقم الوظيفي",
+      "department": "القسم",
+      "job_title": "المسمى الوظيفي",
+      "profile_picture": "الصورة الشخصية"
+    },
+    "providers": {
+      "create": "إضافة موفر",
+      "edit": "تعديل موفر الهوية",
+      "search": "البحث في موفري الهوية...",
+      "empty": "لا يوجد موفرو هوية",
+      "test": "اختبار الاتصال",
+      "testResults": "نتائج اختبار الاتصال",
+      "formDescription": "إعداد اتصال OIDC أو SAML كامل. يمكن للخادم اكتشاف نقاط النهاية الاختيارية.",
+      "secretPreserve": "اترك الحقل فارغاً للاحتفاظ بالقيمة المحمية الحالية. لا تُعرض الأسرار الحالية مطلقاً.",
+      "claimMap": "خريطة المطالبات",
+      "claimMapDescription": "اربط حقول ملف المستخدم بالمطالبات التي يعيدها هذا الموفر.",
+      "oidc": {
+        "title": "إعداد OpenID Connect",
+        "description": "جهة الإصدار وبيانات العميل مطلوبة، ويمكن للاكتشاف توفير نقاط النهاية الأخرى."
+      },
+      "saml": {
+        "title": "إعداد SAML 2.0",
+        "description": "أدخل نقاط بيانات موفر الهوية وشهادة التوقيع ومعرّفات مزود الخدمة."
+      },
+      "deleteTitle": "حذف موفر الهوية",
+      "deleteConfirm": "حذف {{name}}؟ لن يتمكن المستخدمون من تسجيل الدخول من خلاله.",
+      "presetType": "قالب الموفر",
+      "tenantId": "معرّف المستأجر",
+      "auth0Domain": "نطاق Auth0",
+      "applyPreset": "تطبيق إعدادات القالب"
+    },
+    "mappings": {
+      "create": "إضافة ربط",
+      "edit": "تعديل ربط الدور",
+      "search": "البحث في روابط الأدوار...",
+      "empty": "لا توجد روابط أدوار",
+      "formDescription": "اربط قيمة مطالبة خارجية بدور داخلي. تُقيّم أرقام الأولوية الأعلى أولاً.",
+      "deleteTitle": "حذف ربط الدور",
+      "deleteConfirm": "حذف الربط للقيمة {{value}}؟"
+    },
+    "toast": {
+      "providercreate": "تم إنشاء موفر الهوية.",
+      "providerupdate": "تم تحديث موفر الهوية.",
+      "providerdelete": "تم حذف موفر الهوية.",
+      "providercreateFailed": "فشل إنشاء موفر الهوية.",
+      "providerupdateFailed": "فشل تحديث موفر الهوية.",
+      "providerdeleteFailed": "فشل حذف موفر الهوية.",
+      "testSuccess": "نجح الاتصال بموفر الهوية.",
+      "testFailed": "فشل الاتصال بموفر الهوية.",
+      "mappingcreate": "تم إنشاء ربط الدور.",
+      "mappingupdate": "تم تحديث ربط الدور.",
+      "mappingdelete": "تم حذف ربط الدور.",
+      "mappingcreateFailed": "فشل إنشاء ربط الدور.",
+      "mappingupdateFailed": "فشل تحديث ربط الدور.",
+      "mappingdeleteFailed": "فشل حذف ربط الدور."
+    }
+  },
   "settings": {
     "title": "الإعدادات",
     "description": "ضبط التفضيلات العامة للشركة والإشعارات الأمنية.",
@@ -1090,7 +1256,8 @@
       "branding": "الهوية والنصوص",
       "preferences": "التفضيلات",
       "dashboard": "لوحة التحكم",
-      "security": "الأمان"
+      "security": "الأمان",
+      "authentication": "المصادقة"
     },
     "general": {
       "title": "عام",
@@ -1148,5 +1315,25 @@
       "updated": "تم تحديث الإعدادات بنجاح.",
       "updateFailed": "فشل تحديث الإعدادات."
     }
+  },
+  "account": {
+    "securityTitle": "أمان الحساب",
+    "securityDescription": "إدارة نوع المصادقة وموفري الهوية المرتبطين.",
+    "authenticationType": "نوع المصادقة",
+    "authenticationTypeHint": "طريقة تسجيل الدخول المسموح بها لهذا الحساب.",
+    "linkedIdentities": "الهويات المرتبطة",
+    "linkedIdentitiesHint": "الهويات الخارجية المرتبطة بحسابك.",
+    "linkExternalIdentity": "ربط هوية خارجية",
+    "linkingDisabled": "ربط الهوية معطّل من قبل المسؤول.",
+    "noLinkedIdentities": "لا توجد هويات خارجية مرتبطة بعد.",
+    "unknownProvider": "موفر غير معروف",
+    "chooseProvider": "اختر موفر هوية للمتابعة.",
+    "confirmLinkTitle": "تأكيد ربط الهوية",
+    "confirmLinkDescription": "راجع الهوية الخارجية قبل ربطها بحسابك.",
+    "confirmLink": "تأكيد الربط",
+    "willBecomeBoth": "سيتغير نوع المصادقة من محلي إلى كليهما.",
+    "invalidLinkCode": "تأكيد الربط غير صالح أو منتهي الصلاحية.",
+    "linkConfirmed": "تم ربط الهوية الخارجية بنجاح.",
+    "linkFailed": "تعذر ربط الهوية الخارجية."
   }
 }

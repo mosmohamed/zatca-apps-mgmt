@@ -32,8 +32,7 @@ class ExportService
 
     public function __construct(
         private readonly SettingsService $settingsService,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{format: string, scope: string, ids: list<int>, search: string|null, sort: string|null, page: int|null, per_page: int|null, columns: list<string>|null, filters_summary: string|null}  $payload

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\ApplicationAssignmentFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,7 @@ use Spatie\Activitylog\Support\LogOptions;
 
 class ApplicationAssignment extends Model
 {
-    /** @use HasFactory<\Database\Factories\ApplicationAssignmentFactory> */
+    /** @use HasFactory<ApplicationAssignmentFactory> */
     use HasFactory, LogsActivity;
 
     /**

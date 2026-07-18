@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Resources\AppRoleResource;
 use App\Http\Resources\ApplicationStatusResource;
 use App\Http\Resources\ApplicationTypeResource;
+use App\Http\Resources\AppRoleResource;
 use App\Http\Resources\CriticalityResource;
 use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\JobTitleResource;
 use App\Http\Resources\SupportTypeResource;
 use App\Http\Resources\TechnologyResource;
-use App\Models\AppRole;
 use App\Models\ApplicationStatus;
 use App\Models\ApplicationType;
+use App\Models\AppRole;
 use App\Models\Criticality;
 use App\Models\Department;
 use App\Models\JobTitle;

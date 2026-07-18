@@ -8,7 +8,6 @@ use App\Models\Department;
 use App\Traits\SearchTrait;
 use App\Traits\SortTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class DepartmentService

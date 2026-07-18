@@ -14,8 +14,7 @@ class ActivityLogController extends BaseApiController
 {
     public function __construct(
         private readonly ActivityLogService $activityLogService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {

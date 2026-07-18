@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils"
 const ALL_COLUMN_IDS = [
   "name",
   "email",
+  "authenticationType",
   "roles",
   "vendor",
   "jobTitle",
@@ -127,6 +128,19 @@ export function UsersPage() {
         sortable: true,
         sortKey: "email",
         cell: (row) => row.email,
+      },
+      {
+        id: "authenticationType",
+        header: t("users.columns.authenticationType"),
+        label: t("users.columns.authenticationType"),
+        cell: (row) =>
+          row.authentication_type ? (
+            <Badge variant="outline">
+              {t(`users.authenticationTypes.${row.authentication_type}`)}
+            </Badge>
+          ) : (
+            <span className="text-muted-foreground">—</span>
+          ),
       },
       {
         id: "roles",

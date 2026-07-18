@@ -12,8 +12,7 @@ class GlobalSearchController extends BaseApiController
 {
     public function __construct(
         private readonly GlobalSearchService $globalSearchService,
-    ) {
-    }
+    ) {}
 
     public function search(Request $request): JsonResponse
     {

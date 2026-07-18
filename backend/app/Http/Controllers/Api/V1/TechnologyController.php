@@ -17,8 +17,7 @@ class TechnologyController extends BaseApiController
 {
     public function __construct(
         private readonly TechnologyService $technologyService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {

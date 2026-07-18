@@ -18,8 +18,7 @@ class ExportController extends BaseApiController
     public function __construct(
         private readonly ExportRegistry $registry,
         private readonly ExportService $exportService,
-    ) {
-    }
+    ) {}
 
     public function store(string $entity, ExportDataRequest $request): BinaryFileResponse|StreamedResponse|JsonResponse
     {

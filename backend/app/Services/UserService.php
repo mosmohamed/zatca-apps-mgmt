@@ -29,13 +29,13 @@ class UserService
         $perPage = max(1, min((int) ($filters['per_page'] ?? 15), 100));
         $page = max(1, (int) ($filters['page'] ?? 1));
 
-        $query = User::query()->with(['vendor', 'jobTitle', 'roles']);
+        $query = User::query()->with(['vendor', 'department', 'identityProvider', 'jobTitle', 'roles']);
 
         $this->applyUserSearch($query, $filters['search'] ?? null);
         $this->applyColumnSort(
             $query,
             $filters['sort'] ?? null,
-            ['first_name', 'last_name', 'email', 'is_active', 'created_at', 'updated_at'],
+            ['first_name', 'last_name', 'email', 'username', 'employee_id', 'is_active', 'created_at', 'updated_at'],
             '-created_at',
         );
 
@@ -44,7 +44,9 @@ class UserService
 
     public function find(int $id): User
     {
-        return User::query()->with(['vendor', 'jobTitle', 'roles'])->findOrFail($id);
+        return User::query()
+            ->with(['vendor', 'department', 'identityProvider', 'jobTitle', 'roles'])
+            ->findOrFail($id);
     }
 
     /**
@@ -62,7 +64,7 @@ class UserService
                 $this->syncUserRoles($user, $roles, $actor);
             }
 
-            return $user->load(['vendor', 'jobTitle', 'roles']);
+            return $user->load(['vendor', 'department', 'identityProvider', 'jobTitle', 'roles']);
         });
     }
 
@@ -84,7 +86,7 @@ class UserService
                 $this->syncUserRoles($user, $roles, $actor);
             }
 
-            return $user->refresh()->load(['vendor', 'jobTitle', 'roles']);
+            return $user->refresh()->load(['vendor', 'department', 'identityProvider', 'jobTitle', 'roles']);
         });
     }
 
@@ -100,7 +102,7 @@ class UserService
         return DB::transaction(static function () use ($user): User {
             $user->restore();
 
-            return $user->refresh()->load(['vendor', 'jobTitle', 'roles']);
+            return $user->refresh()->load(['vendor', 'department', 'identityProvider', 'jobTitle', 'roles']);
         });
     }
 
@@ -178,6 +180,8 @@ class UserService
                 ->where('first_name', 'like', $term)
                 ->orWhere('last_name', 'like', $term)
                 ->orWhere('email', 'like', $term)
+                ->orWhere('username', 'like', $term)
+                ->orWhere('employee_id', 'like', $term)
                 ->orWhere('phone', 'like', $term)
                 ->orWhereHas('jobTitle', static function (Builder $jobTitleQuery) use ($term): void {
                     $jobTitleQuery

@@ -34,8 +34,17 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'email',
+        'identity_provider_id',
+        // Denormalized last-used IdP subject (OIDC sub / SAML NameID). Source of truth: external_identities.external_subject.
+        'external_subject',
+        'username',
+        'employee_id',
         'password',
+        'authentication_type',
         'vendor_id',
+        'department_id',
+        'profile_picture_url',
+        'last_sso_login_at',
         'phone',
         'teams',
         'whatsapp',
@@ -60,9 +69,13 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'authentication_type' => 'string',
             'is_active' => 'boolean',
             'vendor_id' => 'integer',
             'job_title_id' => 'integer',
+            'identity_provider_id' => 'integer',
+            'department_id' => 'integer',
+            'last_sso_login_at' => 'datetime',
         ];
     }
 
@@ -82,6 +95,30 @@ class User extends Authenticatable
     public function vendor(): BelongsTo
     {
         return $this->belongsTo(Vendor::class);
+    }
+
+    /**
+     * @return BelongsTo<IdentityProvider, $this>
+     */
+    public function identityProvider(): BelongsTo
+    {
+        return $this->belongsTo(IdentityProvider::class);
+    }
+
+    /**
+     * @return HasMany<ExternalIdentity, $this>
+     */
+    public function externalIdentities(): HasMany
+    {
+        return $this->hasMany(ExternalIdentity::class);
+    }
+
+    /**
+     * @return BelongsTo<Department, $this>
+     */
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
     }
 
     /**

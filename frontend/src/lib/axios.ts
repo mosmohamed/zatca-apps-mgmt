@@ -32,7 +32,9 @@ api.interceptors.response.use(
   (error: unknown) => {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
       const requestUrl = String(error.config?.url ?? "")
-      const isLoginRequest = requestUrl.includes("/auth/login")
+      const isLoginRequest =
+        requestUrl.includes("/auth/login") ||
+        requestUrl.includes("/auth/sso/exchange")
 
       if (!isLoginRequest && !isRedirectingToLogin) {
         isRedirectingToLogin = true

@@ -23,7 +23,8 @@ type AuthContextValue = {
   isEmployee: boolean
   can: (permission: string) => boolean
   login: (payload: LoginPayload) => Promise<void>
-  logout: () => Promise<void>
+  exchangeSsoCode: (code: string) => Promise<void>
+  logout: () => Promise<boolean>
   refreshUser: () => Promise<void>
 }
 
@@ -99,9 +100,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     toast.success("Logged in successfully.")
   }, [])
 
+  const exchangeSsoCode = useCallback(async (code: string) => {
+    const response = await authService.exchangeSsoCode(code)
+    authStorage.setToken(response.token)
+    authStorage.setUser(response.user)
+    setToken(response.token)
+    setUser(response.user)
+  }, [])
+
   const logout = useCallback(async () => {
+    let federatedUrl: string | null = null
     try {
-      await authService.logout()
+      const result = await authService.logout()
+      federatedUrl = result.federated_logout_url
     } catch (error) {
       toast.error(getApiErrorMessage(error, "Logout failed."))
     } finally {
@@ -110,6 +121,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null)
       toast.success("Logged out successfully.")
     }
+    if (federatedUrl) {
+      window.location.assign(federatedUrl)
+      return true
+    }
+    return false
   }, [])
 
   const isSuperAdmin = Boolean(user?.roles.includes("super_admin"))
@@ -134,10 +150,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isEmployee: Boolean(user?.roles.includes("employee")),
       can,
       login,
+      exchangeSsoCode,
       logout,
       refreshUser,
     }),
-    [user, token, isBootstrapping, isSuperAdmin, can, login, logout, refreshUser]
+    [user, token, isBootstrapping, isSuperAdmin, can, login, exchangeSsoCode, logout, refreshUser]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

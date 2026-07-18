@@ -11,8 +11,7 @@ class DashboardController extends BaseApiController
 {
     public function __construct(
         private readonly DashboardService $dashboardService,
-    ) {
-    }
+    ) {}
 
     public function index(): JsonResponse
     {

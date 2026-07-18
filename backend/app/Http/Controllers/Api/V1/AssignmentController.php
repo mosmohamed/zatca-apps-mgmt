@@ -22,8 +22,7 @@ class AssignmentController extends BaseApiController
 {
     public function __construct(
         private readonly AssignmentService $assignmentService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {

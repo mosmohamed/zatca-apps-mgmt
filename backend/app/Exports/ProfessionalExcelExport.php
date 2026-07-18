@@ -44,8 +44,7 @@ final class ProfessionalExcelExport implements FromGenerator, WithCustomStartCel
         private readonly iterable $rows,
         private readonly array $columns,
         private readonly array $meta,
-    ) {
-    }
+    ) {}
 
     public function generator(): Generator
     {
@@ -230,7 +229,7 @@ final class ProfessionalExcelExport implements FromGenerator, WithCustomStartCel
         }
 
         try {
-            $drawing = new Drawing();
+            $drawing = new Drawing;
             $drawing->setPath($path);
             $drawing->setHeight(50);
             $drawing->setCoordinates('A1');

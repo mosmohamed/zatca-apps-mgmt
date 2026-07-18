@@ -16,8 +16,7 @@ class SettingsController extends BaseApiController
 {
     public function __construct(
         private readonly SettingsService $settingsService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {

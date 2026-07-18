@@ -17,8 +17,7 @@ class AppRoleController extends BaseApiController
 {
     public function __construct(
         private readonly AppRoleService $appRoleService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {

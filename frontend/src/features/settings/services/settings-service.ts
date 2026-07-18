@@ -8,13 +8,39 @@ import {
   DEFAULT_DASHBOARD_WIDGETS,
   normalizeDashboardWidgets,
 } from "@/features/dashboard/types/dashboard-widgets"
+import type { AuthenticationRoleMappingSettings } from "@/features/authentication-settings/types/authentication-settings"
 
 type SettingRecord = {
   key: string
   value: string | number | boolean | null | Record<string, unknown>
 }
 
+const DEFAULT_AUTHENTICATION_ROLE_MAPPING: AuthenticationRoleMappingSettings = {
+  enabled: false,
+  auto_provisioning: false,
+  allow_email_account_linking: false,
+  require_verified_email_for_linking: true,
+  automatic_department_mapping: false,
+  department_claim: "department",
+  default_role_id: null,
+  default_user_status: "active",
+  update_roles_on_login: true,
+  update_user_information_on_login: true,
+  multi_match_strategy: "multiple",
+  sync_fields: {
+    first_name: true,
+    last_name: true,
+    email: true,
+    username: true,
+    employee_id: true,
+    department: true,
+    job_title: true,
+    profile_picture: true,
+  },
+}
+
 const DEFAULTS: PublicSettings = {
+  authentication_mode: "hybrid",
   company_name: "IT Portfolio System",
   sidebar_tagline_en: "Access Management",
   sidebar_tagline_ar: "إدارة الصلاحيات",
@@ -25,6 +51,33 @@ const DEFAULTS: PublicSettings = {
   default_pagination_size: 15,
   session_timeout_minutes: 120,
   dashboard_widgets: DEFAULT_DASHBOARD_WIDGETS,
+  authentication_role_mapping: DEFAULT_AUTHENTICATION_ROLE_MAPPING,
+}
+
+function normalizeAuthenticationSettings(value: unknown): AuthenticationRoleMappingSettings {
+  if (!value || typeof value !== "object") return DEFAULT_AUTHENTICATION_ROLE_MAPPING
+  const source = value as Partial<AuthenticationRoleMappingSettings>
+  const defaultUserStatus = (value as Record<string, unknown>).default_user_status
+  return {
+    ...DEFAULT_AUTHENTICATION_ROLE_MAPPING,
+    ...source,
+    default_role_id:
+      source.default_role_id === null || typeof source.default_role_id === "number"
+        ? source.default_role_id
+        : DEFAULT_AUTHENTICATION_ROLE_MAPPING.default_role_id,
+    default_user_status:
+      defaultUserStatus === "inactive" || defaultUserStatus === false
+        ? "inactive"
+        : "active",
+    multi_match_strategy:
+      source.multi_match_strategy === "highest_priority"
+        ? "highest_priority"
+        : "multiple",
+    sync_fields: {
+      ...DEFAULT_AUTHENTICATION_ROLE_MAPPING.sync_fields,
+      ...(source.sync_fields ?? {}),
+    },
+  }
 }
 
 function asPublicSettings(
@@ -35,6 +88,11 @@ function asPublicSettings(
     : payload
 
   return {
+    authentication_mode:
+      source.authentication_mode === "sso" ||
+      source.authentication_mode === "hybrid"
+        ? source.authentication_mode
+        : DEFAULTS.authentication_mode,
     company_name:
       typeof source.company_name === "string"
         ? source.company_name
@@ -70,23 +128,45 @@ function asPublicSettings(
         : Number(source.session_timeout_minutes) ||
           DEFAULTS.session_timeout_minutes,
     dashboard_widgets: normalizeDashboardWidgets(source.dashboard_widgets),
+    authentication_role_mapping: normalizeAuthenticationSettings(
+      source.authentication_role_mapping
+    ),
   }
 }
 
 export const settingsService = {
-  async get(): Promise<PublicSettings> {
+  async get(includeProtected = false): Promise<PublicSettings> {
     const { data } = await api.get<
       ApiEnvelope<Record<string, unknown> | SettingRecord[]>
-    >("/settings/public")
+    >(includeProtected ? "/settings" : "/settings/public")
     return asPublicSettings(data.data)
   },
 
   async update(payload: UpdateSettingsPayload): Promise<PublicSettings> {
+    const authentication = payload.authentication_role_mapping
+    const backendPayload = authentication
+      ? {
+          ...payload,
+          authentication_role_mapping: {
+            ...authentication,
+            default_user_status: authentication.default_user_status === "active",
+          },
+        }
+      : payload
     const { data } = await api.put<
       ApiEnvelope<Record<string, unknown> | SettingRecord[]>
     >("/settings", {
-      settings: payload,
+      settings: backendPayload,
     })
-    return asPublicSettings(data.data)
+    const updated = asPublicSettings(data.data)
+    return {
+      ...updated,
+      ...(payload.authentication_mode
+        ? { authentication_mode: payload.authentication_mode }
+        : {}),
+      ...(authentication
+        ? { authentication_role_mapping: authentication }
+        : {}),
+    }
   },
 }

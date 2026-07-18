@@ -17,8 +17,7 @@ class DepartmentController extends BaseApiController
 {
     public function __construct(
         private readonly DepartmentService $departmentService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {

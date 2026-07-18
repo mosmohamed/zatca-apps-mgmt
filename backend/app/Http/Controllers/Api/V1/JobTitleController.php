@@ -17,8 +17,7 @@ class JobTitleController extends BaseApiController
 {
     public function __construct(
         private readonly JobTitleService $jobTitleService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {

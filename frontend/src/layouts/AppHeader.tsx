@@ -19,14 +19,16 @@ type AppHeaderProps = {
 export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
   const { t, i18n } = useTranslation()
   const { isExpanded, toggleExpanded, toggleMobile } = useSidebar()
-  const { user, logout, isSuperAdmin } = useAuth()
+  const { user, logout } = useAuth()
   const { settings } = useSettings()
   const { theme } = useTheme()
   const navigate = useNavigate()
 
   async function handleLogout() {
-    await logout()
-    navigate("/login", { replace: true })
+    const federated = await logout()
+    if (!federated) {
+      navigate("/login", { replace: true })
+    }
   }
 
   const logoVariant = theme === "dark" ? "onDark" : "default"
@@ -112,9 +114,13 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
           <p className="text-sm font-medium leading-none">
             {user?.full_name ?? t("common.user")}
           </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {isSuperAdmin ? t("common.superAdmin") : t("common.employee")}
-          </p>
+          <button
+            type="button"
+            className="mt-1 text-xs text-muted-foreground underline-offset-2 hover:underline"
+            onClick={() => navigate("/account/security")}
+          >
+            {t("account.securityTitle")}
+          </button>
         </div>
         <Button
           variant="outline"

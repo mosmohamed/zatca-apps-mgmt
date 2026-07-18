@@ -17,8 +17,7 @@ class VendorController extends BaseApiController
 {
     public function __construct(
         private readonly VendorService $vendorService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {

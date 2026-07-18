@@ -84,6 +84,14 @@ class PermissionSeeder extends Seeder
             'activity-log.view',
             'settings.view',
             'settings.update',
+            'identity-providers.view',
+            'identity-providers.create',
+            'identity-providers.update',
+            'identity-providers.delete',
+            'role-mappings.view',
+            'role-mappings.create',
+            'role-mappings.update',
+            'role-mappings.delete',
         ];
 
         foreach ($permissions as $permission) {

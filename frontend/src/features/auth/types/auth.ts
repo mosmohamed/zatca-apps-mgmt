@@ -11,6 +11,7 @@ export type AuthUser = {
   last_name: string
   full_name: string
   email: string
+  authentication_type?: "local" | "sso" | "both"
   vendor_id: number | null
   phone: string | null
   teams: string | null
@@ -20,6 +21,12 @@ export type AuthUser = {
   is_active: boolean
   roles: string[]
   permissions: string[]
+  external_identities?: Array<{
+    id: number
+    external_subject: string
+    external_email: string | null
+    identity_provider?: { id: number; name: string; slug: string; protocol: string } | null
+  }>
   created_at: string | null
   updated_at: string | null
   deleted_at: string | null

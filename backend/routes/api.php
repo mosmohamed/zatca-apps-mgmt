@@ -13,12 +13,15 @@ use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DepartmentController;
 use App\Http\Controllers\Api\V1\ExportController;
 use App\Http\Controllers\Api\V1\GlobalSearchController;
+use App\Http\Controllers\Api\V1\IdentityProviderController;
 use App\Http\Controllers\Api\V1\JobTitleController;
 use App\Http\Controllers\Api\V1\LicenseController;
 use App\Http\Controllers\Api\V1\LookupController;
 use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\RoleController;
+use App\Http\Controllers\Api\V1\RoleMappingRuleController;
 use App\Http\Controllers\Api\V1\SettingsController;
+use App\Http\Controllers\Api\V1\SsoController;
 use App\Http\Controllers\Api\V1\SupportTypeController;
 use App\Http\Controllers\Api\V1\TechnologyController;
 use App\Http\Controllers\Api\V1\UserController;
@@ -26,13 +29,36 @@ use App\Http\Controllers\Api\V1\VendorController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function (): void {
-    Route::post('auth/login', [AuthController::class, 'login']);
+    Route::post('auth/login', [AuthController::class, 'login'])
+        ->middleware('throttle:10,1');
+    Route::get('auth/sso/providers', [SsoController::class, 'providers'])
+        ->middleware('throttle:30,1');
+    Route::get('auth/sso/{identityProvider:slug}/redirect', [SsoController::class, 'redirect'])
+        ->middleware('throttle:20,1');
+    Route::get('auth/sso/oidc/callback', [SsoController::class, 'oidcCallback'])
+        ->middleware('throttle:20,1')
+        ->name('sso.oidc.callback');
+    Route::post('auth/sso/saml/acs', [SsoController::class, 'samlAcs'])
+        ->middleware('throttle:20,1')
+        ->name('sso.saml.acs');
+    Route::get('auth/sso/saml/sls', [SsoController::class, 'samlSls'])
+        ->middleware('throttle:20,1')
+        ->name('sso.saml.sls');
+    Route::post('auth/sso/exchange', [SsoController::class, 'exchange'])
+        ->middleware('throttle:20,1');
 
     Route::get('settings/public', [SettingsController::class, 'public']);
 
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::get('auth/me', [AuthController::class, 'me']);
         Route::post('auth/logout', [AuthController::class, 'logout']);
+        Route::get('auth/identity-links', [AuthController::class, 'linkedIdentities']);
+        Route::get('auth/identity-links/preview', [AuthController::class, 'previewIdentityLink'])
+            ->middleware('throttle:20,1');
+        Route::post('auth/identity-links/confirm', [AuthController::class, 'confirmIdentityLink'])
+            ->middleware('throttle:10,1');
+        Route::post('auth/identity-links/{identityProvider:slug}/initiate', [AuthController::class, 'initiateIdentityLink'])
+            ->middleware('throttle:10,1');
 
         Route::get('dashboard', [DashboardController::class, 'index']);
 
@@ -68,6 +94,17 @@ Route::prefix('v1')->group(function (): void {
 
         Route::get('settings', [SettingsController::class, 'index']);
         Route::put('settings', [SettingsController::class, 'update']);
+
+        Route::get('identity-providers/presets', [IdentityProviderController::class, 'presets']);
+        Route::post('identity-providers/presets/build', [IdentityProviderController::class, 'buildPreset']);
+        Route::post(
+            'identity-providers/{identity_provider}/test',
+            [IdentityProviderController::class, 'testConnection'],
+        );
+        Route::apiResource('identity-providers', IdentityProviderController::class)
+            ->parameters(['identity-providers' => 'identity_provider']);
+        Route::apiResource('role-mappings', RoleMappingRuleController::class)
+            ->parameters(['role-mappings' => 'role_mapping']);
 
         Route::apiResource('vendors', VendorController::class);
         Route::apiResource('departments', DepartmentController::class);

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\AppRole;
 use App\Models\Application;
 use App\Models\ApplicationAssignment;
 use App\Models\ApplicationStatus;
 use App\Models\ApplicationType;
+use App\Models\AppRole;
 use App\Models\Criticality;
 use App\Models\Department;
 use App\Models\SupportType;

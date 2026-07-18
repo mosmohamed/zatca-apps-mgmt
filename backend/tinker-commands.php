@@ -1,4 +1,4 @@
-﻿use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\Sanctum;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
