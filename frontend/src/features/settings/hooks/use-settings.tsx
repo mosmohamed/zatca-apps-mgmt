@@ -17,10 +17,7 @@ import type {
 } from "@/features/settings/types/settings"
 import { getApiErrorMessage } from "@/lib/api-errors"
 import i18n from "@/lib/i18n"
-import {
-  DEFAULT_DASHBOARD_WIDGETS,
-  normalizeDashboardWidgets,
-} from "@/features/dashboard/types/dashboard-widgets"
+import { DEFAULT_DASHBOARD_WIDGETS } from "@/features/dashboard/types/dashboard-widgets"
 
 type SettingsContextValue = {
   settings: PublicSettings
@@ -87,13 +84,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setIsSaving(true)
     try {
       const updated = await settingsService.update(payload)
-      setSettings({
-        ...updated,
-        dashboard_widgets:
-          payload.dashboard_widgets !== undefined
-            ? normalizeDashboardWidgets(payload.dashboard_widgets)
-            : updated.dashboard_widgets,
-      })
+      setSettings(updated)
       toast.success(i18n.t("settings.toast.updated"))
     } catch (error) {
       toast.error(

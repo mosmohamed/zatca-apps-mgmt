@@ -247,7 +247,11 @@ export function DashboardPage() {
 
   return (
     <section className="space-y-6">
-      <DashboardLiveHeader />
+      <DashboardLiveHeader
+        showWeather={widgets.weather}
+        showLocalTime={widgets.local_time}
+        showPrayerTimes={widgets.prayer_times}
+      />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         {kpiCards.map((item, index) => (

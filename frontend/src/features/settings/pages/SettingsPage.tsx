@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
@@ -33,7 +33,11 @@ import {
 } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
-import { DASHBOARD_WIDGET_KEYS } from "@/features/dashboard/types/dashboard-widgets"
+import {
+  DASHBOARD_WIDGET_KEYS,
+  DEFAULT_DASHBOARD_WIDGETS,
+  normalizeDashboardWidgetsByRole,
+} from "@/features/dashboard/types/dashboard-widgets"
 import { useSettings } from "@/features/settings/hooks/use-settings"
 import {
   createSettingsFormSchema,
@@ -57,8 +61,19 @@ const TIMEZONE_OPTIONS = [
 export function SettingsPage() {
   const { t } = useTranslation()
   const { settings, isLoading, isSaving, updateSettings } = useSettings()
+  const [selectedRoleId, setSelectedRoleId] = useState<string>("")
 
   const settingsFormSchema = useMemo(() => createSettingsFormSchema(t), [t])
+
+  const roleOptions = settings.dashboard_widget_roles ?? []
+  const byRoleDefaults = useMemo(
+    () =>
+      normalizeDashboardWidgetsByRole(
+        settings.dashboard_widgets_by_role ?? {},
+        roleOptions.map((role) => role.id)
+      ),
+    [roleOptions, settings.dashboard_widgets_by_role]
+  )
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsFormSchema),
@@ -70,7 +85,7 @@ export function SettingsPage() {
       header_subtitle_ar: settings.header_subtitle_ar,
       default_timezone: settings.default_timezone,
       default_pagination_size: settings.default_pagination_size,
-      dashboard_widgets: settings.dashboard_widgets,
+      dashboard_widgets_by_role: byRoleDefaults,
     },
   })
 
@@ -84,14 +99,39 @@ export function SettingsPage() {
         header_subtitle_ar: settings.header_subtitle_ar,
         default_timezone: settings.default_timezone,
         default_pagination_size: settings.default_pagination_size,
-        dashboard_widgets: settings.dashboard_widgets,
+        dashboard_widgets_by_role: byRoleDefaults,
       })
     }
-  }, [isLoading, settings, form])
+  }, [isLoading, settings, form, byRoleDefaults])
+
+  useEffect(() => {
+    if (roleOptions.length === 0) {
+      setSelectedRoleId("")
+      return
+    }
+
+    setSelectedRoleId((current) => {
+      if (current && roleOptions.some((role) => String(role.id) === current)) {
+        return current
+      }
+      return String(roleOptions[0].id)
+    })
+  }, [roleOptions])
 
   async function onSubmit(values: SettingsFormValues) {
     try {
-      await updateSettings(values)
+      await updateSettings({
+        company_name: values.company_name,
+        sidebar_tagline_en: values.sidebar_tagline_en,
+        sidebar_tagline_ar: values.sidebar_tagline_ar,
+        header_subtitle_en: values.header_subtitle_en,
+        header_subtitle_ar: values.header_subtitle_ar,
+        default_timezone: values.default_timezone,
+        default_pagination_size: values.default_pagination_size,
+        dashboard_widgets: {
+          roles: values.dashboard_widgets_by_role,
+        },
+      })
     } catch (error) {
       const fieldErrors = getApiFieldErrors(error)
       if (fieldErrors) {
@@ -321,44 +361,95 @@ export function SettingsPage() {
                     {t("settings.dashboard.description")}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  {DASHBOARD_WIDGET_KEYS.map((widgetKey) => (
-                    <FormField
-                      key={widgetKey}
-                      control={form.control}
-                      name={`dashboard_widgets.${widgetKey}`}
-                      render={({ field }) => (
-                        <FormItem
-                          data-enabled={field.value}
-                          className="flex flex-row items-start gap-3 rounded-xl border border-stroke/80 p-3 transition-colors data-[enabled=true]:border-primary/30 data-[enabled=true]:bg-primary/[0.03]"
+                <CardContent className="space-y-4">
+                  {roleOptions.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      {t("settings.dashboard.noRoles")}
+                    </p>
+                  ) : (
+                    <>
+                      <div className="space-y-2">
+                        <FormLabel htmlFor="dashboard-widget-role">
+                          {t("settings.dashboard.roleLabel")}
+                        </FormLabel>
+                        <Select
+                          value={selectedRoleId}
+                          onValueChange={setSelectedRoleId}
                         >
-                          <FormControl>
-                            <Checkbox
-                              id={`dashboard-widget-${widgetKey}`}
-                              checked={field.value}
-                              onCheckedChange={(checked) =>
-                                field.onChange(checked === true)
-                              }
-                              className="mt-0.5"
+                          <SelectTrigger
+                            id="dashboard-widget-role"
+                            className="w-full max-w-md"
+                          >
+                            <SelectValue
+                              placeholder={t("settings.dashboard.rolePlaceholder")}
                             />
-                          </FormControl>
-                          <div className="min-w-0 space-y-1">
-                            <FormLabel
-                              htmlFor={`dashboard-widget-${widgetKey}`}
-                              className="cursor-pointer font-medium leading-none"
-                            >
-                              {t(`settings.dashboard.widgets.${widgetKey}`)}
-                            </FormLabel>
-                            <FormDescription>
-                              {t(
-                                `settings.dashboard.widgetHints.${widgetKey}`
-                              )}
-                            </FormDescription>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
-                  ))}
+                          </SelectTrigger>
+                          <SelectContent>
+                            {roleOptions.map((role) => (
+                              <SelectItem key={role.id} value={String(role.id)}>
+                                {role.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          {t("settings.dashboard.roleHint")}
+                        </FormDescription>
+                      </div>
+
+                      {selectedRoleId ? (
+                        <div className="space-y-3">
+                          {DASHBOARD_WIDGET_KEYS.map((widgetKey) => {
+                            const fieldName =
+                              `dashboard_widgets_by_role.${selectedRoleId}.${widgetKey}` as const
+
+                            return (
+                              <FormField
+                                key={`${selectedRoleId}-${widgetKey}`}
+                                control={form.control}
+                                name={fieldName}
+                                defaultValue={
+                                  DEFAULT_DASHBOARD_WIDGETS[widgetKey]
+                                }
+                                render={({ field }) => (
+                                  <FormItem
+                                    data-enabled={field.value}
+                                    className="flex flex-row items-start gap-3 rounded-xl border border-stroke/80 p-3 transition-colors data-[enabled=true]:border-primary/30 data-[enabled=true]:bg-primary/[0.03]"
+                                  >
+                                    <FormControl>
+                                      <Checkbox
+                                        id={`dashboard-widget-${selectedRoleId}-${widgetKey}`}
+                                        checked={field.value === true}
+                                        onCheckedChange={(checked) =>
+                                          field.onChange(checked === true)
+                                        }
+                                        className="mt-0.5"
+                                      />
+                                    </FormControl>
+                                    <div className="min-w-0 space-y-1">
+                                      <FormLabel
+                                        htmlFor={`dashboard-widget-${selectedRoleId}-${widgetKey}`}
+                                        className="cursor-pointer font-medium leading-none"
+                                      >
+                                        {t(
+                                          `settings.dashboard.widgets.${widgetKey}`
+                                        )}
+                                      </FormLabel>
+                                      <FormDescription>
+                                        {t(
+                                          `settings.dashboard.widgetHints.${widgetKey}`
+                                        )}
+                                      </FormDescription>
+                                    </div>
+                                  </FormItem>
+                                )}
+                              />
+                            )
+                          })}
+                        </div>
+                      ) : null}
+                    </>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>

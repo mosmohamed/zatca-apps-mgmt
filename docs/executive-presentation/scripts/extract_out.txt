@@ -1,0 +1,247 @@
+﻿LAYOUT DETAILS
+
+LAYOUT: Title Slide
+  fill type BACKGROUND (5)
+  shape PLACEHOLDER (14) 'Title 1' (1.67,1.23) 10.00x2.61
+    text: Click to edit Master title style
+  shape PLACEHOLDER (14) 'Subtitle 2' (1.67,3.94) 10.00x1.81
+    text: Click to edit Master subtitle style
+  shape PLACEHOLDER (14) 'Date Placeholder 3' (0.92,6.95) 3.00x0.40
+    text: 1/20/2026
+  shape PLACEHOLDER (14) 'Footer Placeholder 4' (0.00,6.95) 13.33x0.40
+  shape PLACEHOLDER (14) 'Slide Number Placeholder 5' (9.42,6.95) 3.00x0.40
+    text: ΓÇ╣#ΓÇ║
+  shape TEXT_BOX (17) 'fcSlideMaster.Title SlideFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+
+LAYOUT: Title and Content
+  fill type BACKGROUND (5)
+  shape PLACEHOLDER (14) 'Title 1' (0.92,0.40) 11.50x1.45
+    text: Click to edit Master title style
+  shape PLACEHOLDER (14) 'Content Placeholder 2' (0.92,2.00) 11.50x4.76
+    text: Click to edit Master text styles | Second level | Third level | Fourth level | F
+  shape PLACEHOLDER (14) 'Date Placeholder 3' (0.92,6.95) 3.00x0.40
+    text: 1/20/2026
+  shape PLACEHOLDER (14) 'Footer Placeholder 4' (0.00,6.95) 13.33x0.40
+  shape PLACEHOLDER (14) 'Slide Number Placeholder 5' (9.42,6.95) 3.00x0.40
+    text: ΓÇ╣#ΓÇ║
+  shape TEXT_BOX (17) 'fcSlideMaster.Title and ContentFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+
+LAYOUT: Section Header
+  fill type BACKGROUND (5)
+  shape PLACEHOLDER (14) 'Title 1' (0.91,1.87) 11.50x3.12
+    text: Click to edit Master title style
+  shape PLACEHOLDER (14) 'Text Placeholder 2' (0.91,5.02) 11.50x1.64
+    text: Click to edit Master text styles
+  shape PLACEHOLDER (14) 'Date Placeholder 3' (0.92,6.95) 3.00x0.40
+    text: 1/20/2026
+  shape PLACEHOLDER (14) 'Footer Placeholder 4' (0.00,6.95) 13.33x0.40
+  shape PLACEHOLDER (14) 'Slide Number Placeholder 5' (9.42,6.95) 3.00x0.40
+    text: ΓÇ╣#ΓÇ║
+  shape TEXT_BOX (17) 'fcSlideMaster.Section HeaderFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+
+LAYOUT: Two Content
+  fill type BACKGROUND (5)
+  shape PLACEHOLDER (14) 'Title 1' (0.92,0.40) 11.50x1.45
+    text: Click to edit Master title style
+  shape PLACEHOLDER (14) 'Content Placeholder 2' (0.92,2.00) 5.67x4.76
+    text: Click to edit Master text styles | Second level | Third level | Fourth level | F
+  shape PLACEHOLDER (14) 'Content Placeholder 3' (6.75,2.00) 5.67x4.76
+    text: Click to edit Master text styles | Second level | Third level | Fourth level | F
+  shape PLACEHOLDER (14) 'Date Placeholder 4' (0.92,6.95) 3.00x0.40
+    text: 1/20/2026
+  shape PLACEHOLDER (14) 'Footer Placeholder 5' (0.00,6.95) 13.33x0.40
+  shape PLACEHOLDER (14) 'Slide Number Placeholder 6' (9.42,6.95) 3.00x0.40
+    text: ΓÇ╣#ΓÇ║
+  shape TEXT_BOX (17) 'fcSlideMaster.Two ContentFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+
+LAYOUT: Comparison
+  fill type BACKGROUND (5)
+  shape PLACEHOLDER (14) 'Title 1' (0.92,0.40) 11.50x1.45
+    text: Click to edit Master title style
+  shape PLACEHOLDER (14) 'Text Placeholder 2' (0.92,1.84) 5.64x0.90
+    text: Click to edit Master text styles
+  shape PLACEHOLDER (14) 'Content Placeholder 3' (0.92,2.74) 5.64x4.03
+    text: Click to edit Master text styles | Second level | Third level | Fourth level | F
+  shape PLACEHOLDER (14) 'Text Placeholder 4' (6.75,1.84) 5.67x0.90
+    text: Click to edit Master text styles
+  shape PLACEHOLDER (14) 'Content Placeholder 5' (6.75,2.74) 5.67x4.03
+    text: Click to edit Master text styles | Second level | Third level | Fourth level | F
+  shape PLACEHOLDER (14) 'Date Placeholder 6' (0.92,6.95) 3.00x0.40
+    text: 1/20/2026
+  shape PLACEHOLDER (14) 'Footer Placeholder 7' (0.00,6.95) 13.33x0.40
+  shape PLACEHOLDER (14) 'Slide Number Placeholder 8' (9.42,6.95) 3.00x0.40
+    text: ΓÇ╣#ΓÇ║
+  shape TEXT_BOX (17) 'fcSlideMaster.ComparisonFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+
+LAYOUT: Title Only
+  fill type BACKGROUND (5)
+  shape PLACEHOLDER (14) 'Title 1' (0.92,0.40) 11.50x1.45
+    text: Click to edit Master title style
+  shape PLACEHOLDER (14) 'Date Placeholder 2' (0.92,6.95) 3.00x0.40
+    text: 1/20/2026
+  shape PLACEHOLDER (14) 'Footer Placeholder 3' (0.00,6.95) 13.33x0.40
+  shape PLACEHOLDER (14) 'Slide Number Placeholder 4' (9.42,6.95) 3.00x0.40
+    text: ΓÇ╣#ΓÇ║
+  shape TEXT_BOX (17) 'fcSlideMaster.Title OnlyFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+
+LAYOUT: Blank
+  fill type BACKGROUND (5)
+  shape PLACEHOLDER (14) 'Date Placeholder 1' (0.92,6.95) 3.00x0.40
+    text: 1/20/2026
+  shape PLACEHOLDER (14) 'Footer Placeholder 2' (0.00,6.95) 13.33x0.40
+    text: Public | ╪╣╪º┘à
+  shape PLACEHOLDER (14) 'Slide Number Placeholder 3' (9.42,6.95) 3.00x0.40
+    text: ΓÇ╣#ΓÇ║
+  shape TEXT_BOX (17) 'fcSlideMaster.BlankFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+
+LAYOUT: Content with Caption
+  fill type BACKGROUND (5)
+  shape PLACEHOLDER (14) 'Title 1' (0.92,0.50) 4.30x1.75
+    text: Click to edit Master title style
+  shape PLACEHOLDER (14) 'Content Placeholder 2' (5.67,1.08) 6.75x5.33
+    text: Click to edit Master text styles | Second level | Third level | Fourth level | F
+  shape PLACEHOLDER (14) 'Text Placeholder 3' (0.92,2.25) 4.30x4.17
+    text: Click to edit Master text styles
+  shape PLACEHOLDER (14) 'Date Placeholder 4' (0.92,6.95) 3.00x0.40
+    text: 1/20/2026
+  shape PLACEHOLDER (14) 'Footer Placeholder 5' (0.00,6.95) 13.33x0.40
+  shape PLACEHOLDER (14) 'Slide Number Placeholder 6' (9.42,6.95) 3.00x0.40
+    text: ΓÇ╣#ΓÇ║
+  shape TEXT_BOX (17) 'fcSlideMaster.Content with CaptionFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+
+LAYOUT: Picture with Caption
+  fill type BACKGROUND (5)
+  shape PLACEHOLDER (14) 'Title 1' (0.92,0.50) 4.30x1.75
+    text: Click to edit Master title style
+  shape PLACEHOLDER (14) 'Picture Placeholder 2' (5.67,1.08) 6.75x5.33
+  shape PLACEHOLDER (14) 'Text Placeholder 3' (0.92,2.25) 4.30x4.17
+    text: Click to edit Master text styles
+  shape PLACEHOLDER (14) 'Date Placeholder 4' (0.92,6.95) 3.00x0.40
+    text: 1/20/2026
+  shape PLACEHOLDER (14) 'Footer Placeholder 5' (0.00,6.95) 13.33x0.40
+  shape PLACEHOLDER (14) 'Slide Number Placeholder 6' (9.42,6.95) 3.00x0.40
+    text: ΓÇ╣#ΓÇ║
+  shape TEXT_BOX (17) 'fcSlideMaster.Picture with CaptionFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+
+LAYOUT: Title and Vertical Text
+  fill type BACKGROUND (5)
+  shape PLACEHOLDER (14) 'Title 1' (0.92,0.40) 11.50x1.45
+    text: Click to edit Master title style
+  shape PLACEHOLDER (14) 'Vertical Text Placeholder 2' (0.92,2.00) 11.50x4.76
+    text: Click to edit Master text styles | Second level | Third level | Fourth level | F
+  shape PLACEHOLDER (14) 'Date Placeholder 3' (0.92,6.95) 3.00x0.40
+    text: 1/20/2026
+  shape PLACEHOLDER (14) 'Footer Placeholder 4' (0.00,6.95) 13.33x0.40
+  shape PLACEHOLDER (14) 'Slide Number Placeholder 5' (9.42,6.95) 3.00x0.40
+    text: ΓÇ╣#ΓÇ║
+  shape TEXT_BOX (17) 'fcSlideMaster.Title and Vertical TextFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+
+LAYOUT: Vertical Title and Text
+  fill type BACKGROUND (5)
+  shape PLACEHOLDER (14) 'Vertical Title 1' (9.54,0.40) 2.87x6.36
+    text: Click to edit Master title style
+  shape PLACEHOLDER (14) 'Vertical Text Placeholder 2' (0.92,0.40) 8.46x6.36
+    text: Click to edit Master text styles | Second level | Third level | Fourth level | F
+  shape PLACEHOLDER (14) 'Date Placeholder 3' (0.92,6.95) 3.00x0.40
+    text: 1/20/2026
+  shape PLACEHOLDER (14) 'Footer Placeholder 4' (0.00,6.95) 13.33x0.40
+  shape PLACEHOLDER (14) 'Slide Number Placeholder 5' (9.42,6.95) 3.00x0.40
+    text: ΓÇ╣#ΓÇ║
+  shape TEXT_BOX (17) 'fcSlideMaster.Vertical Title and TextFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+
+LAYOUT: Cover 20 ARA
+  fill type BACKGROUND (5)
+  shape PICTURE (13) 'Picture 9' (0.00,0.00) 13.33x7.50
+  shape PICTURE (13) 'Picture 10' (0.00,0.00) 1.30x7.50
+  shape PICTURE (13) 'Graphic 11' (0.41,6.15) 1.54x0.95
+  shape PICTURE (13) 'Picture 12' (10.04,0.40) 2.89x0.63
+  shape TEXT_BOX (17) 'fcSlideMaster.Cover 20 ARAFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+  IMAGE saved layout_Cover_20_ARA.png (54277 bytes, image/png)
+  IMAGE saved layout_Cover_20_ARA_1.png (1332555 bytes, image/png)
+  IMAGE saved layout_Cover_20_ARA_2.png (78275 bytes, image/png)
+  IMAGE saved layout_Cover_20_ARA.bin (247407 bytes, image/svg+xml)
+  IMAGE saved layout_Cover_20_ARA_3.png (82640 bytes, image/png)
+
+LAYOUT: Grey ARA BG
+  fill type SOLID (1)
+  shape AUTO_SHAPE (1) 'Rectangle 3' (-0.00,0.00) 13.33x7.50
+  shape PICTURE (13) 'Picture 1' (0.00,3.56) 4.59x3.94
+  shape TEXT_BOX (17) 'Slide Number Placeholder' (0.41,7.01) 0.16x0.17
+    text: ΓÇ╣#ΓÇ║
+  shape PICTURE (13) 'Graphic 5' (0.41,0.40) 0.52x0.62
+  shape PLACEHOLDER (14) 'Content Placeholder 4' (2.06,0.47) 10.90x0.49
+    text: ╪º┘å┘é╪▒ ┘ä╪Ñ╪╢╪º┘ü╪⌐ ╪º┘ä┘å╪╡ ┘ç┘å╪º
+  shape TEXT_BOX (17) 'fcSlideMaster.Grey ARA BGFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+  IMAGE saved layout_Grey_ARA_BG.png (96712 bytes, image/png)
+  IMAGE saved layout_Grey_ARA_BG_1.png (41436 bytes, image/png)
+
+LAYOUT: White ARA BG
+  fill type SOLID (1)
+  shape PICTURE (13) 'Picture 5' (0.00,3.56) 4.59x3.94
+  shape PICTURE (13) 'Graphic 5' (0.41,0.40) 0.52x0.62
+  shape PLACEHOLDER (14) 'Content Placeholder 4' (2.06,0.47) 10.90x0.49
+    text: ╪º┘å┘é╪▒ ┘ä╪Ñ╪╢╪º┘ü╪⌐ ╪º┘ä┘å╪╡ ┘ç┘å╪º
+  shape TEXT_BOX (17) 'fcSlideMaster.White ARA BGFooter' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+  IMAGE saved layout_White_ARA_BG.png (96712 bytes, image/png)
+  IMAGE saved layout_White_ARA_BG_1.png (41436 bytes, image/png)
+
+LAYOUT: 1_Divider 3
+  fill type BACKGROUND (5)
+  shape PICTURE (13) 'Picture 1' (0.00,-0.00) 13.33x7.50
+  shape PICTURE (13) 'Picture 2' (0.00,0.00) 13.33x7.50
+  shape PICTURE (13) 'Picture 3' (0.00,0.00) 13.33x7.50
+  shape PICTURE (13) 'Picture 4' (0.00,3.56) 4.59x3.94
+  shape AUTO_SHAPE (1) 'Round Single Corner Rectangle 5' (2.88,3.18) 8.56x1.50
+  shape FREEFORM (5) 'Freeform 6' (4.90,4.61) 6.54x0.07
+  shape TEXT_BOX (17) 'Slide Number Placeholder' (0.41,7.01) 0.16x0.17
+    text: ΓÇ╣#ΓÇ║
+  shape PICTURE (13) 'Graphic 5' (0.41,0.40) 0.52x0.62
+  shape TEXT_BOX (17) 'fcSlideMaster.1_Divider 3Footer' (0.00,7.09) 13.33x0.30
+    text: Public | ╪╣╪º┘à
+  IMAGE saved layout_1_Divider_3.jpg (505005 bytes, image/jpeg)
+  IMAGE saved layout_1_Divider_3.png (232463 bytes, image/png)
+  IMAGE saved layout_1_Divider_3_1.png (174099 bytes, image/png)
+  IMAGE saved layout_1_Divider_3_2.png (41436 bytes, image/png)
+  IMAGE saved layout_1_Divider_3_3.png (198300 bytes, image/png)
+SLIDE4 pic slide4_pic_0.png @(0.00,0.00) 13.33x7.50 232463b
+SLIDE4 pic slide4_pic_1.jpg @(0.00,0.00) 13.33x7.50 505005b
+SLIDE4 pic slide4_pic_2.png @(0.00,0.00) 13.33x7.50 198300b
+SLIDE4 pic slide4_pic_3.png @(0.00,3.56) 4.59x3.94 41436b
+SLIDE4 pic slide4_pic_4.png @(0.41,6.27) 1.34x0.83 82640b
+SLIDE4 pic slide4_pic_5.png @(10.04,0.40) 2.89x0.63 78275b
+
+Extracted to c:\Users\mosmo\OneDrive\Desktop\it-portfolio-system\docs\executive-presentation\assets\style-extracted
+  layout_1_Divider_3.jpg 505005
+  layout_1_Divider_3.png 232463
+  layout_1_Divider_3_1.png 174099
+  layout_1_Divider_3_2.png 41436
+  layout_1_Divider_3_3.png 198300
+  layout_Cover_20_ARA.bin 247407
+  layout_Cover_20_ARA.png 54277
+  layout_Cover_20_ARA_1.png 1332555
+  layout_Cover_20_ARA_2.png 78275
+  layout_Cover_20_ARA_3.png 82640
+  layout_Grey_ARA_BG.png 96712
+  layout_Grey_ARA_BG_1.png 41436
+  layout_White_ARA_BG.png 96712
+  layout_White_ARA_BG_1.png 41436
+  slide4_pic_0.png 232463
+  slide4_pic_1.jpg 505005
+  slide4_pic_2.png 198300
+  slide4_pic_3.png 41436
+  slide4_pic_4.png 82640
+  slide4_pic_5.png 78275

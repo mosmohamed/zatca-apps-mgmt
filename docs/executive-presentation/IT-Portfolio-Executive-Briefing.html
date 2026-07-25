@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT Portfolio &amp; Access Management — Executive Briefing</title>
+  <style>
+    :root {
+      --navy: #0b1f33;
+      --navy-mid: #14324d;
+      --slate: #334155;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --bg: #f8fafc;
+      --white: #ffffff;
+      --accent: #0f766e;
+      --accent-soft: #ccfbf1;
+      --warn: #b45309;
+      --risk: #b91c1c;
+      --risk-soft: #fee2e2;
+      --gold: #a16207;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      background: #0a1628;
+      color: var(--navy);
+    }
+
+    .deck {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem 1.25rem 0.5rem;
+      position: relative;
+    }
+
+    .slide {
+      display: none;
+      width: min(1180px, 96vw);
+      height: min(662px, calc(100vh - 7.5rem));
+      background: var(--white);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      position: relative;
+      flex-direction: column;
+    }
+
+    .slide.active { display: flex; }
+
+    .slide-accent-bar {
+      height: 6px;
+      background: linear-gradient(90deg, var(--navy) 0%, var(--accent) 100%);
+      flex-shrink: 0;
+    }
+
+    .slide-body {
+      flex: 1;
+      padding: 2rem 2.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.55rem;
+    }
+
+    h1 {
+      font-size: 2.15rem;
+      line-height: 1.15;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      max-width: 920px;
+    }
+
+    h2 {
+      font-size: 1.65rem;
+      line-height: 1.2;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.015em;
+      margin-bottom: 0.35rem;
+    }
+
+    .subtitle {
+      margin-top: 0.75rem;
+      font-size: 1.05rem;
+      color: var(--slate);
+      max-width: 820px;
+      line-height: 1.45;
+    }
+
+    .key-message {
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.92rem;
+      color: var(--navy-mid);
+      font-weight: 600;
+    }
+
+    .key-message span {
+      color: var(--accent);
+      font-weight: 700;
+      margin-inline-end: 0.4rem;
+    }
+
+    .footer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.65rem 2.5rem 0.85rem;
+      border-top: 1px solid var(--line);
+      background: var(--bg);
+      font-size: 0.72rem;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin-top: 1.1rem;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.9rem 1rem;
+      background: var(--white);
+    }
+
+    .card.soft { background: var(--bg); }
+    .card.risk { background: #fff7f7; border-color: #fecaca; }
+    .card.accent { background: #f0fdfa; border-color: #99f6e4; }
+    .card.warn { background: #fffbeb; border-color: #fde68a; }
+
+    .card h3 {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 0.35rem;
+    }
+
+    .card p, .card li {
+      font-size: 0.82rem;
+      color: var(--slate);
+      line-height: 1.4;
+    }
+
+    .card ul { padding-inline-start: 1rem; }
+    .card li + li { margin-top: 0.25rem; }
+
+    .icon-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 800;
+      margin-bottom: 0.45rem;
+    }
+
+    .icon-pill.risk { background: var(--risk-soft); color: var(--risk); }
+    .icon-pill.warn { background: #fef3c7; color: var(--warn); }
+
+    .title-slide {
+      background: var(--navy);
+      color: white;
+    }
+
+    .title-slide .slide-accent-bar {
+      background: var(--accent);
+    }
+
+    .title-slide .slide-body {
+      justify-content: center;
+      padding: 3rem 3rem 2rem;
+    }
+
+    .title-slide h1 {
+      color: white;
+      font-size: 2.5rem;
+      max-width: 880px;
+    }
+
+    .title-slide .subtitle { color: #cbd5e1; }
+    .title-slide .eyebrow { color: #5eead4; }
+
+    .title-slide .meta-row {
+      margin-top: 2rem;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+
+    .title-slide .footer-meta {
+      background: #071422;
+      border-top-color: #1e293b;
+      color: #64748b;
+    }
+
+    .title-slide .key-message {
+      border-top-color: #1e3a4f;
+      color: #e2e8f0;
+    }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .flow-step {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.55rem 0.7rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+    }
+
+    .flow-arrow {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1.25rem;
+      margin-top: 1.1rem;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .bullet-list {
+      list-style: none;
+      margin-top: 1rem;
+    }
+
+    .bullet-list li {
+      position: relative;
+      padding-inline-start: 1.15rem;
+      margin-bottom: 0.55rem;
+      font-size: 0.95rem;
+      color: var(--slate);
+      line-height: 1.4;
+    }
+
+    .bullet-list li::before {
+      content: "";
+      position: absolute;
+      inset-inline-start: 0;
+      top: 0.45rem;
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-top: 1.1rem;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.9rem;
+      background: var(--bg);
+    }
+
+    .stat .value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+
+    .stat .label {
+      margin-top: 0.25rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.65rem 1.25rem 0.9rem;
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+
+    .controls-left, .controls-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid #334155;
+      background: #132337;
+      color: #e2e8f0;
+      border-radius: 6px;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+
+    .btn:hover { background: #1a3150; }
+    .btn:disabled { opacity: 0.4; cursor: default; }
+
+    .progress {
+      width: 180px;
+      height: 4px;
+      background: #1e293b;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress > span {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+
+    .notes-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.25s ease;
+      background: #0f172a;
+      color: #cbd5e1;
+      border-top: 1px solid #1e293b;
+    }
+
+    .notes-panel.open { max-height: 220px; }
+
+    .notes-inner {
+      padding: 0.85rem 1.5rem 1rem;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .notes-inner strong {
+      color: #5eead4;
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .visual-hint {
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .capability {
+      display: flex;
+      gap: 0.65rem;
+      align-items: flex-start;
+    }
+
+    .capability .num {
+      flex-shrink: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 4px;
+      background: var(--navy);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.1rem;
+    }
+
+    .capability h3 { font-size: 0.86rem; margin-bottom: 0.15rem; }
+    .capability p { font-size: 0.76rem; color: var(--muted); line-height: 1.35; }
+
+    .closing {
+      background: var(--navy);
+      color: white;
+    }
+
+    .closing h2, .closing h1 { color: white; }
+    .closing .subtitle { color: #cbd5e1; }
+    .closing .key-message {
+      border-top-color: #1e3a4f;
+      color: #e2e8f0;
+    }
+    .closing .footer-meta {
+      background: #071422;
+      border-top-color: #1e293b;
+      color: #64748b;
+    }
+    .closing .card {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.12);
+    }
+    .closing .card h3 { color: #f8fafc; }
+    .closing .card p { color: #94a3b8; }
+
+    @media (max-width: 900px) {
+      .grid-2, .grid-3, .grid-4, .stat-row, .two-col {
+        grid-template-columns: 1fr;
+      }
+      .slide { height: auto; min-height: 70vh; }
+      h1 { font-size: 1.6rem; }
+      h2 { font-size: 1.3rem; }
+    }
+
+    @media print {
+      .controls, .notes-panel { display: none !important; }
+      .slide {
+        display: flex !important;
+        page-break-after: always;
+        box-shadow: none;
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        border-radius: 0;
+      }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <div class="stage" id="stage"></div>
+
+    <div class="notes-panel" id="notesPanel">
+      <div class="notes-inner">
+        <strong>Speaker notes</strong>
+        <div id="notesText"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="controls-left">
+        <button class="btn" id="prevBtn" type="button">← Prev</button>
+        <button class="btn" id="nextBtn" type="button">Next →</button>
+        <button class="btn" id="notesBtn" type="button">Speaker notes</button>
+        <span id="slideCounter">1 / 1</span>
+      </div>
+      <div class="controls-right">
+        <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+        <span>← → to navigate · F for fullscreen · N for notes · P to print</span>
+      </div>
+    </div>
+  </div>
+
+  <template id="slides-data"></template>
+
+  <script>
+    const slides = [
+      {
+        section: "Opening",
+        title: "IT Portfolio & Access Management",
+        type: "title",
+        eyebrow: "Executive Briefing  ·  Confidential",
+        heading: "Governing the Enterprise Application Portfolio with Clarity, Control, and Accountability",
+        subtitle: "A business case for centralizing digital asset governance, license control, identity access, and executive decision support.",
+        meta: ["Audience: Senior Management & Directors", "Format: Strategic Briefing + Live Demonstration", "Outcome: Informed investment decision"],
+        key: "This is not an IT tool discussion — it is a governance and risk conversation.",
+        notes: "Open by framing the session as a business decision, not a software demo. Emphasize that every organization of our scale depends on dozens (or hundreds) of applications — yet ownership, cost, and access are often managed in fragments. Promise a clear story: problem → impact → solution → value → roadmap → demo.",
+        visual: "Full-bleed navy title slide. Teal accent line. Organization logo top-right (optional). No screenshots.",
+        icons: "Shield / Building / Chart rising",
+        transition: "Move from ambition to the uncomfortable truth: how we manage applications today."
+      },
+      {
+        section: "01  Executive Summary",
+        title: "Executive Summary",
+        eyebrow: "01  ·  Executive Summary",
+        heading: "The organization cannot govern what it cannot see",
+        subtitle: "Critical digital assets — applications, licenses, vendors, and access rights — are too often managed through spreadsheets, inbox trails, and tribal knowledge.",
+        body: `
+          <div class="grid-3">
+            <div class="card soft">
+              <div class="icon-pill">1</div>
+              <h3>Fragmented control</h3>
+              <p>Application data lives across teams, files, and personal knowledge — with no single authoritative source.</p>
+            </div>
+            <div class="card soft">
+              <div class="icon-pill">2</div>
+              <h3>Rising exposure</h3>
+              <p>Untracked licenses, unclear ownership, and weak access oversight increase cost, audit, and security risk.</p>
+            </div>
+            <div class="card soft">
+              <div class="icon-pill">3</div>
+              <h3>Limited foresight</h3>
+              <p>Leaders lack timely answers on portfolio health, renewals, utilization, and departmental accountability.</p>
+            </div>
+          </div>
+          <p class="visual-hint">Visual: Three equal cards under a one-line thesis. Optional thin timeline at bottom: Spreadsheets → Risk → Platform.</p>
+        `,
+        key: "Manual portfolio management does not scale with enterprise complexity.",
+        notes: "Spend 60–90 seconds here. Do not list features. State the thesis: without a centralized governance platform, leadership is flying partially blind. Connect emotionally to audit season, renewal surprises, and 'who owns this app?' moments.",
+        visual: "Clean three-pillar summary. Avoid product UI.",
+        icons: "Scattered documents · Warning triangle · Blindfolded dashboard",
+        transition: "Zoom into the concrete operational challenges executives already recognize."
+      },
+      {
+        section: "02  Current Challenges",
+        title: "Current Challenges",
+        eyebrow: "02  ·  Current State",
+        heading: "Today’s operating model creates avoidable complexity",
+        subtitle: "These are familiar pain points across enterprise IT, procurement, security, and business ownership.",
+        body: `
+          <div class="grid-3">
+            <div class="card">
+              <div class="icon-pill warn">A</div>
+              <h3>Inventory chaos</h3>
+              <ul>
+                <li>Applications scattered across spreadsheets</li>
+                <li>No centralized inventory</li>
+                <li>Unknown or outdated owners</li>
+                <li>Duplicate or shadow systems</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="icon-pill warn">B</div>
+              <h3>License & vendor blind spots</h3>
+              <ul>
+                <li>Difficult license tracking</li>
+                <li>Expired or near-expiry licenses</li>
+                <li>Weak environment visibility</li>
+                <li>Vendor criticality unclear</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="icon-pill warn">C</div>
+              <h3>Governance gaps</h3>
+              <ul>
+                <li>Inconsistent access control</li>
+                <li>No reliable audit trail</li>
+                <li>Painful management reporting</li>
+                <li>Knowledge walks out with people</li>
+              </ul>
+            </div>
+          </div>
+        `,
+        key: "The problem is not effort — it is the absence of a controlled system of record.",
+        notes: "Ask the room (rhetorically): Can we produce, in under one hour, an authoritative list of production applications, owners, and licenses expiring this quarter? If the answer is 'it depends who you ask,' the case is already made.",
+        visual: "Three challenge columns with amber markers. Optional faded spreadsheet collage in background at 8% opacity.",
+        icons: "Spreadsheet · Key/license · Broken chain (governance)",
+        transition: "Translate operational pain into board-level consequences."
+      },
+      {
+        section: "03  Business Impact",
+        title: "Business Impact",
+        eyebrow: "03  ·  Risk & Cost Exposure",
+        heading: "What this costs the organization if left unaddressed",
+        subtitle: "Fragmentation is not a documentation issue — it is a risk, cost, and accountability issue.",
+        body: `
+          <div class="grid-2">
+            <div class="card risk">
+              <div class="icon-pill risk">Risk</div>
+              <h3>Operational & security exposure</h3>
+              <ul>
+                <li>Increased operational risk from undocumented dependencies</li>
+                <li>Security gaps when access rights are unclear</li>
+                <li>Knowledge loss when key people leave</li>
+                <li>Shadow IT and duplicate applications</li>
+              </ul>
+            </div>
+            <div class="card warn">
+              <div class="icon-pill warn">Cost</div>
+              <h3>Financial & compliance pressure</h3>
+              <ul>
+                <li>Higher licensing spend from unused seats and surprise renewals</li>
+                <li>Compliance findings due to weak evidence trails</li>
+                <li>Slower, lower-quality investment decisions</li>
+                <li>Repeated fire drills before audits and board reviews</li>
+              </ul>
+            </div>
+          </div>
+          <div class="stat-row">
+            <div class="stat"><div class="value">↑ Risk</div><div class="label">Unowned systems and unclear access</div></div>
+            <div class="stat"><div class="value">↑ Cost</div><div class="label">Shelfware & late renewals</div></div>
+            <div class="stat"><div class="value">↓ Speed</div><div class="label">Manual reporting cycles</div></div>
+            <div class="stat"><div class="value">↓ Trust</div><div class="label">Conflicting sources of truth</div></div>
+          </div>
+        `,
+        key: "Inaction has a compounding cost — financial, regulatory, and operational.",
+        notes: "Keep this slide executive. Avoid scare tactics; use sober language. If you have one internal anecdote (expired license scramble, audit request that took weeks), use it briefly. Otherwise keep qualitative.",
+        visual: "Split risk/cost panels + four impact metrics. Red/amber sparingly.",
+        icons: "Shield alert · Currency · Clock · Broken trust",
+        transition: "Introduce the platform as the governance response — vision first."
+      },
+      {
+        section: "04  Proposed Solution",
+        title: "Proposed Solution",
+        eyebrow: "04  ·  Strategic Response",
+        heading: "An Enterprise IT Governance Platform",
+        subtitle: "A single, authoritative system to centralize the application portfolio, license governance, identity access, and executive reporting.",
+        body: `
+          <div class="two-col">
+            <div>
+              <p class="section-label">Vision</p>
+              <ul class="bullet-list">
+                <li><strong>One source of truth</strong> for applications, owners, vendors, and technologies</li>
+                <li><strong>Controlled access</strong> with clear roles, accountability, and identity integration</li>
+                <li><strong>License discipline</strong> across environments, utilization, and renewal cycles</li>
+                <li><strong>Executive visibility</strong> through trusted dashboards — not slide-assembled reports</li>
+                <li><strong>Defensible compliance</strong> through continuous activity evidence</li>
+              </ul>
+            </div>
+            <div class="card accent">
+              <div class="icon-pill">Platform</div>
+              <h3>What this is</h3>
+              <p style="margin-bottom:0.6rem">An enterprise governance layer for digital assets and access — designed for directors, auditors, IT leaders, and operational owners.</p>
+              <h3>What this is not</h3>
+              <p>Not a spreadsheet replacement exercise. Not a developer utility. Not a point solution for a single team.</p>
+            </div>
+          </div>
+        `,
+        key: "From fragmented records → to governed enterprise intelligence.",
+        notes: "Name the product once: IT Portfolio & Access Management System. Then stay on outcomes. Emphasize 'system of record + system of insight.' Pause after the vision bullets — let the room absorb the shift from chaos to control.",
+        visual: "Left vision bullets, right positioning card. Optional simple hub diagram: Portfolio · Licenses · Identity · Insights.",
+        icons: "Central hub with four spokes",
+        transition: "Map the vision to concrete business capabilities."
+      },
+      {
+        section: "05  Core Capabilities",
+        title: "Core Business Capabilities",
+        eyebrow: "05  ·  Capability Landscape",
+        heading: "Nine capabilities that turn governance into daily practice",
+        subtitle: "Each capability maps to a business outcome — not a screen.",
+        body: `
+          <div class="grid-3" style="margin-top:0.85rem">
+            <div class="card capability"><div class="num">01</div><div><h3>Centralized Application Portfolio</h3><p>Digital asset governance — one inventory of systems, status, criticality, and ownership.</p></div></div>
+            <div class="card capability"><div class="num">02</div><div><h3>License Lifecycle Management</h3><p>Cost optimization — track entitlement, utilization, expiry, and environment context.</p></div></div>
+            <div class="card capability"><div class="num">03</div><div><h3>Vendor Management</h3><p>Third-party risk clarity — know which partners underpin critical services.</p></div></div>
+            <div class="card capability"><div class="num">04</div><div><h3>Department Ownership</h3><p>Accountability — every application linked to an organizational owner.</p></div></div>
+            <div class="card capability"><div class="num">05</div><div><h3>Environment Tracking</h3><p>Operational awareness — production vs non-production exposure and spend.</p></div></div>
+            <div class="card capability"><div class="num">06</div><div><h3>User & Role Management</h3><p>Access governance — who can see and change what, by design.</p></div></div>
+            <div class="card capability"><div class="num">07</div><div><h3>Identity Integration (SSO)</h3><p>Enterprise authentication — align access with corporate identity standards.</p></div></div>
+            <div class="card capability"><div class="num">08</div><div><h3>Audit & Activity Logging</h3><p>Compliance evidence — who changed what, when, and why it matters.</p></div></div>
+            <div class="card capability"><div class="num">09</div><div><h3>Dashboards & Executive Reporting</h3><p>Decision support — portfolio health visible without manual collation.</p></div></div>
+          </div>
+        `,
+        key: "Capabilities are the bridge between strategy and measurable control.",
+        notes: "Do not demo here. Read 3–4 capabilities aloud and paraphrase the rest. Translate live: 'License management means we stop paying for shelfware.' 'Activity logging means audit requests become retrieval, not reconstruction.'",
+        visual: "3×3 capability mosaic. Navy numbered tiles.",
+        icons: "Nine minimal line icons matching each capability",
+        transition: "Convert capabilities into the benefits leadership cares about."
+      },
+      {
+        section: "06  Business Benefits",
+        title: "Business Benefits",
+        eyebrow: "06  ·  Outcomes",
+        heading: "What leadership should expect after adoption",
+        subtitle: "Benefits are expressed as organizational outcomes — not feature checklists.",
+        body: `
+          <div class="grid-4">
+            <div class="card soft"><div class="icon-pill">G</div><h3>Better governance</h3><p>Policies enforced through process and permission — not tribal knowledge.</p></div>
+            <div class="card soft"><div class="icon-pill">1</div><h3>Single source of truth</h3><p>One trusted portfolio for IT, business, procurement, and audit.</p></div>
+            <div class="card soft"><div class="icon-pill">↓</div><h3>Reduced operational risk</h3><p>Fewer unknowns around ownership, access, and critical dependencies.</p></div>
+            <div class="card soft"><div class="icon-pill">⏱</div><h3>Faster audits</h3><p>Evidence on demand instead of multi-week data hunts.</p></div>
+            <div class="card soft"><div class="icon-pill">$</div><h3>Reduced software waste</h3><p>Visibility into unused seats and redundant tools.</p></div>
+            <div class="card soft"><div class="icon-pill">✓</div><h3>Improved compliance</h3><p>Traceable changes and accountable access decisions.</p></div>
+            <div class="card soft"><div class="icon-pill">◎</div><h3>Executive visibility</h3><p>Portfolio answers in minutes for leadership forums.</p></div>
+            <div class="card soft"><div class="icon-pill">◎</div><h3>Clear accountability</h3><p>Owners, departments, and approvers are explicit.</p></div>
+          </div>
+        `,
+        key: "Value is realized when the platform becomes the default place leadership trusts.",
+        notes: "Pick two benefits that resonate with your audience (often: audit speed + license waste). Offer to quantify in a follow-up working session using current spreadsheet effort and renewal surprises.",
+        visual: "Eight outcome cards in a compact grid. Teal icon pills.",
+        icons: "Check, shield, clock, coins, eye, people",
+        transition: "Deepen the trust story: security and governance controls."
+      },
+      {
+        section: "07  Security & Governance",
+        title: "Security & Governance",
+        eyebrow: "07  ·  Trust Architecture (Business View)",
+        heading: "Control by design — not control by heroics",
+        subtitle: "Enterprise-grade access and accountability mechanisms protect the portfolio itself.",
+        body: `
+          <div class="grid-3">
+            <div class="card">
+              <div class="icon-pill">RBAC</div>
+              <h3>Role-based access control</h3>
+              <p>Least privilege by role. Sensitive actions limited to authorized personnel.</p>
+            </div>
+            <div class="card">
+              <div class="icon-pill">SSO</div>
+              <h3>Enterprise authentication</h3>
+              <p>SSO and identity federation align platform access with corporate identity standards.</p>
+            </div>
+            <div class="card">
+              <div class="icon-pill">Map</div>
+              <h3>Role mapping</h3>
+              <p>Identity claims from the corporate directory can drive platform roles consistently.</p>
+            </div>
+            <div class="card">
+              <div class="icon-pill">Log</div>
+              <h3>Audit & activity tracking</h3>
+              <p>Material changes leave an evidence trail suitable for internal and external review.</p>
+            </div>
+            <div class="card">
+              <div class="icon-pill">Min</div>
+              <h3>Least privilege</h3>
+              <p>Employees see what they need; administrators govern deliberately.</p>
+            </div>
+            <div class="card">
+              <div class="icon-pill">ID</div>
+              <h3>Identity federation</h3>
+              <p>Reduce local credential sprawl and strengthen joiners/movers/leavers discipline.</p>
+            </div>
+          </div>
+        `,
+        key: "Governance of the portfolio must itself be governed.",
+        notes: "Reassure security and risk stakeholders: the platform is built for controlled access and auditability. Avoid protocol deep-dives unless asked. If pressed: 'We support enterprise SSO patterns and permissioned administration.'",
+        visual: "Six governance cards. Optional simple identity flow: Directory → SSO → Role → Permission → Action → Audit.",
+        icons: "Lock, key, id badge, clipboard, funnel, network nodes",
+        transition: "Show how visibility turns controls into better decisions."
+      },
+      {
+        section: "08  Analytics & Decision Support",
+        title: "Analytics & Decision Support",
+        eyebrow: "08  ·  Executive Questions, Answered",
+        heading: "From data hunting to decision-ready insight",
+        subtitle: "Dashboards exist to answer the questions directors actually ask.",
+        body: `
+          <div class="grid-2">
+            <div class="card soft">
+              <h3>Questions the platform is designed to answer</h3>
+              <ul>
+                <li>Which licenses expire in the next 30 days?</li>
+                <li>Which departments own the most applications?</li>
+                <li>Where is license utilization weak (paid but unused)?</li>
+                <li>Which vendors are most critical to operations?</li>
+                <li>How are applications distributed by status and environment?</li>
+                <li>What changed recently — and who changed it?</li>
+              </ul>
+            </div>
+            <div class="card accent">
+              <h3>Decision support themes</h3>
+              <ul>
+                <li><strong>Cost:</strong> utilization, renewals, shelfware signals</li>
+                <li><strong>Risk:</strong> expired entitlements, ownership gaps</li>
+                <li><strong>Accountability:</strong> department and owner concentration</li>
+                <li><strong>Strategy:</strong> technology and HA footprint</li>
+                <li><strong>Assurance:</strong> recent governed activity</li>
+              </ul>
+              <p class="visual-hint" style="margin-top:0.75rem">Live demo will open on the executive dashboard.</p>
+            </div>
+          </div>
+        `,
+        key: "If a question requires three spreadsheets, it is already too late for agile leadership.",
+        notes: "This slide primes the demo. Ask the room which question they want answered first during the live walkthrough — then deliver it on the dashboard.",
+        visual: "Q&A split layout. Optional mock KPI strip (illustrative, clearly labeled as example).",
+        icons: "Bar chart, pie chart, calendar alert, building",
+        transition: "Show that the platform is a foundation — with a deliberate roadmap."
+      },
+      {
+        section: "09  Future Roadmap",
+        title: "Future Roadmap",
+        eyebrow: "09  ·  Evolution Path",
+        heading: "A platform designed to grow with enterprise ambition",
+        subtitle: "Near-term hardening and longer-term intelligence — sequenced to reduce risk before adding sophistication.",
+        body: `
+          <div class="grid-3">
+            <div class="card">
+              <div class="section-label">Horizon 1</div>
+              <h3>Integrate & automate</h3>
+              <ul>
+                <li>Deeper Microsoft Entra ID alignment</li>
+                <li>Automated license renewal alerts</li>
+                <li>Notifications & approval workflows</li>
+                <li>Expanded API integrations</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="section-label">Horizon 2</div>
+              <h3>Connect the enterprise</h3>
+              <ul>
+                <li>CMDB integration</li>
+                <li>ServiceNow integration</li>
+                <li>Broader ITSM / operations sync</li>
+                <li>Mobile-friendly leadership access</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="section-label">Horizon 3</div>
+              <h3>Anticipate & advise</h3>
+              <ul>
+                <li>AI-assisted portfolio insights</li>
+                <li>Predictive renewal & waste analytics</li>
+                <li>Scenario support for investment decisions</li>
+                <li>Continuous access review automation</li>
+              </ul>
+            </div>
+          </div>
+        `,
+        key: "Start with control and truth — then add prediction.",
+        notes: "Roadmap builds confidence that this is not a dead-end tool. Emphasize prioritization with stakeholders. Do not over-promise dates unless you have them.",
+        visual: "Three horizon columns. Subtle increasing accent intensity left→right.",
+        icons: "Plug · Network · Spark/insight",
+        transition: "Close the value case with ROI language executives expect."
+      },
+      {
+        section: "10  Return on Investment",
+        title: "Return on Investment",
+        eyebrow: "10  ·  Value Realization",
+        heading: "Where the return appears in the operating model",
+        subtitle: "ROI is realized through time, cost avoidance, risk reduction, and decision quality — not vanity metrics.",
+        body: `
+          <div class="stat-row">
+            <div class="stat"><div class="value">Time</div><div class="label">Hours saved preparing audits, renewals, and leadership packs</div></div>
+            <div class="stat"><div class="value">Cost</div><div class="label">Lower waste from unused licenses and duplicate tooling</div></div>
+            <div class="stat"><div class="value">Risk</div><div class="label">Fewer surprises from expiry, ownership gaps, and access drift</div></div>
+            <div class="stat"><div class="value">Speed</div><div class="label">Faster, evidence-based reporting to management</div></div>
+          </div>
+          <div class="grid-2" style="margin-top:0.9rem">
+            <div class="card soft">
+              <h3>Direct value levers</h3>
+              <ul>
+                <li>Reduced manual consolidation work</li>
+                <li>Earlier renewal intervention</li>
+                <li>Clearer reclamation of unused entitlements</li>
+                <li>Less rework during compliance reviews</li>
+              </ul>
+            </div>
+            <div class="card soft">
+              <h3>Strategic value levers</h3>
+              <ul>
+                <li>Higher confidence in portfolio decisions</li>
+                <li>Stronger accountability culture</li>
+                <li>Reusable governance for future digital programs</li>
+                <li>Better negotiation posture with vendors</li>
+              </ul>
+            </div>
+          </div>
+        `,
+        key: "The cheapest control failure is the one prevented by visibility.",
+        notes: "If finance is in the room, propose a 90-day value baseline: hours spent on portfolio reporting today, number of urgent renewals last year, and known shelfware candidates. Offer a value-tracking appendix after the meeting.",
+        visual: "Four ROI pillars + two lever panels. No fake ROI percentages.",
+        icons: "Clock, coins, shield, gauge",
+        transition: "Move from narrative to proof — a guided live demonstration."
+      },
+      {
+        section: "11  Live Demonstration",
+        title: "Live Demonstration",
+        eyebrow: "11  ·  Recommended Demo Narrative",
+        heading: "A business story told through the platform",
+        subtitle: "The demonstration follows decisions — not menus.",
+        body: `
+          <div class="flow">
+            <div class="flow-step">1. Dashboard</div><div class="flow-arrow">→</div>
+            <div class="flow-step">2. Applications</div><div class="flow-arrow">→</div>
+            <div class="flow-step">3. Licenses</div><div class="flow-arrow">→</div>
+            <div class="flow-step">4. Vendors</div><div class="flow-arrow">→</div>
+            <div class="flow-step">5. Departments</div><div class="flow-arrow">→</div>
+            <div class="flow-step">6. Users</div><div class="flow-arrow">→</div>
+            <div class="flow-step">7. Roles</div><div class="flow-arrow">→</div>
+            <div class="flow-step">8. SSO</div><div class="flow-arrow">→</div>
+            <div class="flow-step">9. Audit</div><div class="flow-arrow">→</div>
+            <div class="flow-step">10. Insights</div>
+          </div>
+          <div class="grid-2" style="margin-top:1rem">
+            <div class="card">
+              <h3>Storyline to narrate</h3>
+              <ul>
+                <li><strong>See</strong> portfolio health at a glance</li>
+                <li><strong>Own</strong> applications and departmental accountability</li>
+                <li><strong>Control</strong> license cost and renewal risk</li>
+                <li><strong>Govern</strong> people, roles, and enterprise identity</li>
+                <li><strong>Prove</strong> changes with an audit trail</li>
+              </ul>
+            </div>
+            <div class="card accent">
+              <h3>Facilitation tips</h3>
+              <ul>
+                <li>Stay on the business question for each screen</li>
+                <li>Avoid deep form walkthroughs</li>
+                <li>Invite one executive question mid-demo</li>
+                <li>End on dashboard — return to leadership view</li>
+              </ul>
+            </div>
+          </div>
+        `,
+        key: "Demo to decide — not demo to explore every field.",
+        notes: "Before switching to the application, restate the flow in one breath. Keep total demo to 12–15 minutes unless the room wants depth. Assign a colleague to capture questions.",
+        visual: "Horizontal process flow + two coaching cards.",
+        icons: "Play / path nodes",
+        transition: "Enter the live system using the scripted path on the next slides."
+      },
+      {
+        section: "11  Demo Script",
+        title: "Demo Script — Part A",
+        eyebrow: "11a  ·  Demo Facilitation Card",
+        heading: "Portfolio visibility → ownership → cost control",
+        body: `
+          <div class="grid-3">
+            <div class="card">
+              <div class="section-label">Step 1</div>
+              <h3>Dashboard</h3>
+              <p><strong>Say:</strong> “This is the leadership view — applications, people, vendors, licenses, and risk signals without assembling a deck.”</p>
+              <p style="margin-top:0.45rem"><strong>Show:</strong> KPI strip, license expiry/utilization, department distribution.</p>
+            </div>
+            <div class="card">
+              <div class="section-label">Step 2</div>
+              <h3>Applications</h3>
+              <p><strong>Say:</strong> “Every system has a governed identity — status, criticality, ownership, and context.”</p>
+              <p style="margin-top:0.45rem"><strong>Show:</strong> Inventory list + one application detail.</p>
+            </div>
+            <div class="card">
+              <div class="section-label">Step 3</div>
+              <h3>License Management</h3>
+              <p><strong>Say:</strong> “This is where cost leakage becomes visible — seats, environments, and renewals.”</p>
+              <p style="margin-top:0.45rem"><strong>Show:</strong> Expiring soon + utilization example.</p>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top:0.85rem">
+            <div class="card soft">
+              <div class="section-label">Step 4</div>
+              <h3>Vendors</h3>
+              <p>Connect third parties to the portfolio. Narrative: critical vendor concentration risk.</p>
+            </div>
+            <div class="card soft">
+              <div class="section-label">Step 5</div>
+              <h3>Departments</h3>
+              <p>Show accountability by organizational unit — who owns what volume of the estate.</p>
+            </div>
+          </div>
+        `,
+        key: "First half of the demo proves visibility and cost control.",
+        notes: "Keep each step under 90 seconds. If leadership engages on licenses, allow a brief deeper dive — that is often the ROI moment.",
+        visual: "Facilitation cards only. No screenshots required in the slide file.",
+        icons: "1–5 numbered markers",
+        transition: "Continue into identity, governance, and assurance."
+      },
+      {
+        section: "11  Demo Script",
+        title: "Demo Script — Part B",
+        eyebrow: "11b  ·  Demo Facilitation Card",
+        heading: "Identity → access governance → assurance → close",
+        body: `
+          <div class="grid-2">
+            <div class="card">
+              <div class="section-label">Step 6–7</div>
+              <h3>Users · Roles & Permissions</h3>
+              <p><strong>Say:</strong> “Access to the governance platform is itself governed — least privilege, clear roles, no shared ambiguity.”</p>
+              <p style="margin-top:0.45rem"><strong>Show:</strong> Role list and permission intent at a high level (avoid checkbox tourism).</p>
+            </div>
+            <div class="card">
+              <div class="section-label">Step 8</div>
+              <h3>Identity Providers (SSO)</h3>
+              <p><strong>Say:</strong> “Enterprise authentication brings the platform into the corporate identity fabric.”</p>
+              <p style="margin-top:0.45rem"><strong>Show:</strong> Configured provider concept / settings area without exposing secrets.</p>
+            </div>
+            <div class="card">
+              <div class="section-label">Step 9</div>
+              <h3>Audit Logs</h3>
+              <p><strong>Say:</strong> “When auditors ask what changed, we retrieve — we do not reconstruct.”</p>
+              <p style="margin-top:0.45rem"><strong>Show:</strong> Recent material activity.</p>
+            </div>
+            <div class="card">
+              <div class="section-label">Step 10</div>
+              <h3>Return to Dashboard / Reports</h3>
+              <p><strong>Say:</strong> “We end where executives live — with answers, not raw tables.”</p>
+              <p style="margin-top:0.45rem"><strong>Close:</strong> Invite decisions on sponsorship, rollout scope, and success metrics.</p>
+            </div>
+          </div>
+        `,
+        key: "End on assurance and executive clarity — then ask for the decision.",
+        notes: "After the demo: summarize in 20 seconds — single source of truth, lower risk, better cost control, audit-ready. Then open for questions.",
+        visual: "Four closing facilitation cards.",
+        icons: "Users, shield, fingerprint, clipboard, chart",
+        transition: "Leave the room with a clear ask."
+      },
+      {
+        section: "Close",
+        title: "Decision & Next Steps",
+        type: "closing",
+        eyebrow: "Decision Request",
+        heading: "Recommended next steps",
+        subtitle: "Convert alignment into sponsorship and a measurable rollout.",
+        body: `
+          <div class="grid-3">
+            <div class="card">
+              <div class="icon-pill">1</div>
+              <h3>Endorse the platform direction</h3>
+              <p>Confirm IT Portfolio & Access Management as the enterprise system of record for application and license governance.</p>
+            </div>
+            <div class="card">
+              <div class="icon-pill">2</div>
+              <h3>Name accountable owners</h3>
+              <p>Appoint business and IT owners for data quality, access governance, and license stewardship.</p>
+            </div>
+            <div class="card">
+              <div class="icon-pill">3</div>
+              <h3>Approve a 90-day value plan</h3>
+              <p>Baseline reporting effort, renewals at risk, and utilization — then track improvement.</p>
+            </div>
+          </div>
+        `,
+        key: "Governance improves when leadership chooses a single system — and uses it.",
+        notes: "Be explicit about the ask. Offer a one-page decision memo as follow-up. Thank the room. Remain available for risk, audit, and finance deep-dives.",
+        visual: "Navy closing slide with three decision cards.",
+        icons: "Stamp / people / 90-day calendar",
+        transition: "Q&A."
+      },
+      {
+        section: "Appendix",
+        title: "Appendix — Messaging Map",
+        eyebrow: "Appendix  ·  Feature → Business Value",
+        heading: "How we speak about the platform",
+        subtitle: "Use business language in every leadership conversation.",
+        body: `
+          <div class="grid-2">
+            <div class="card soft">
+              <h3>Do not say → Say instead</h3>
+              <ul>
+                <li>CRUD modules → <strong>Centralized governance</strong></li>
+                <li>Users screen → <strong>Identity management</strong></li>
+                <li>Roles → <strong>Access governance</strong></li>
+                <li>SSO setup → <strong>Enterprise authentication</strong></li>
+                <li>Activity logs → <strong>Compliance & audit evidence</strong></li>
+                <li>Dashboard widgets → <strong>Executive decision support</strong></li>
+                <li>License records → <strong>Cost optimization</strong></li>
+                <li>Application list → <strong>Digital asset governance</strong></li>
+              </ul>
+            </div>
+            <div class="card accent">
+              <h3>One-sentence elevator pitch</h3>
+              <p style="font-size:0.95rem;line-height:1.45;color:var(--navy);font-weight:600">
+                “We are establishing an enterprise governance platform that gives leadership a single, trusted view of applications, licenses, ownership, and access — reducing risk, waste, and audit friction.”
+              </p>
+              <p class="visual-hint">Print this appendix as a leave-behind for presenters.</p>
+            </div>
+          </div>
+        `,
+        key: "Language shapes whether this is seen as admin software — or enterprise control.",
+        notes: "Optional slide if time remains. Excellent handout for anyone who will present later.",
+        visual: "Translation table + pitch card.",
+        icons: "Speech bubble / compass",
+        transition: "End of deck."
+      }
+    ];
+
+    const stage = document.getElementById("stage");
+    const notesText = document.getElementById("notesText");
+    const notesPanel = document.getElementById("notesPanel");
+    const slideCounter = document.getElementById("slideCounter");
+    const progressBar = document.getElementById("progressBar");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const notesBtn = document.getElementById("notesBtn");
+
+    let index = 0;
+
+    function renderSlides() {
+      stage.innerHTML = "";
+      slides.forEach((slide, i) => {
+        const el = document.createElement("article");
+        el.className = "slide" + (slide.type === "title" ? " title-slide" : "") + (slide.type === "closing" ? " closing" : "");
+        el.dataset.index = String(i);
+
+        const metaLeft = `${slide.section}`;
+        const metaRight = `IT Portfolio & Access Management  ·  Executive Briefing`;
+
+        el.innerHTML = `
+          <div class="slide-accent-bar"></div>
+          <div class="slide-body">
+            <div class="eyebrow">${slide.eyebrow || slide.section}</div>
+            <h2>${slide.heading}</h2>
+            ${slide.subtitle ? `<p class="subtitle">${slide.subtitle}</p>` : ""}
+            ${slide.meta ? `<div class="meta-row">${slide.meta.map((m) => `<span>${m}</span>`).join("")}</div>` : ""}
+            ${slide.body || ""}
+            <div class="key-message"><span>Key message</span>${slide.key}</div>
+            ${slide.visual ? `<p class="visual-hint">Visual: ${slide.visual} · Icons: ${slide.icons || "—"} · Next: ${slide.transition || "—"}</p>` : ""}
+          </div>
+          <div class="footer-meta">
+            <span>${metaLeft}</span>
+            <span>${metaRight}</span>
+          </div>
+        `;
+        stage.appendChild(el);
+      });
+    }
+
+    function show(i) {
+      index = Math.max(0, Math.min(slides.length - 1, i));
+      document.querySelectorAll(".slide").forEach((el, idx) => {
+        el.classList.toggle("active", idx === index);
+      });
+      const s = slides[index];
+      notesText.innerHTML = `
+        <div>${s.notes}</div>
+        <div style="margin-top:0.55rem;opacity:0.85"><em>Transition:</em> ${s.transition || "—"}</div>
+        <div style="margin-top:0.35rem;opacity:0.85"><em>Visual direction:</em> ${s.visual || "—"}</div>
+      `;
+      slideCounter.textContent = `${index + 1} / ${slides.length}`;
+      progressBar.style.width = `${((index + 1) / slides.length) * 100}%`;
+      prevBtn.disabled = index === 0;
+      nextBtn.disabled = index === slides.length - 1;
+    }
+
+    prevBtn.addEventListener("click", () => show(index - 1));
+    nextBtn.addEventListener("click", () => show(index + 1));
+    notesBtn.addEventListener("click", () => notesPanel.classList.toggle("open"));
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") {
+        e.preventDefault();
+        show(index + 1);
+      } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+        e.preventDefault();
+        show(index - 1);
+      } else if (e.key.toLowerCase() === "n") {
+        notesPanel.classList.toggle("open");
+      } else if (e.key.toLowerCase() === "f") {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen?.();
+        } else {
+          document.exitFullscreen?.();
+        }
+      } else if (e.key.toLowerCase() === "p") {
+        window.print();
+      } else if (e.key === "Home") {
+        show(0);
+      } else if (e.key === "End") {
+        show(slides.length - 1);
+      }
+    });
+
+    renderSlides();
+    show(0);
+  </script>
+</body>
+</html>

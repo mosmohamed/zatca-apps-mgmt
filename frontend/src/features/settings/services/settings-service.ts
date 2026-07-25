@@ -7,6 +7,8 @@ import type {
 import {
   DEFAULT_DASHBOARD_WIDGETS,
   normalizeDashboardWidgets,
+  normalizeDashboardWidgetsByRole,
+  type DashboardWidgetRoleOption,
 } from "@/features/dashboard/types/dashboard-widgets"
 
 type SettingRecord = {
@@ -27,12 +29,42 @@ const DEFAULTS: PublicSettings = {
   dashboard_widgets: DEFAULT_DASHBOARD_WIDGETS,
 }
 
+function asRoleOptions(value: unknown): DashboardWidgetRoleOption[] | undefined {
+  if (!Array.isArray(value)) {
+    return undefined
+  }
+
+  return value
+    .map((item) => {
+      if (!item || typeof item !== "object") {
+        return null
+      }
+      const record = item as Record<string, unknown>
+      const id = Number(record.id)
+      const name = typeof record.name === "string" ? record.name : ""
+      if (!Number.isFinite(id) || name === "") {
+        return null
+      }
+      return { id, name }
+    })
+    .filter((item): item is DashboardWidgetRoleOption => item !== null)
+}
+
 function asPublicSettings(
   payload: Record<string, unknown> | SettingRecord[] | PublicSettings
 ): PublicSettings {
   const source: Record<string, unknown> = Array.isArray(payload)
     ? Object.fromEntries(payload.map((item) => [item.key, item.value]))
     : payload
+
+  const roleOptions = asRoleOptions(source.dashboard_widget_roles)
+  const byRole =
+    source.dashboard_widgets_by_role !== undefined
+      ? normalizeDashboardWidgetsByRole(
+          source.dashboard_widgets_by_role,
+          roleOptions?.map((role) => role.id) ?? []
+        )
+      : undefined
 
   return {
     company_name:
@@ -70,6 +102,10 @@ function asPublicSettings(
         : Number(source.session_timeout_minutes) ||
           DEFAULTS.session_timeout_minutes,
     dashboard_widgets: normalizeDashboardWidgets(source.dashboard_widgets),
+    ...(byRole !== undefined ? { dashboard_widgets_by_role: byRole } : {}),
+    ...(roleOptions !== undefined
+      ? { dashboard_widget_roles: roleOptions }
+      : {}),
   }
 }
 

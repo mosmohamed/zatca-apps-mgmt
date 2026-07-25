@@ -7,6 +7,7 @@ namespace App\Http\Requests\Settings;
 use App\Http\Requests\Concerns\HasLocalizedValidationMessages;
 use App\Support\DashboardWidgets;
 use Illuminate\Foundation\Http\FormRequest;
+use Spatie\Permission\Models\Role;
 
 class UpdateSettingsRequest extends FormRequest
 {
@@ -41,20 +42,71 @@ class UpdateSettingsRequest extends FormRequest
                         return;
                     }
 
-                    foreach (array_keys($value) as $key) {
-                        if (! in_array($key, DashboardWidgets::keys(), true)) {
-                            $fail(__('validation.in', ['attribute' => $attribute]));
+                    if (array_key_exists('roles', $value)) {
+                        if (! is_array($value['roles'])) {
+                            $fail(__('validation.array', ['attribute' => $attribute.'.roles']));
 
                             return;
                         }
+
+                        foreach ($value['roles'] as $roleId => $map) {
+                            if (! is_numeric($roleId)) {
+                                $fail(__('validation.in', ['attribute' => $attribute.'.roles']));
+
+                                return;
+                            }
+
+                            if (! is_array($map)) {
+                                $fail(__('validation.array', ['attribute' => $attribute.'.roles.'.$roleId]));
+
+                                return;
+                            }
+
+                            foreach (array_keys($map) as $widgetKey) {
+                                if (! in_array($widgetKey, DashboardWidgets::keys(), true)) {
+                                    $fail(__('validation.in', ['attribute' => $attribute.'.roles.'.$roleId]));
+
+                                    return;
+                                }
+                            }
+                        }
+
+                        return;
+                    }
+
+                    if (! DashboardWidgets::isLegacyFlatMap($value) && $value !== []) {
+                        $fail(__('validation.in', ['attribute' => $attribute]));
                     }
                 },
             ],
+            'settings.dashboard_widgets.roles' => ['sometimes', 'required', 'array'],
+            'settings.dashboard_widgets.roles.*' => ['required', 'array'],
         ];
 
         foreach (DashboardWidgets::keys() as $key) {
             $rules['settings.dashboard_widgets.'.$key] = ['sometimes', 'required', 'boolean'];
+            $rules['settings.dashboard_widgets.roles.*.'.$key] = ['sometimes', 'required', 'boolean'];
         }
+
+        $roleIds = Role::query()->pluck('id')->map(static fn ($id): int => (int) $id)->all();
+        $rules['settings.dashboard_widgets.roles'] = [
+            'sometimes',
+            'required',
+            'array',
+            function (string $attribute, mixed $value, \Closure $fail) use ($roleIds): void {
+                if (! is_array($value)) {
+                    return;
+                }
+
+                foreach (array_keys($value) as $roleId) {
+                    if (! in_array((int) $roleId, $roleIds, true)) {
+                        $fail(__('validation.exists', ['attribute' => $attribute]));
+
+                        return;
+                    }
+                }
+            },
+        ];
 
         return $rules;
     }
@@ -64,14 +116,6 @@ class UpdateSettingsRequest extends FormRequest
      */
     public function settingsPayload(): array
     {
-        $payload = (array) $this->validated('settings');
-
-        if (array_key_exists(DashboardWidgets::SETTING_KEY, $payload)) {
-            $payload[DashboardWidgets::SETTING_KEY] = DashboardWidgets::normalize(
-                $payload[DashboardWidgets::SETTING_KEY]
-            );
-        }
-
-        return $payload;
+        return (array) $this->validated('settings');
     }
 }

@@ -29,10 +29,13 @@ class SettingsController extends BaseApiController
         );
     }
 
-    public function public(): JsonResponse
+    public function public(Request $request): JsonResponse
     {
+        /** @var \App\Models\User|null $user */
+        $user = $request->user('sanctum');
+
         return $this->successResponse(
-            $this->settingsService->publicSettings(),
+            $this->settingsService->publicSettings($user),
             __('messages.settings.public_listed'),
         );
     }
@@ -41,8 +44,11 @@ class SettingsController extends BaseApiController
     {
         $this->settingsService->setMany($request->settingsPayload());
 
+        /** @var \App\Models\User|null $user */
+        $user = $request->user();
+
         return $this->successResponse(
-            $this->settingsService->publicSettings(),
+            $this->settingsService->publicSettings($user),
             __('messages.settings.updated'),
             Response::HTTP_OK,
         );

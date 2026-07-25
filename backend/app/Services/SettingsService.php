@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Setting;
+use App\Models\User;
 use App\Support\DashboardWidgets;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 class SettingsService
 {
@@ -46,17 +49,36 @@ class SettingsService
     /**
      * @return array<string, mixed>
      */
-    public function publicSettings(): array
+    public function publicSettings(?User $user = null): array
     {
+        $user ??= Auth::guard('sanctum')->user();
+
         $settings = Setting::query()
             ->where('is_public', true)
             ->get()
             ->mapWithKeys(static fn (Setting $setting): array => [$setting->key => $setting->castValue()])
             ->all();
 
-        $settings[DashboardWidgets::SETTING_KEY] = DashboardWidgets::normalize(
-            $settings[DashboardWidgets::SETTING_KEY] ?? null
+        $stored = $settings[DashboardWidgets::SETTING_KEY] ?? null;
+        $config = DashboardWidgets::normalizeConfig($stored);
+
+        $settings[DashboardWidgets::SETTING_KEY] = DashboardWidgets::forUser(
+            $user instanceof User ? $user->loadMissing('roles') : null,
+            $config,
         );
+
+        if ($user instanceof User && $user->can('settings.update')) {
+            $settings['dashboard_widgets_by_role'] = $config['roles'];
+            $settings['dashboard_widget_roles'] = Role::query()
+                ->orderBy('name')
+                ->get(['id', 'name'])
+                ->map(static fn (Role $role): array => [
+                    'id' => (int) $role->id,
+                    'name' => (string) $role->name,
+                ])
+                ->values()
+                ->all();
+        }
 
         return $settings;
     }
@@ -69,12 +91,19 @@ class SettingsService
     {
         return DB::transaction(function () use ($values): Collection {
             foreach ($values as $key => $value) {
+                if ($key === DashboardWidgets::SETTING_KEY) {
+                    $value = $this->normalizeIncomingDashboardWidgets($value);
+                }
+
                 $setting = Setting::query()->where('key', $key)->first();
 
                 if ($setting === null && $key === DashboardWidgets::SETTING_KEY) {
                     $setting = Setting::query()->create([
                         'key' => DashboardWidgets::SETTING_KEY,
-                        'value' => $this->stringifyValue(DashboardWidgets::defaults(), 'json'),
+                        'value' => $this->stringifyValue(
+                            DashboardWidgets::normalizeConfig(null),
+                            'json',
+                        ),
                         'type' => 'json',
                         'group' => 'dashboard',
                         'label' => 'Dashboard Widgets Visibility',
@@ -93,6 +122,93 @@ class SettingsService
 
             return Setting::query()->whereIn('key', array_keys($values))->get();
         });
+    }
+
+    public function ensureRoleDashboardWidgets(int $roleId): void
+    {
+        $raw = $this->get(DashboardWidgets::SETTING_KEY);
+        $rolesPayload = is_array($raw) && is_array($raw['roles'] ?? null)
+            ? $raw['roles']
+            : [];
+
+        $key = (string) $roleId;
+        if (array_key_exists($key, $rolesPayload) || array_key_exists($roleId, $rolesPayload)) {
+            return;
+        }
+
+        $config = DashboardWidgets::normalizeConfig($raw);
+        $config['roles'][$key] = DashboardWidgets::defaults();
+        $this->persistDashboardWidgetsConfig($config);
+    }
+
+    public function removeRoleDashboardWidgets(int $roleId): void
+    {
+        $config = DashboardWidgets::normalizeConfig(
+            $this->get(DashboardWidgets::SETTING_KEY)
+        );
+
+        $key = (string) $roleId;
+        if (! array_key_exists($key, $config['roles'])) {
+            return;
+        }
+
+        unset($config['roles'][$key]);
+        $this->persistDashboardWidgetsConfig($config);
+    }
+
+    /**
+     * @param  mixed  $value
+     * @return array{roles: array<string, array<string, bool>>}
+     */
+    private function normalizeIncomingDashboardWidgets(mixed $value): array
+    {
+        $current = DashboardWidgets::normalizeConfig(
+            $this->get(DashboardWidgets::SETTING_KEY)
+        );
+
+        if (! is_array($value)) {
+            return $current;
+        }
+
+        if (DashboardWidgets::isLegacyFlatMap($value)) {
+            return DashboardWidgets::normalizeConfig($value);
+        }
+
+        if (! array_key_exists('roles', $value) || ! is_array($value['roles'])) {
+            return $current;
+        }
+
+        $roles = $current['roles'];
+        foreach ($value['roles'] as $roleId => $map) {
+            $roles[(string) $roleId] = DashboardWidgets::normalizeRoleMap($map);
+        }
+
+        return DashboardWidgets::normalizeConfig(['roles' => $roles]);
+    }
+
+    /**
+     * @param  array{roles: array<string, array<string, bool>>}  $config
+     */
+    private function persistDashboardWidgetsConfig(array $config): void
+    {
+        $setting = Setting::query()->where('key', DashboardWidgets::SETTING_KEY)->first();
+
+        if ($setting === null) {
+            Setting::query()->create([
+                'key' => DashboardWidgets::SETTING_KEY,
+                'value' => $this->stringifyValue($config, 'json'),
+                'type' => 'json',
+                'group' => 'dashboard',
+                'label' => 'Dashboard Widgets Visibility',
+                'is_public' => true,
+            ]);
+
+            return;
+        }
+
+        $setting->update([
+            'value' => $this->stringifyValue($config, 'json'),
+        ]);
     }
 
     private function stringifyValue(mixed $value, string $type): ?string

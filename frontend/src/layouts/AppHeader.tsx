@@ -16,6 +16,16 @@ type AppHeaderProps = {
   onOpenSearch?: () => void
 }
 
+/**
+ * Shared app chrome header.
+ *
+ * Layout strategy (enterprise dashboard):
+ * - Mobile (<640px) / tablet (<1024px): two-column grid — title cluster | actions.
+ *   Logo is hidden so branding never wraps under the title or search.
+ * - Desktop (≥1024px): three-column grid — title | logo | actions.
+ *   Logo sits in its own column (no absolute positioning), so it cannot
+ *   overlap or push other header elements onto a second line.
+ */
 export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
   const { t, i18n } = useTranslation()
   const { isExpanded, toggleExpanded, toggleMobile } = useSidebar()
@@ -35,12 +45,13 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
     : settings.header_subtitle_en
 
   return (
-    <header className="sticky top-0 z-30 relative flex h-16 items-center justify-between gap-2 border-b border-stroke bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:gap-3 md:px-6">
-      <div className="flex min-w-0 flex-1 items-center gap-2">
+    <header className="sticky top-0 z-30 grid h-16 max-w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 overflow-hidden border-b border-stroke bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:gap-x-3 sm:px-4 md:px-6 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-x-4">
+      {/* Start: sidebar controls + page title */}
+      <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
         <Button
           variant="ghost"
           size="icon"
-          className="shrink-0 lg:hidden"
+          className="size-9 shrink-0 lg:hidden"
           onClick={toggleMobile}
           aria-label={t("common.openSidebar")}
         >
@@ -49,7 +60,7 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="hidden shrink-0 lg:inline-flex"
+          className="hidden size-9 shrink-0 lg:inline-flex"
           onClick={toggleExpanded}
           aria-label={
             isExpanded
@@ -59,71 +70,73 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
         >
           {isExpanded ? <PanelLeftClose /> : <PanelLeftOpen />}
         </Button>
-        <div className="min-w-0">
-          <h1 className="truncate text-base font-semibold md:text-lg">
+        <div className="min-w-0 flex-1 overflow-hidden">
+          <h1 className="truncate text-sm font-semibold leading-tight sm:text-base md:text-lg">
             {title ?? t("nav.dashboard")}
           </h1>
-          <p className="hidden truncate text-xs text-muted-foreground sm:block">
+          <p className="mt-0.5 hidden truncate text-xs leading-tight text-muted-foreground md:block">
             {headerSubtitle}
           </p>
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 hidden justify-center lg:flex">
+      {/* Center: brand logo — desktop only; own grid column prevents wrap/overlap */}
+      <div className="hidden min-w-0 items-center justify-center px-2 lg:flex">
         <AppLogo
-          className="pointer-events-auto justify-center"
-          imgClassName="h-8 max-w-[8.5rem] shrink-0 sm:h-9 sm:max-w-[10rem]"
+          className="justify-center"
+          imgClassName="h-8 max-h-8 w-auto max-w-[9rem] shrink-0 object-contain xl:h-9 xl:max-w-[10rem]"
           variant={logoVariant}
         />
       </div>
 
-      <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
+      {/* End: search + utilities */}
+      <div className="flex shrink-0 items-center justify-end gap-1 sm:gap-1.5 md:gap-2 lg:gap-3">
         {onOpenSearch ? (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="hidden items-center gap-2 text-muted-foreground sm:inline-flex"
-            onClick={onOpenSearch}
-            aria-label={t("search.open")}
-          >
-            <Search />
-            <span>{t("search.placeholder")}</span>
-            <kbd className="ms-2 rounded border border-stroke bg-muted px-1.5 py-0.5 text-[0.65rem] font-medium">
-              Ctrl K
-            </kbd>
-          </Button>
-        ) : null}
-        {onOpenSearch ? (
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="sm:hidden"
-            onClick={onOpenSearch}
-            aria-label={t("search.open")}
-          >
-            <Search />
-          </Button>
+          <>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="hidden max-w-[14rem] items-center gap-2 truncate text-muted-foreground lg:inline-flex"
+              onClick={onOpenSearch}
+              aria-label={t("search.open")}
+            >
+              <Search className="size-4 shrink-0" />
+              <span className="truncate">{t("search.placeholder")}</span>
+              <kbd className="ms-1 hidden rounded border border-stroke bg-muted px-1.5 py-0.5 text-[0.65rem] font-medium xl:inline">
+                Ctrl K
+              </kbd>
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-9 lg:hidden"
+              onClick={onOpenSearch}
+              aria-label={t("search.open")}
+            >
+              <Search />
+            </Button>
+          </>
         ) : null}
         <ThemeToggle />
-        <LanguageSwitcher />
-        <div className="hidden text-end sm:block">
-          <p className="text-sm font-medium leading-none">
+        <LanguageSwitcher className="shrink-0" />
+        <div className="hidden min-w-0 max-w-[10rem] text-end lg:block">
+          <p className="truncate text-sm font-medium leading-none">
             {user?.full_name ?? t("common.user")}
           </p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 truncate text-xs text-muted-foreground">
             {isSuperAdmin ? t("common.superAdmin") : t("common.employee")}
           </p>
         </div>
         <Button
           variant="outline"
           size="sm"
-          className="shrink-0"
+          className="size-9 shrink-0 px-0 sm:h-8 sm:w-auto sm:px-2.5"
           onClick={() => void handleLogout()}
           aria-label={t("common.signOut")}
         >
-          <LogOut />
+          <LogOut className="size-4" />
           <span className="hidden sm:inline">{t("common.signOut")}</span>
         </Button>
       </div>

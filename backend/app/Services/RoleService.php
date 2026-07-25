@@ -16,6 +16,11 @@ class RoleService
 {
     private const string PROTECTED_ROLE = 'super_admin';
 
+    public function __construct(
+        private readonly SettingsService $settingsService,
+    ) {
+    }
+
     /**
      * @return Collection<int, Role>
      */
@@ -49,6 +54,8 @@ class RoleService
             if (array_key_exists('permissions', $data)) {
                 $role->syncPermissions($data['permissions']);
             }
+
+            $this->settingsService->ensureRoleDashboardWidgets((int) $role->id);
 
             $this->forgetPermissionCache();
 
@@ -88,7 +95,9 @@ class RoleService
         $this->guardProtectedRole($role);
 
         DB::transaction(function () use ($role): void {
+            $roleId = (int) $role->id;
             $role->delete();
+            $this->settingsService->removeRoleDashboardWidgets($roleId);
 
             $this->forgetPermissionCache();
         });

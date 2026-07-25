@@ -87,7 +87,7 @@ class SettingsSeeder extends Seeder
             ],
             [
                 'key' => DashboardWidgets::SETTING_KEY,
-                'value' => json_encode(DashboardWidgets::defaults(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                'value' => json_encode(DashboardWidgets::normalizeConfig(null), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
                 'type' => 'json',
                 'group' => 'dashboard',
                 'label' => 'Dashboard Widgets Visibility',

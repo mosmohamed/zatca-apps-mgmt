@@ -1119,7 +1119,11 @@
     },
     "dashboard": {
       "title": "Dashboard widgets",
-      "description": "Choose which dashboard charts and panels are visible. New widgets appear here automatically.",
+      "description": "Choose which dashboard charts and panels are visible for each role. Newly created roles appear here automatically.",
+      "roleLabel": "Role",
+      "rolePlaceholder": "Select a role",
+      "roleHint": "Widget visibility applies only to users assigned to the selected role.",
+      "noRoles": "No roles are available yet. Create a role first, then configure its dashboard widgets.",
       "widgets": {
         "top_technologies": "Top technologies",
         "employees_per_application": "Employees per application",
@@ -1129,7 +1133,10 @@
         "license_usage": "License usage",
         "license_status_distribution": "License status distribution",
         "licenses_by_environment": "Licenses by environment",
-        "recent_activity": "Recent activity"
+        "recent_activity": "Recent activity",
+        "weather": "Weather",
+        "local_time": "Current time and date",
+        "prayer_times": "Prayer times"
       },
       "widgetHints": {
         "top_technologies": "Radar chart of the most used technologies.",
@@ -1140,7 +1147,10 @@
         "license_usage": "Radial chart of licensed vs used seats.",
         "license_status_distribution": "Active, expiring, and expired licenses.",
         "licenses_by_environment": "License counts by environment.",
-        "recent_activity": "Latest audited activity feed."
+        "recent_activity": "Latest audited activity feed.",
+        "weather": "Live weather conditions for the configured location. Hidden by default.",
+        "local_time": "Live local clock and calendar date. Hidden by default.",
+        "prayer_times": "Prayer times and next-prayer countdown. Hidden by default."
       }
     },
     "security": {

@@ -1,0 +1,201 @@
+﻿STYLE slides 4 layouts ['Title Slide', 'Title and Content', 'Section Header', 'Two Content', 'Comparison', 'Title Only', 'Blank', 'Content with Caption', 'Picture with Caption', 'Title and Vertical Text', 'Vertical Title and Text', 'Cover 20 ARA', 'Grey ARA BG', 'White ARA BG', '1_Divider 3']
+
+THEME master[0] ../theme/theme1.xml
+  clrScheme: Office
+    dk1: sys=windowText last=000000
+    lt1: sys=window last=FFFFFF
+    dk2: #0E2841
+    lt2: #E8E8E8
+    accent1: #156082
+    accent2: #E97132
+    accent3: #196B24
+    accent4: #0F9ED5
+    accent5: #A02B93
+    accent6: #4EA72E
+    hlink: #467886
+    folHlink: #96607D
+  major latin: Aptos Display
+  minor latin: Aptos
+  major ea: 
+  minor ea: 
+  major cs: 
+  minor cs: 
+
+===== SLIDE 1 shapes=2 =====
+background fill type: BACKGROUND (5)
+layout: Cover 20 ARA
+FREEFORM (5) 'Freeform 3' @(7.05,4.31) 5.39x0.06 fill=GRADIENT (3)
+TEXT_BOX (17) 'BJPseudoFooter' @(6.31,7.26) 0.72x0.24 fill=BACKGROUND (5)
+  P0: 'Public | ╪╣╪º┘à' -> [{'t': 'Public | ', 'font': 'Segoe UI', 'sz': 8.0, 'rgb': 'AEC90B'}, {'t': '╪╣╪º┘à', 'font': 'Segoe UI', 'sz': 8.0, 'rgb': 'AEC90B'}]
+
+===== SLIDE 2 shapes=1 =====
+background fill type: BACKGROUND (5)
+layout: 1_Divider 3
+TEXT_BOX (17) 'BJPseudoFooter' @(6.31,7.26) 0.72x0.24 fill=BACKGROUND (5)
+  P0: 'Public | ╪╣╪º┘à' -> [{'t': 'Public | ', 'font': 'Segoe UI', 'sz': 8.0, 'rgb': 'AEC90B'}, {'t': '╪╣╪º┘à', 'font': 'Segoe UI', 'sz': 8.0, 'rgb': 'AEC90B'}]
+
+===== SLIDE 3 shapes=3 =====
+background fill type: BACKGROUND (5)
+layout: Grey ARA BG
+FREEFORM (5) 'Freeform 2' @(5.8,1.16) 7.12x0.06 fill=GRADIENT (3)
+TEXT_BOX (17) 'TextBox 65' @(4.09,-0.53) 0.2x0.4 fill=BACKGROUND (5)
+TEXT_BOX (17) 'BJPseudoFooter' @(6.31,7.26) 0.72x0.24 fill=BACKGROUND (5)
+  P0: 'Public | ╪╣╪º┘à' -> [{'t': 'Public | ', 'font': 'Segoe UI', 'sz': 8.0, 'rgb': 'AEC90B'}, {'t': '╪╣╪º┘à', 'font': 'Segoe UI', 'sz': 8.0, 'rgb': 'AEC90B'}]
+
+===== SLIDE 4 shapes=10 =====
+background fill type: BACKGROUND (5)
+layout: Blank
+PICTURE (13) 'Picture 3' @(0.0,0.0) 13.33x7.5
+  PICTURE image/png 232463 bytes
+PICTURE (13) 'Picture 7' @(0.0,0.0) 13.33x7.5
+  PICTURE image/jpeg 505005 bytes
+PICTURE (13) 'Picture 1' @(0.0,0.0) 13.33x7.5
+  PICTURE image/png 198300 bytes
+PICTURE (13) 'Picture 2' @(0.0,3.56) 4.59x3.94
+  PICTURE image/png 41436 bytes
+PICTURE (13) 'Graphic 4' @(0.41,6.27) 1.34x0.83
+  PICTURE image/png 82640 bytes
+PICTURE (13) 'Picture 5' @(10.04,0.4) 2.89x0.63
+  PICTURE image/png 78275 bytes
+TEXT_BOX (17) 'Footer Placeholder 11' @(0.0,6.95) 13.33x0.4 fill=BACKGROUND (5)
+  P0: 'Public | ╪╣╪º┘à' -> [{'t': 'Public | ', 'font': 'Segoe UI', 'sz': 8.0, 'rgb': 'AEC90B'}, {'t': '╪╣╪º┘à', 'font': 'Segoe UI', 'sz': 8.0, 'rgb': 'AEC90B'}]
+TEXT_BOX (17) 'Footer Placeholder 9' @(0.0,6.95) 13.33x0.4 fill=BACKGROUND (5)
+  P0: 'Public | ╪╣╪º┘à' -> [{'t': 'Public | ', 'font': 'Segoe UI', 'sz': 8.0, 'rgb': 'AEC90B'}, {'t': '╪╣╪º┘à', 'font': 'Segoe UI', 'sz': 8.0, 'rgb': 'AEC90B'}]
+TEXT_BOX (17) 'Footer Placeholder 10' @(0.0,6.95) 13.33x0.4 fill=BACKGROUND (5)
+  P0: 'Public | ╪╣╪º┘à' -> [{'t': 'Public | ', 'font': 'Segoe UI', 'sz': 8.0, 'rgb': 'AEC90B'}, {'t': '╪╣╪º┘à', 'font': 'Segoe UI', 'sz': 8.0, 'rgb': 'AEC90B'}]
+PLACEHOLDER (14) 'Footer Placeholder 11' @(0.0,6.95) 13.33x0.4
+  P0: 'Public | ╪╣╪º┘à' -> [{'t': 'Public | ', 'font': None, 'sz': None}, {'t': '╪╣╪º┘à', 'font': None, 'sz': None}]
+
+
+################ CENTRIX ################
+CENTRIX slides 17
+
+THEME master[0] ../theme/theme1.xml
+  clrScheme: Office
+    dk1: sys=windowText last=000000
+    lt1: sys=window last=FFFFFF
+    dk2: #1F497D
+    lt2: #EEECE1
+    accent1: #4F81BD
+    accent2: #C0504D
+    accent3: #9BBB59
+    accent4: #8064A2
+    accent5: #4BACC6
+    accent6: #F79646
+    hlink: #0000FF
+    folHlink: #800080
+  major latin: Calibri
+  minor latin: Calibri
+  major ea: 
+  minor ea: 
+  major cs: 
+  minor cs: 
+
+===== SLIDE 1 shapes=7 =====
+background fill type: BACKGROUND (5)
+layout: Blank
+AUTO_SHAPE (1) 'Rectangle 1' @(0.0,0.0) 13.33x7.5 fill=SOLID (1):0E2547
+AUTO_SHAPE (1) 'Rectangle 2' @(0.0,0.0) 0.18x7.5 fill=SOLID (1):10CFC9
+TEXT_BOX (17) 'TextBox 3' @(0.9,1.55) 11.0x0.35 fill=BACKGROUND (5)
+  P0: 'ZATCA  ┬╖  ENTERPRISE IT GOVERNANCE' -> [{'t': 'ZATCA  ┬╖  ENTERPRISE IT GOVERNANCE', 'font': 'Calibri', 'sz': 11.0, 'rgb': '10CFC9'}]
+TEXT_BOX (17) 'TextBox 4' @(0.9,2.15) 11.5x0.85 fill=BACKGROUND (5)
+  P0: 'CENTRIX' -> [{'t': 'CENTRIX', 'font': 'Calibri', 'sz': 54.0, 'rgb': 'FFFFFF'}]
+TEXT_BOX (17) 'TextBox 5' @(0.9,3.1) 11.0x0.5 fill=BACKGROUND (5)
+  P0: 'Enterprise IT Portfolio & Access Governance Platform' -> [{'t': 'Enterprise IT Portfolio & Access Governa', 'font': 'Calibri', 'sz': 20.0, 'rgb': '009ADE'}]
+TEXT_BOX (17) 'TextBox 6' @(0.9,3.9) 10.5x0.7 fill=BACKGROUND (5)
+  P0: 'Transforming IT Governance Through Centralization,\nAutomation and Visibility' -> [{'t': 'Transforming IT Governance Through Centr', 'font': 'Calibri', 'sz': 16.0, 'rgb': 'B8C5D6'}]
+TEXT_BOX (17) 'TextBox 7' @(0.9,5.6) 11.0x0.5 fill=BACKGROUND (5)
+  P0: 'Executive Briefing  ┬╖  Senior Management  ┬╖  Confidential' -> [{'t': 'Executive Briefing  ┬╖  Senior Management', 'font': 'Calibri', 'sz': 12.0, 'rgb': '7A8B9C'}]
+
+===== SLIDE 2 shapes=22 =====
+background fill type: BACKGROUND (5)
+layout: Blank
+AUTO_SHAPE (1) 'Rectangle 1' @(0.0,0.0) 13.33x0.08 fill=SOLID (1):002F87
+TEXT_BOX (17) 'TextBox 2' @(0.55,0.28) 12.0x0.28 fill=BACKGROUND (5)
+  P0: '01  ┬╖  EXECUTIVE SUMMARY' -> [{'t': '01  ┬╖  EXECUTIVE SUMMARY', 'font': 'Calibri', 'sz': 10.0, 'rgb': '009ADE'}]
+TEXT_BOX (17) 'TextBox 3' @(0.55,0.52) 12.2x0.55 fill=BACKGROUND (5)
+  P0: 'One platform. One truth. Better control.' -> [{'t': 'One platform. One truth. Better control.', 'font': 'Calibri', 'sz': 28.0, 'rgb': '0E2547'}]
+TEXT_BOX (17) 'TextBox 4' @(0.55,1.05) 12.2x0.35 fill=BACKGROUND (5)
+  P0: 'Key message: Fragmented IT records become governed enterprise intelligence.' -> [{'t': 'Key message: Fragmented IT records becom', 'font': 'Calibri', 'sz': 13.0, 'rgb': '5C6B7A'}]
+AUTO_SHAPE (1) 'Rounded Rectangle 5' @(0.55,1.7) 3.95x4.5 fill=SOLID (1):FFFFFF
+AUTO_SHAPE (1) 'Rectangle 6' @(0.55,1.7) 3.95x0.12 fill=SOLID (1):F26652
+TEXT_BOX (17) 'TextBox 7' @(0.85,2.1) 3.3x0.4 fill=BACKGROUND (5)
+  P0: '01' -> [{'t': '01', 'font': 'Calibri', 'sz': 22.0, 'rgb': 'F26652'}]
+TEXT_BOX (17) 'TextBox 8' @(0.85,2.7) 3.3x0.5 fill=BACKGROUND (5)
+  P0: 'Current Challenges' -> [{'t': 'Current Challenges', 'font': 'Calibri', 'sz': 16.0, 'rgb': '0E2547'}]
+TEXT_BOX (17) 'TextBox 9' @(0.85,3.4) 3.3x2.0 fill=BACKGROUND (5)
+  P0: 'Spreadsheets, unknown ownership,\nmanual licenses, weak audit evidence' -> [{'t': 'Spreadsheets, unknown ownership,\nmanual ', 'font': 'Calibri', 'sz': 13.0, 'rgb': '5C6B7A'}]
+AUTO_SHAPE (1) 'Rounded Rectangle 10' @(4.7,1.7) 3.95x4.5 fill=SOLID (1):FFFFFF
+AUTO_SHAPE (1) 'Rectangle 11' @(4.7,1.7) 3.95x0.12 fill=SOLID (1):009ADE
+TEXT_BOX (17) 'TextBox 12' @(5.0,2.1) 3.3x0.4 fill=BACKGROUND (5)
+  P0: '02' -> [{'t': '02', 'font': 'Calibri', 'sz': 22.0, 'rgb': '009ADE'}]
+TEXT_BOX (17) 'TextBox 13' @(5.0,2.7) 3.3x0.5 fill=BACKGROUND (5)
+  P0: 'Business Opportunity' -> [{'t': 'Business Opportunity', 'font': 'Calibri', 'sz': 16.0, 'rgb': '0E2547'}]
+TEXT_BOX (17) 'TextBox 14' @(5.0,3.4) 3.3x2.0 fill=BACKGROUND (5)
+  P0: 'Centralize portfolio, licenses,\nidentity, and executive visibility' -> [{'t': 'Centralize portfolio, licenses,\nidentity', 'font': 'Calibri', 'sz': 13.0, 'rgb': '5C6B7A'}]
+AUTO_SHAPE (1) 'Rounded Rectangle 15' @(8.85,1.7) 3.95x4.5 fill=SOLID (1):FFFFFF
+AUTO_SHAPE (1) 'Rectangle 16' @(8.85,1.7) 3.95x0.12 fill=SOLID (1):156342
+TEXT_BOX (17) 'TextBox 17' @(9.15,2.1) 3.3x0.4 fill=BACKGROUND (5)
+  P0: '03' -> [{'t': '03', 'font': 'Calibri', 'sz': 22.0, 'rgb': '156342'}]
+TEXT_BOX (17) 'TextBox 18' @(9.15,2.7) 3.3x0.5 fill=BACKGROUND (5)
+  P0: 'Expected Outcome' -> [{'t': 'Expected Outcome', 'font': 'Calibri', 'sz': 16.0, 'rgb': '0E2547'}]
+TEXT_BOX (17) 'TextBox 19' @(9.15,3.4) 3.3x2.0 fill=BACKGROUND (5)
+  P0: 'Lower risk ┬╖ lower waste ┬╖\nfaster audits ┬╖ clearer decisions' -> [{'t': 'Lower risk ┬╖ lower waste ┬╖\nfaster audits', 'font': 'Calibri', 'sz': 13.0, 'rgb': '5C6B7A'}]
+AUTO_SHAPE (1) 'Rectangle 20' @(0.55,7.05) 12.2x0.01 fill=SOLID (1):D9E2EC
+TEXT_BOX (17) 'TextBox 21' @(0.55,7.12) 9.0x0.28 fill=BACKGROUND (5)
+  P0: 'CENTRIX  ┬╖  Executive Summary  ┬╖  Confidential' -> [{'t': 'CENTRIX  ┬╖  Executive Summary  ┬╖  Confid', 'font': 'Calibri', 'sz': 9.0, 'rgb': '5C6B7A'}]
+TEXT_BOX (17) 'TextBox 22' @(11.2,7.12) 1.5x0.28 fill=BACKGROUND (5)
+  P0: '02  /  16' -> [{'t': '02  /  16', 'font': 'Calibri', 'sz': 9.0, 'rgb': '5C6B7A'}]
+
+===== SLIDE 3 shapes=16 =====
+background fill type: BACKGROUND (5)
+layout: Blank
+AUTO_SHAPE (1) 'Rectangle 1' @(0.0,0.0) 13.33x0.08 fill=SOLID (1):002F87
+TEXT_BOX (17) 'TextBox 2' @(0.55,0.28) 12.0x0.28 fill=BACKGROUND (5)
+  P0: '02  ┬╖  WHAT IS CENTRIX?' -> [{'t': '02  ┬╖  WHAT IS CENTRIX?', 'font': 'Calibri', 'sz': 10.0, 'rgb': '009ADE'}]
+TEXT_BOX (17) 'TextBox 3' @(0.55,0.52) 12.2x0.55 fill=BACKGROUND (5)
+  P0: 'The enterprise system of record for IT assets & access' -> [{'t': 'The enterprise system of record for IT a', 'font': 'Calibri', 'sz': 28.0, 'rgb': '0E2547'}]
+TEXT_BOX (17) 'TextBox 4' @(0.55,1.05) 12.2x0.35 fill=BACKGROUND (5)
+  P0: 'Key message: CENTRIX centralizes the IT ecosystem ΓÇö applications to audit evidence.' -> [{'t': 'Key message: CENTRIX centralizes the IT ', 'font': 'Calibri', 'sz': 13.0, 'rgb': '5C6B7A'}]
+AUTO_SHAPE (1) 'Rounded Rectangle 5' @(5.0,3.15) 3.3x1.5 fill=SOLID (1):002F87
+  P0: 'CENTRIX\nGovernance Core' -> [{'t': 'CENTRIX\nGovernance Core', 'font': 'Calibri', 'sz': 14.0, 'rgb': 'FFFFFF'}]
+AUTO_SHAPE (1) 'Rounded Rectangle 6' @(0.55,1.75) 2.2x0.95 fill=SOLID (1):F5F7FA
+  P0: 'Applications' -> [{'t': 'Applications', 'font': 'Calibri', 'sz': 12.0, 'rgb': '0E2547'}]
+AUTO_SHAPE (1) 'Rounded Rectangle 7' @(3.55,1.75) 2.2x0.95 fill=SOLID (1):F5F7FA
+  P0: 'Licenses' -> [{'t': 'Licenses', 'font': 'Calibri', 'sz': 12.0, 'rgb': '0E2547'}]
+AUTO_SHAPE (1) 'Rounded Rectangle 8' @(9.55,1.75) 2.2x0.95 fill=SOLID (1):F5F7FA
+  P0: 'Vendors' -> [{'t': 'Vendors', 'font': 'Calibri', 'sz': 12.0, 'rgb': '0E2547'}]
+AUTO_SHAPE (1) 'Rounded Rectangle 9' @(11.55,1.75) 2.2x0.95 fill=SOLID (1):F5F7FA
+  P0: 'Departments' -> [{'t': 'Departments', 'font': 'Calibri', 'sz': 12.0, 'rgb': '0E2547'}]
+AUTO_SHAPE (1) 'Rounded Rectangle 10' @(0.55,5.2) 2.2x0.95 fill=SOLID (1):F5F7FA
+  P0: 'Identity' -> [{'t': 'Identity', 'font': 'Calibri', 'sz': 12.0, 'rgb': '0E2547'}]
+AUTO_SHAPE (1) 'Rounded Rectangle 11' @(3.55,5.2) 2.2x0.95 fill=SOLID (1):F5F7FA
+  P0: 'Access' -> [{'t': 'Access', 'font': 'Calibri', 'sz': 12.0, 'rgb': '0E2547'}]
+AUTO_SHAPE (1) 'Rounded Rectangle 12' @(9.55,5.2) 2.2x0.95 fill=SOLID (1):F5F7FA
+  P0: 'Reporting' -> [{'t': 'Reporting', 'font': 'Calibri', 'sz': 12.0, 'rgb': '0E2547'}]
+AUTO_SHAPE (1) 'Rounded Rectangle 13' @(11.55,5.2) 2.2x0.95 fill=SOLID (1):F5F7FA
+  P0: 'Governance' -> [{'t': 'Governance', 'font': 'Calibri', 'sz': 12.0, 'rgb': '0E2547'}]
+AUTO_SHAPE (1) 'Rectangle 14' @(0.55,7.05) 12.2x0.01 fill=SOLID (1):D9E2EC
+TEXT_BOX (17) 'TextBox 15' @(0.55,7.12) 9.0x0.28 fill=BACKGROUND (5)
+  P0: 'CENTRIX  ┬╖  What is CENTRIX?  ┬╖  Confidential' -> [{'t': 'CENTRIX  ┬╖  What is CENTRIX?  ┬╖  Confide', 'font': 'Calibri', 'sz': 9.0, 'rgb': '5C6B7A'}]
+TEXT_BOX (17) 'TextBox 16' @(11.2,7.12) 1.5x0.28 fill=BACKGROUND (5)
+  P0: '03  /  16' -> [{'t': '03  /  16', 'font': 'Calibri', 'sz': 9.0, 'rgb': '5C6B7A'}]
+
+All CENTRIX slide titles/first texts:
+  01: ['ZATCA  ┬╖  ENTERPRISE IT GOVERNANCE', 'CENTRIX', 'Enterprise IT Portfolio & Access Governance Platform']
+  02: ['01  ┬╖  EXECUTIVE SUMMARY', 'One platform. One truth. Better control.', 'Key message: Fragmented IT records become governed enterprise intelligence.']
+  03: ['02  ┬╖  WHAT IS CENTRIX?', 'The enterprise system of record for IT assets & access', 'Key message: CENTRIX centralizes the IT ecosystem ΓÇö applications to audit evidence.']
+  04: ['03  ┬╖  PURPOSE', 'Why CENTRIX exists', 'Key message: Purpose is governance outcomes ΓÇö not software features.']
+  05: ['04  ┬╖  CURRENT CHALLENGES', 'The cost of fragmentation', 'Key message: TodayΓÇÖs model relies on files, inboxes, and tribal knowledge.']
+  06: ['05  ┬╖  BUSINESS IMPACT', 'How fragmentation hits the enterprise', 'Key message: This is a risk, cost, and decision-quality problem.']
+  07: ['06  ┬╖  PORTAL OVERVIEW', 'One governed journey across the IT estate', 'Key message: CENTRIX connects inventory ΓåÆ control ΓåÆ assurance ΓåÆ insight.']
+  08: ['07  ┬╖  DASHBOARD OVERVIEW', 'Executive visibility at a glance', 'Key message: Leadership questions answered without assembling a deck.']
+  09: ['08  ┬╖  CORE MODULES', 'Business capabilities ΓÇö not screens', 'Key message: Each module delivers a governance outcome.']
+  10: ['09  ┬╖  WHO CAN BENEFIT?', 'Value by stakeholder', 'Key message: CENTRIX serves the full IT value chain ΓÇö from ops to the board.']
+  11: ['10  ┬╖  SECURITY & GOVERNANCE', 'Control by design', 'Key message: The governance platform is itself governed.']
+  12: ['11  ┬╖  BUSINESS VALUE', 'Outcomes that matter to leadership', 'Key message: Value is measured in time, risk, cost, and decision quality.']
+  13: ['12  ┬╖  FUTURE ROADMAP', 'From foundation to intelligence', 'Key message: Control first ΓÇö then automation, integration, and AI.']
+  14: ['13  ┬╖  VISION', 'Where CENTRIX is heading', 'Key message: One trusted platform for the complete IT ecosystem.']
+  15: ['14  ┬╖  LIVE DEMONSTRATION', 'A business story ΓÇö not a menu walk', 'Key message: See ΓåÆ Own ΓåÆ Control ΓåÆ Govern ΓåÆ Prove.']
+  16: ['THANK YOU', 'Questions', 'CENTRIX  ┬╖  Enterprise IT Portfolio & Access Governance']
+  17: ['APPENDIX  ┬╖  SCREENSHOT REPLACEMENT KIT', 'Drop-in media slots (correct aspect)', 'Replace each labeled frame with the matching CENTRIX screenshot ΓÇö layout preserved.']
