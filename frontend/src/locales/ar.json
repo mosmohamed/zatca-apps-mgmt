@@ -1,14 +1,15 @@
 {
   "app": {
     "name": "Zatca Application OPS",
-    "tagline": "إدارة الصلاحيات",
-    "subtitle": "نظام ادارة التطبيقات وإدارة الصلاحيات في هيئة الزكاة والضريبة والجمارك",
+    "tagline": "",
+    "subtitle": "نظام ادارة التطبيقات في هيئة الزكاة والضريبة والجمارك",
     "fallbackTitle": "Zatca Application OPS"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
     "applicationsDetails": "تفاصيل التطبيقات",
     "applicationDetail": "تفاصيل التطبيق",
+    "applicationEdit": "تعديل التطبيق",
     "assignments": "التعيينات",
     "masterData": "البيانات الأساسية",
     "applications": "التطبيقات",
@@ -73,7 +74,10 @@
     "selectAll": "تحديد الكل",
     "selectRow": "تحديد الصف",
     "selectedCount": "تم تحديد {{count}}",
-    "deleteSelected": "حذف المحدد"
+    "deleteSelected": "حذف المحدد",
+    "copied": "تم النسخ إلى الحافظة.",
+    "copyFailed": "تعذّر النسخ إلى الحافظة.",
+    "copyValue": "نسخ {{label}}"
   },
   "validation": {
     "required": "{{field}} مطلوب.",
@@ -92,9 +96,24 @@
     "passwordMin": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
     "applicationRequired": "التطبيق مطلوب.",
     "userRequired": "المستخدم مطلوب.",
+    "usersRequired": "أضف مستخدماً واحداً على الأقل.",
     "appRoleRequired": "دور التطبيق مطلوب.",
+    "statusRequired": "الحالة مطلوبة.",
+    "criticalityRequired": "درجة الأهمية مطلوبة.",
+    "supportTypeRequired": "نوع الدعم مطلوب.",
     "categoryRequired": "الفئة مطلوبة.",
-    "haModelInvalid": "اختر نموذج توافر عالٍ (HA) صالحاً."
+    "passwordConfirmationRequired": "تأكيد كلمة المرور مطلوب.",
+    "passwordConfirmationMismatch": "تأكيد كلمة المرور غير مطابق.",
+    "haModelInvalid": "اختر نموذج توافر عالٍ (HA) صالحاً.",
+    "ipInvalid": "أدخل عنوان IPv4 أو IPv6 صالحاً.",
+    "hostnameInvalid": "أدخل اسم مضيف صالحاً.",
+    "cidrInvalid": "أدخل نطاق CIDR صالحاً، مثل 10.0.0.0/24.",
+    "portInvalid": "أدخل منفذاً بين 1 و 65535.",
+    "integerInvalid": "أدخل رقماً صحيحاً أكبر من أو يساوي 0.",
+    "dateInvalid": "أدخل تاريخاً صالحاً.",
+    "optionInvalid": "اختر أحد الخيارات المتاحة.",
+    "maxLength": "استخدم {{max}} حرفاً كحد أقصى.",
+    "requiredWhenPublished": "مطلوب عند نشر البيئة على الإنترنت."
   },
   "auth": {
     "signIn": "تسجيل الدخول",
@@ -193,6 +212,53 @@
       "emptyDepartments": "أنشئ الأقسام والتطبيقات لملء هذا الرسم.",
       "emptyLicenses": "أضف تراخيص لملء هذه الرسوم.",
       "emptyHaModel": "عيّن نماذج التوافر العالي للتطبيقات لملء هذا الرسم."
+    },
+    "layout": {
+      "dragHandle": "اسحب لإعادة ترتيب العنصر",
+      "resetLayout": "إعادة تعيين التخطيط",
+      "resetSuccess": "تمت استعادة التخطيط الافتراضي للوحة التحكم.",
+      "resetFailed": "تعذّرت إعادة تعيين تخطيط لوحة التحكم.",
+      "saveFailed": "تعذّر حفظ تخطيط لوحة التحكم.",
+      "hint": "اسحب المقبض الموجود على العنصر لإعادة ترتيب لوحة التحكم. يُحفظ الترتيب لحسابك.",
+      "emptyTitle": "لا توجد عناصر مفعّلة",
+      "emptyDescription": "عناصر لوحة التحكم معطّلة لدورك. اطلب من المسؤول تفعيلها من الإعدادات."
+    }
+  },
+  "entityPreview": {
+    "loadFailed": "تعذّر تحميل المعاينة.",
+    "copiedField": "تم نسخ {{label}} إلى الحافظة.",
+    "fields": {
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "extension": "التحويلة",
+      "teams": "مايكروسوفت تيمز",
+      "roles": "الأدوار",
+      "code": "الرمز",
+      "department": "الإدارة",
+      "type": "النوع",
+      "businessOwner": "مالك الأعمال",
+      "technicalOwner": "المالك التقني",
+      "haModel": "نموذج التوافرية العالية",
+      "documentationUrl": "التوثيق",
+      "repositoryUrl": "المستودع",
+      "contactPersonEmail": "بريد مسؤول التواصل",
+      "contactPersonPhone": "هاتف مسؤول التواصل"
+    },
+    "user": {
+      "dialogLabel": "معاينة {{name}}",
+      "noJobTitle": "بدون مسمى وظيفي",
+      "internal": "داخلي",
+      "assignmentsCount": "{{value}} تكليفات تطبيقات نشطة",
+      "unmatchedName": "لم يتم العثور على ملف مستخدم مطابق لهذا الاسم."
+    },
+    "vendor": {
+      "dialogLabel": "معاينة {{name}}",
+      "usersCount": "{{active}} نشط من {{total}} مستخدم مرتبط"
+    },
+    "application": {
+      "dialogLabel": "معاينة {{name}}",
+      "activeUsers": "{{value}} مستخدم نشط",
+      "technologies": "{{value}} تقنية"
     }
   },
   "errors": {
@@ -221,7 +287,6 @@
     "description": "إدارة جرد تطبيقات تقنية المعلومات مع البحث والترتيب والتصفح.",
     "new": "تطبيق جديد",
     "create": "إنشاء تطبيق",
-    "edit": "تعديل التطبيق",
     "searchPlaceholder": "ابحث بالاسم أو الرمز أو المالك...",
     "emptyTitle": "لم يتم العثور على تطبيقات",
     "emptyCreate": "أنشئ أول تطبيق لبدء الجرد.",
@@ -264,6 +329,9 @@
       "technologiesPlaceholder": "اختر التقنيات",
       "technologiesSearch": "ابحث عن التقنيات...",
       "technologiesEmpty": "لم يتم العثور على تقنيات.",
+      "ownersPlaceholder": "اختر المستخدمين",
+      "ownersSearch": "ابحث بالاسم أو البريد أو المسمى...",
+      "ownersEmpty": "لا يوجد مستخدمون.",
       "documentationUrl": "رابط التوثيق",
       "repositoryUrl": "رابط المستودع",
       "saving": "جاري الحفظ...",
@@ -279,7 +347,303 @@
       "deleteFailed": "فشل حذف التطبيق."
     },
     "bulkDeleteTitle": "حذف التطبيقات المحددة؟",
-    "bulkDeleteConfirm": "حذف {{count}} تطبيقات محددة؟ سيتم الحذف الناعم للسجلات."
+    "bulkDeleteConfirm": "حذف {{count}} تطبيقات محددة؟ سيتم الحذف الناعم للسجلات.",
+    "edit": {
+      "subtitle": "حدّث بيانات التطبيق وصف مكان تشغيله في كل بيئة.",
+      "backToDetail": "العودة إلى التطبيق",
+      "viewDetails": "عرض التفاصيل",
+      "unsavedBadge": "تغييرات غير محفوظة",
+      "discard": "تجاهل التغييرات",
+      "discardTitle": "تجاهل التغييرات غير المحفوظة؟",
+      "discardDescription": "لم يتم حفظ تغييراتك في هذه الصفحة وسيتم فقدانها.",
+      "leave": "مغادرة الصفحة",
+      "loadFailedTitle": "تعذّر تحميل خيارات النموذج",
+      "loadFailedDescription": "فشل تحميل القوائم المنسدلة مثل الإدارة. حدّث الصفحة وحاول مرة أخرى.",
+      "tabs": {
+        "main": "البيانات الأساسية",
+        "infrastructure": "تفاصيل البنية التحتية"
+      }
+    },
+    "infrastructure": {
+      "environmentSwitcher": "البيئة",
+      "configured": "مُعرَّفة",
+      "notConfigured": "غير مُعرَّفة",
+      "notSpecified": "غير محدد",
+      "profileConfigured": "تم تعريف البنية التحتية لهذه البيئة.",
+      "profileMissing": "لم يتم وصف هذه البيئة بعد.",
+      "readOnlyNotice": "لديك صلاحية عرض تفاصيل البنية التحتية دون تعديلها.",
+      "saveEnvironment": "حفظ البيئة",
+      "deleteProfile": "حذف ملف البيئة",
+      "deleteProfileTitle": "حذف ملف البيئة؟",
+      "deleteProfileDescription": "سيتم حذف ملف بيئة {{environment}} وجميع مكوناته. الحذف ناعم ويمكن استعادته بوصف البيئة مرة أخرى.",
+      "addRecord": "إضافة {{item}}",
+      "emptyCollection": "لا توجد سجلات {{item}} بعد.",
+      "emptySection": "لا توجد بيانات مسجلة في هذا القسم بعد.",
+      "moveUp": "تحريك لأعلى",
+      "moveDown": "تحريك لأسفل",
+      "removeRecordTitle": "إزالة {{item}}؟",
+      "removeRecordDescription": "ستتم إزالة السجل من القائمة وحذفه عند حفظ هذه البيئة.",
+      "forbiddenTitle": "البنية التحتية غير متاحة",
+      "forbiddenDescription": "ليس لديك صلاحية لعرض تفاصيل البنية التحتية لهذا التطبيق.",
+      "loadFailedTitle": "تعذّر تحميل البنية التحتية",
+      "loadFailedDescription": "تعذّر تحميل بيانات البنية التحتية. حاول مرة أخرى بعد لحظات.",
+      "noEnvironmentsTitle": "لا توجد بيئات معرّفة",
+      "noEnvironmentsDescription": "لا توجد بيئات نشطة متاحة. اطلب من المسؤول تهيئة بيانات البيئات الأساسية.",
+      "emptyProfileTitle": "لا توجد بيانات بعد",
+      "emptyProfileDescription": "لم يتم وصف بيئة {{environment}} لهذا التطبيق.",
+      "copy": {
+        "action": "نسخ من بيئة",
+        "title": "نسخ ملف البيئة",
+        "description": "انسخ بيئة مكتملة إلى {{target}} بدلاً من إدخالها من جديد.",
+        "sourceLabel": "البيئة المصدر",
+        "sourcePlaceholder": "اختر بيئة للنسخ منها",
+        "noSources": "لا توجد بيئة أخرى تحتوي على بنية تحتية للنسخ بعد.",
+        "overwriteWarning": "هذه البيئة تحتوي بالفعل على ملف. سيؤدي النسخ إلى استبدال كل القيم والمكونات ببيانات البيئة المصدر.",
+        "confirm": "نسخ البيئة",
+        "copying": "جاري النسخ..."
+      },
+      "toast": {
+        "saved": "تم حفظ البنية التحتية للبيئة بنجاح.",
+        "saveFailed": "فشل حفظ البنية التحتية للبيئة.",
+        "deleted": "تم حذف ملف البيئة بنجاح.",
+        "deleteFailed": "فشل حذف ملف البيئة.",
+        "copied": "تم نسخ ملف البيئة بنجاح.",
+        "copyFailed": "فشل نسخ ملف البيئة."
+      },
+      "sections": {
+        "hosting": {
+          "title": "الاستضافة",
+          "description": "مكان نشر التطبيق والمنصة التي تشغّله."
+        },
+        "internet": {
+          "title": "النشر على الإنترنت",
+          "description": "الانكشاف العام والحماية الطرفية والنقاط المنشورة."
+        },
+        "operational": {
+          "title": "المراقبة والتشغيل",
+          "description": "المراقبة والملكية والنسخ الاحتياطي وأهداف التعافي."
+        }
+      },
+      "collections": {
+        "servers": {
+          "title": "الخوادم",
+          "item": "خادم",
+          "description": "الأجهزة الافتراضية والعُقد التي تشغّل التطبيق."
+        },
+        "databases": {
+          "title": "قواعد البيانات",
+          "item": "قاعدة بيانات",
+          "description": "نسخ قواعد البيانات وأدوارها ونقاط الاتصال بها."
+        },
+        "networks": {
+          "title": "الشبكات",
+          "item": "شبكة",
+          "description": "الشبكات الفرعية وشبكات VLAN ومتطلبات الجدار الناري."
+        },
+        "dns_records": {
+          "title": "سجلات DNS",
+          "item": "سجل DNS",
+          "description": "الأسماء الداخلية والخارجية التي تشير إلى التطبيق."
+        },
+        "listeners": {
+          "title": "المستمعات",
+          "item": "مستمع",
+          "description": "المنافذ والبروتوكولات وفحوص السلامة التي يعرضها التطبيق."
+        },
+        "load_balancers": {
+          "title": "موزعات الأحمال",
+          "item": "موزع أحمال",
+          "description": "الخوادم الافتراضية والمجمعات وتوزيع حركة البيانات."
+        },
+        "integrations": {
+          "title": "التكاملات",
+          "item": "تكامل",
+          "description": "الواجهات المتبادلة مع الأنظمة الأخرى."
+        },
+        "message_brokers": {
+          "title": "وسطاء الرسائل",
+          "item": "وسيط رسائل",
+          "description": "المواضيع والطوابير ومجموعات المستهلكين المستخدمة."
+        },
+        "storage_resources": {
+          "title": "موارد التخزين",
+          "item": "مورد تخزين",
+          "description": "المشاركات والحاويات ووحدات التخزين المرتبطة بالتطبيق."
+        }
+      },
+      "options": {
+        "databaseRole": {
+          "primary": "أساسية",
+          "replica": "نسخة متماثلة",
+          "standby": "احتياطية"
+        },
+        "dnsScope": {
+          "internal": "داخلي",
+          "external": "خارجي"
+        },
+        "loadBalancerType": {
+          "f5": "F5",
+          "cloud": "سحابي",
+          "nginx": "NGINX",
+          "haproxy": "HAProxy",
+          "other": "أخرى"
+        },
+        "vipVisibility": {
+          "private": "خاص",
+          "public": "عام"
+        },
+        "integrationDirection": {
+          "inbound": "وارد",
+          "outbound": "صادر",
+          "bidirectional": "ثنائي الاتجاه"
+        }
+      },
+      "fields": {
+        "active_standby_status": "حالة النشط/الاحتياطي",
+        "api_gateway": "بوابة API",
+        "api_url": "رابط API",
+        "apm_tool": "أداة APM",
+        "authentication_type": "نوع المصادقة",
+        "availability_zone": "منطقة التوافر",
+        "backend_pool": "المجمع الخلفي",
+        "backup_enabled": "النسخ الاحتياطي مفعّل",
+        "backup_policy": "سياسة النسخ الاحتياطي",
+        "broker_name": "اسم الوسيط",
+        "broker_type": "نوع الوسيط",
+        "broker_url": "رابط الوسيط",
+        "capacity": "السعة",
+        "cdn_enabled": "شبكة توصيل المحتوى مفعّلة",
+        "cdn_provider": "مزوّد شبكة توصيل المحتوى",
+        "certificate_expires_at": "انتهاء الشهادة",
+        "certificate_name": "اسم الشهادة",
+        "certificate_reference": "مرجع الشهادة",
+        "cicd_pipeline_url": "رابط خط CI/CD",
+        "cidr": "نطاق CIDR",
+        "cloud_account": "الحساب السحابي",
+        "cloud_provider": "المزوّد السحابي",
+        "cluster_ip": "عنوان IP للعنقود",
+        "cluster_name": "اسم العنقود",
+        "connection_type": "نوع الاتصال",
+        "consumer_group": "مجموعة المستهلكين",
+        "cpu": "المعالج",
+        "dashboard_url": "رابط لوحة المراقبة",
+        "data_center": "مركز البيانات",
+        "data_classification": "تصنيف البيانات",
+        "database_engine": "محرك قاعدة البيانات",
+        "database_name": "اسم قاعدة البيانات",
+        "database_owner": "مالك قاعدة البيانات",
+        "database_role": "دور قاعدة البيانات",
+        "database_schema": "المخطط",
+        "database_type": "نوع قاعدة البيانات",
+        "database_version": "إصدار قاعدة البيانات",
+        "deployment_type": "نوع النشر",
+        "destination_network": "الشبكة الوجهة",
+        "destination_system": "النظام الوجهة",
+        "direction": "الاتجاه",
+        "disaster_recovery_enabled": "التعافي من الكوارث مفعّل",
+        "disaster_recovery_environment": "بيئة التعافي من الكوارث",
+        "dns_name": "اسم DNS",
+        "dns_scope": "نطاق DNS",
+        "dns_server": "خادم DNS",
+        "documentation_url": "رابط التوثيق",
+        "exposure_type": "نوع الانكشاف",
+        "external_port": "المنفذ الخارجي",
+        "f5_partition": "قسم F5",
+        "firewall_requirement": "متطلب الجدار الناري",
+        "fqdn": "الاسم الكامل للنطاق",
+        "gateway": "البوابة",
+        "ha_model": "نموذج التوافر العالي",
+        "health_check_path": "مسار فحص السلامة",
+        "health_check_port": "منفذ فحص السلامة",
+        "health_check_protocol": "بروتوكول فحص السلامة",
+        "health_check_url": "رابط فحص السلامة",
+        "health_monitor": "مراقب السلامة",
+        "hosting_model": "نموذج الاستضافة",
+        "hostname": "اسم المضيف",
+        "instance_name": "اسم النسخة",
+        "integration_name": "اسم التكامل",
+        "internet_facing_lb": "موزع أحمال متصل بالإنترنت",
+        "internet_notes": "ملاحظات النشر على الإنترنت",
+        "lb_method": "أسلوب توزيع الأحمال",
+        "lb_name": "اسم موزع الأحمال",
+        "lb_type": "نوع موزع الأحمال",
+        "listener_ip": "عنوان IP للمستمع",
+        "listener_name": "اسم المستمع",
+        "listener_port": "منفذ المستمع",
+        "logging_enabled": "تسجيل السجلات مفعّل",
+        "logging_platform": "منصة السجلات",
+        "management_ip": "عنوان IP للإدارة",
+        "memory": "الذاكرة",
+        "monitoring_enabled": "المراقبة مفعّلة",
+        "monitoring_tool": "أداة المراقبة",
+        "mount_path": "مسار التركيب",
+        "namespace": "مساحة الأسماء",
+        "network_ip": "عنوان IP للشبكة",
+        "network_name": "اسم الشبكة",
+        "network_route": "المسار",
+        "network_type": "نوع الشبكة",
+        "network_zone": "منطقة الشبكة",
+        "node_name": "اسم العقدة",
+        "notes": "ملاحظات",
+        "on_call_group": "مجموعة المناوبة",
+        "operating_system": "نظام التشغيل",
+        "operational_notes": "ملاحظات تشغيلية",
+        "operations_owner": "مالك التشغيل",
+        "owner": "المالك",
+        "persistence_config": "إعداد الاستمرارية",
+        "persistence_profile": "ملف الاستمرارية",
+        "pool_members": "أعضاء المجمع",
+        "pool_name": "اسم المجمع",
+        "port": "المنفذ",
+        "private_ip": "عنوان IP خاص",
+        "protocol": "البروتوكول",
+        "public_domain": "النطاق العام",
+        "public_ip": "عنوان IP عام",
+        "public_url": "الرابط العام",
+        "publication_owner": "مالك النشر",
+        "published_to_internet": "منشور على الإنترنت",
+        "queue": "الطابور",
+        "read_write_role": "دور القراءة/الكتابة",
+        "record_type": "نوع السجل",
+        "region": "المنطقة",
+        "replication": "النسخ المتماثل",
+        "repository_url": "رابط المستودع",
+        "resource_group": "مجموعة الموارد",
+        "retention_period": "مدة الاحتفاظ",
+        "retry_policy": "سياسة إعادة المحاولة",
+        "rpo": "هدف نقطة الاستعادة (RPO)",
+        "rto": "هدف زمن الاستعادة (RTO)",
+        "runbook_url": "رابط دليل التشغيل",
+        "secret_reference": "مرجع السر",
+        "security_zone": "المنطقة الأمنية",
+        "server_name": "اسم الخادم",
+        "server_role": "دور الخادم",
+        "service_name": "اسم الخدمة",
+        "source_network": "الشبكة المصدر",
+        "source_system": "النظام المصدر",
+        "ssl_profile": "ملف SSL",
+        "status": "الحالة",
+        "storage": "التخزين",
+        "storage_endpoint": "نقطة نهاية التخزين",
+        "storage_name": "اسم التخزين",
+        "storage_type": "نوع التخزين",
+        "subnet": "الشبكة الفرعية",
+        "support_team": "فريق الدعم",
+        "target": "الهدف",
+        "tenant": "المستأجر",
+        "timeout": "المهلة (ثانية)",
+        "tls_certificate": "شهادة TLS",
+        "tls_enabled": "TLS مفعّل",
+        "topic": "الموضوع",
+        "vip_ip": "عنوان IP لـ VIP",
+        "vip_name": "اسم VIP",
+        "vip_visibility": "ظهور VIP",
+        "vlan": "VLAN",
+        "vm_name": "اسم الجهاز الافتراضي",
+        "waf_enabled": "جدار حماية التطبيقات مفعّل",
+        "waf_provider": "مزوّد جدار حماية التطبيقات"
+      }
+    }
   },
   "vendors": {
     "title": "الموردون",
@@ -879,6 +1243,11 @@
     "documentation": "التوثيق",
     "repository": "المستودع",
     "internal": "داخلي",
+    "editApplication": "تعديل التطبيق",
+    "tabs": {
+      "mainData": "البيانات الرئيسية",
+      "infrastructure": "تفاصيل البنية التحتية"
+    },
     "filters": {
       "title": "الفلاتر",
       "searchPlaceholder": "ابحث بالاسم أو الرمز أو المالك...",
@@ -1119,6 +1488,49 @@
       "rolePlaceholder": "اختر دوراً",
       "roleHint": "تُطبَّق إعدادات الظهور فقط على المستخدمين المعيّنين للدور المحدد.",
       "noRoles": "لا توجد أدوار بعد. أنشئ دوراً أولاً ثم اضبط عناصر لوحة التحكم الخاصة به.",
+      "layoutCardTitle": "تخطيط العناصر",
+      "layoutCardDescription": "اضبط حجم الشبكة والارتفاع والعناصر المرئية والترتيب الافتراضي لكل عنصر. هذا مستقل عن ترتيب السحب والإفلات لكل مستخدم وعن صلاحية الظهور حسب الدور.",
+      "layoutTitle": "إعدادات التخطيط",
+      "layoutDescription": "عدّل الأعمدة والعرض. تُطبَّق التغييرات بعد حفظ الإعدادات.",
+      "livePreview": "معاينة مباشرة",
+      "resetLayout": "إعادة للافتراضي",
+      "recommendedLayout": "استعادة التخطيط الموصى به",
+      "defaultOrder": "الترتيب الافتراضي",
+      "defaultOrderHint": "يُستخدم عندما لا يحفظ المستخدم ترتيباً شخصياً. ترتيب السحب والإفلات لا يغيّر العرض أو الارتفاع.",
+      "headerWidget": "رأس الصفحة",
+      "moveUp": "تحريك لأعلى",
+      "moveDown": "تحريك لأسفل",
+      "sizePreset": "عرض مسبق",
+      "presets": {
+        "full": "عرض كامل",
+        "half": "نصف العرض",
+        "third": "ثلث العرض",
+        "custom": "مخصص"
+      },
+      "spanDesktop": "أعمدة سطح المكتب (من 6)",
+      "spanTablet": "أعمدة الجهاز اللوحي (من 2)",
+      "spanLabel": "{{value}}/6",
+      "chartHeight": "ارتفاع المخطط (بكسل)",
+      "minHeight": "الحد الأدنى للارتفاع (بكسل)",
+      "maxHeight": "الحد الأقصى للارتفاع (بكسل)",
+      "maxHeightNone": "بدون حد أقصى",
+      "overflow": "فيض المحتوى",
+      "overflowOptions": {
+        "auto": "تمرير عند الحاجة",
+        "hidden": "قص الفيض",
+        "visible": "السماح بالفيض"
+      },
+      "legendPosition": "موضع وسيلة الإيضاح",
+      "legendOptions": {
+        "bottom": "أسفل",
+        "top": "أعلى",
+        "hidden": "مخفي"
+      },
+      "showHeader": "إظهار العنوان",
+      "showDescription": "إظهار الوصف",
+      "showLegend": "إظهار وسيلة الإيضاح",
+      "showFilters": "إظهار عوامل التصفية",
+      "showStatistics": "إظهار الإحصائيات",
       "widgets": {
         "top_technologies": "أبرز التقنيات",
         "employees_per_application": "الموظفون لكل تطبيق",
@@ -1157,6 +1569,64 @@
     "toast": {
       "updated": "تم تحديث الإعدادات بنجاح.",
       "updateFailed": "فشل تحديث الإعدادات."
+    }
+  },
+  "preview": {
+    "errorTitle": "المعاينة غير متاحة",
+    "errorDescription": "تعذّر تحميل هذا الملخص في الوقت الحالي.",
+    "retry": "إعادة المحاولة",
+    "openDetails": "فتح تفاصيل {{name}}",
+    "showDetails": "عرض ملخص {{name}}",
+    "user": {
+      "cardLabel": "ملخص الموظف {{name}}",
+      "title": "موظف",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "extension": "التحويلة",
+      "teams": "Teams",
+      "vendor": "المورد",
+      "internal": "موظف داخلي",
+      "roles": "الأدوار",
+      "noRoles": "لا توجد أدوار معيّنة",
+      "activeAssignments": "تعيين نشط",
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "vendor": {
+      "cardLabel": "ملخص المورد {{name}}",
+      "title": "مورد",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "contactEmail": "بريد مسؤول التواصل",
+      "contactPhone": "هاتف مسؤول التواصل",
+      "remarks": "ملاحظات",
+      "users": "مستخدم",
+      "activeUsers": "نشط",
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "application": {
+      "cardLabel": "ملخص التطبيق {{name}}",
+      "title": "تطبيق",
+      "code": "الرمز",
+      "department": "الإدارة",
+      "type": "النوع",
+      "status": "الحالة",
+      "criticality": "درجة الأهمية",
+      "supportType": "نوع الدعم",
+      "haModel": "نموذج التوافر العالي",
+      "businessOwner": "المالك التشغيلي",
+      "technicalOwner": "المالك التقني",
+      "links": "الروابط",
+      "documentation": "التوثيق",
+      "repository": "المستودع",
+      "teamMembers": "عضو فريق",
+      "technologies": "تقنية"
+    },
+    "department": {
+      "cardLabel": "ملخص الإدارة {{name}}",
+      "title": "إدارة",
+      "applications": "تطبيق"
     }
   }
 }

@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Models\Application;
 use App\Models\ApplicationAssignment;
+use App\Models\ApplicationEnvironment;
 use App\Models\ApplicationStatus;
 use App\Models\AppRole;
 use App\Models\Criticality;
@@ -16,8 +17,10 @@ use App\Models\Setting;
 use App\Models\SupportType;
 use App\Models\Technology;
 use App\Models\User;
+use App\Models\UserDashboardLayout;
 use App\Models\Vendor;
 use App\Policies\ApplicationAssignmentPolicy;
+use App\Policies\ApplicationInfrastructurePolicy;
 use App\Policies\ApplicationPolicy;
 use App\Policies\ApplicationStatusPolicy;
 use App\Policies\AppRolePolicy;
@@ -28,6 +31,7 @@ use App\Policies\LicensePolicy;
 use App\Policies\SettingPolicy;
 use App\Policies\SupportTypePolicy;
 use App\Policies\TechnologyPolicy;
+use App\Policies\UserDashboardLayoutPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\VendorPolicy;
 use Illuminate\Database\Eloquent\Model;
@@ -65,5 +69,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Technology::class, TechnologyPolicy::class);
         Gate::policy(License::class, LicensePolicy::class);
         Gate::policy(Setting::class, SettingPolicy::class);
+        Gate::policy(UserDashboardLayout::class, UserDashboardLayoutPolicy::class);
+        Gate::policy(ApplicationEnvironment::class, ApplicationInfrastructurePolicy::class);
     }
 }

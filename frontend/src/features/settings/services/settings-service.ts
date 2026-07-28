@@ -10,6 +10,10 @@ import {
   normalizeDashboardWidgetsByRole,
   type DashboardWidgetRoleOption,
 } from "@/features/dashboard/types/dashboard-widgets"
+import {
+  DEFAULT_DASHBOARD_WIDGET_LAYOUT,
+  normalizeDashboardWidgetLayout,
+} from "@/features/dashboard/types/widget-layout-config"
 
 type SettingRecord = {
   key: string
@@ -17,16 +21,17 @@ type SettingRecord = {
 }
 
 const DEFAULTS: PublicSettings = {
-  company_name: "IT Portfolio System",
-  sidebar_tagline_en: "Access Management",
-  sidebar_tagline_ar: "إدارة الصلاحيات",
-  header_subtitle_en: "ZATCA Applications Operations & Access Management",
+  company_name: "CENTRIX",
+  sidebar_tagline_en: "",
+  sidebar_tagline_ar: "",
+  header_subtitle_en: "ZATCA Applications Operations",
   header_subtitle_ar:
-    "نظام ادارة التطبيقات وإدارة الصلاحيات في هيئة الزكاة والضريبة والجمارك",
+    "نظام ادارة التطبيقات في هيئة الزكاة والضريبة والجمارك",
   default_timezone: "Asia/Riyadh",
   default_pagination_size: 15,
   session_timeout_minutes: 120,
   dashboard_widgets: DEFAULT_DASHBOARD_WIDGETS,
+  dashboard_widget_layout: DEFAULT_DASHBOARD_WIDGET_LAYOUT,
 }
 
 function asRoleOptions(value: unknown): DashboardWidgetRoleOption[] | undefined {
@@ -102,6 +107,9 @@ function asPublicSettings(
         : Number(source.session_timeout_minutes) ||
           DEFAULTS.session_timeout_minutes,
     dashboard_widgets: normalizeDashboardWidgets(source.dashboard_widgets),
+    dashboard_widget_layout: normalizeDashboardWidgetLayout(
+      source.dashboard_widget_layout
+    ),
     ...(byRole !== undefined ? { dashboard_widgets_by_role: byRole } : {}),
     ...(roleOptions !== undefined
       ? { dashboard_widget_roles: roleOptions }

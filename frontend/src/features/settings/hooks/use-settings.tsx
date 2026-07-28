@@ -18,6 +18,7 @@ import type {
 import { getApiErrorMessage } from "@/lib/api-errors"
 import i18n from "@/lib/i18n"
 import { DEFAULT_DASHBOARD_WIDGETS } from "@/features/dashboard/types/dashboard-widgets"
+import { DEFAULT_DASHBOARD_WIDGET_LAYOUT } from "@/features/dashboard/types/widget-layout-config"
 
 type SettingsContextValue = {
   settings: PublicSettings
@@ -28,16 +29,17 @@ type SettingsContextValue = {
 }
 
 export const DEFAULT_SETTINGS: PublicSettings = {
-  company_name: "IT Portfolio System",
-  sidebar_tagline_en: "Access Management",
-  sidebar_tagline_ar: "إدارة الصلاحيات",
-  header_subtitle_en: "ZATCA Applications Operations & Access Management",
+  company_name: "CENTRIX",
+  sidebar_tagline_en: "",
+  sidebar_tagline_ar: "",
+  header_subtitle_en: "ZATCA Applications Operations",
   header_subtitle_ar:
-    "نظام ادارة التطبيقات وإدارة الصلاحيات في هيئة الزكاة والضريبة والجمارك",
+    "نظام ادارة التطبيقات في هيئة الزكاة والضريبة والجمارك",
   default_timezone: "Asia/Riyadh",
   default_pagination_size: 15,
   session_timeout_minutes: 120,
   dashboard_widgets: DEFAULT_DASHBOARD_WIDGETS,
+  dashboard_widget_layout: DEFAULT_DASHBOARD_WIDGET_LAYOUT,
 }
 
 const SettingsContext = createContext<SettingsContextValue | null>(null)

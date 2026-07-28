@@ -1,3 +1,4 @@
+import { useState, type ReactNode } from "react"
 import { Link, useParams } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import {
@@ -6,11 +7,14 @@ import {
   ExternalLink,
   Layers3,
   Link2,
+  Pencil,
   Shield,
   Truck,
   Users,
 } from "lucide-react"
 
+import { UserPreviewLink } from "@/components/entity-preview/UserPreviewLink"
+import { VendorPreviewLink } from "@/components/entity-preview/VendorPreviewLink"
 import { EmptyState } from "@/components/EmptyState"
 import { LoadingSkeleton } from "@/components/LoadingSkeleton"
 import { Badge } from "@/components/ui/badge"
@@ -30,10 +34,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ApplicationInfrastructureView } from "@/features/applications/components/ApplicationInfrastructureView"
+import { ApplicationOwnerChips } from "@/features/applications/components/ApplicationOwnerChips"
 import { useApplication } from "@/features/applications/hooks/use-applications"
+import type { Application } from "@/features/applications/types/application"
 import { useApplicationAssignmentDetails } from "@/features/assignments/hooks/use-assignments"
+import type { Assignment } from "@/features/assignments/types/assignment"
+import { useAuth } from "@/features/auth/hooks/use-auth"
 import { cn } from "@/lib/utils"
 import { formatDateTime } from "@/utils/format"
+
+type DetailTab = "main" | "infrastructure"
 
 const METRIC_STYLES = [
   {
@@ -59,6 +71,9 @@ export function ApplicationDetailPage() {
   const params = useParams()
   const applicationId = Number(params.id)
   const isArabic = i18n.language.startsWith("ar")
+  const { can } = useAuth()
+  const canUpdate = can("applications.update")
+  const [tab, setTab] = useState<DetailTab>("main")
 
   const applicationQuery = useApplication(applicationId)
   const matrixQuery = useApplicationAssignmentDetails(
@@ -159,6 +174,14 @@ export function ApplicationDetailPage() {
           </div>
 
           <div className="flex flex-wrap gap-2">
+            {canUpdate ? (
+              <Button asChild size="sm">
+                <Link to={`/applications/${application.id}/edit`}>
+                  <Pencil />
+                  {t("applicationsDetails.editApplication")}
+                </Link>
+              </Button>
+            ) : null}
             {application.documentation_url ? (
               <Button asChild variant="outline" size="sm">
                 <a
@@ -187,6 +210,56 @@ export function ApplicationDetailPage() {
         </div>
       </div>
 
+      <Tabs value={tab} onValueChange={(value) => setTab(value as DetailTab)}>
+        <TabsList className="w-full sm:w-auto">
+          <TabsTrigger value="main">
+            {t("applicationsDetails.tabs.mainData")}
+          </TabsTrigger>
+          <TabsTrigger value="infrastructure">
+            {t("applicationsDetails.tabs.infrastructure")}
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="main" className="space-y-5">
+          <MainDataPanel
+            application={application}
+            assignments={assignments}
+            vendorCount={vendorCount}
+            departmentName={departmentName}
+            typeName={typeName}
+            supportTypeName={supportTypeName}
+          />
+        </TabsContent>
+
+        <TabsContent value="infrastructure">
+          <ApplicationInfrastructureView applicationId={application.id} />
+        </TabsContent>
+      </Tabs>
+    </section>
+  )
+}
+
+type MainDataPanelProps = {
+  application: Application
+  assignments: Assignment[]
+  vendorCount: number
+  departmentName: string
+  typeName: string
+  supportTypeName: string
+}
+
+function MainDataPanel({
+  application,
+  assignments,
+  vendorCount,
+  departmentName,
+  typeName,
+  supportTypeName,
+}: MainDataPanelProps) {
+  const { t } = useTranslation()
+
+  return (
+    <>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
           icon={Users}
@@ -244,11 +317,19 @@ export function ApplicationDetailPage() {
               />
               <DetailItem
                 label={t("applicationsDetails.fields.businessOwner")}
-                value={application.business_owner || "—"}
+                value={
+                  <ApplicationOwnerChips
+                    owners={application.business_owners}
+                  />
+                }
               />
               <DetailItem
                 label={t("applicationsDetails.fields.technicalOwner")}
-                value={application.technical_owner || "—"}
+                value={
+                  <ApplicationOwnerChips
+                    owners={application.technical_owners}
+                  />
+                }
               />
               {application.documentation_url ? (
                 <DetailItem
@@ -360,9 +441,16 @@ export function ApplicationDetailPage() {
                     <TableRow key={assignment.id}>
                       <TableCell className="align-middle">
                         <div className="min-w-0 space-y-0.5">
-                          <p className="truncate font-medium leading-none">
-                            {assignment.user?.full_name ?? "—"}
-                          </p>
+                          <div className="truncate text-sm font-medium leading-none">
+                            {assignment.user ? (
+                              <UserPreviewLink
+                                userId={assignment.user.id}
+                                name={assignment.user.full_name}
+                              />
+                            ) : (
+                              "—"
+                            )}
+                          </div>
                           <p className="truncate text-xs text-muted-foreground">
                             {assignment.user?.email ?? "—"}
                           </p>
@@ -377,8 +465,14 @@ export function ApplicationDetailPage() {
                         </Badge>
                       </TableCell>
                       <TableCell className="align-middle truncate">
-                        {assignment.user?.vendor?.name ??
-                          t("applicationsDetails.internal")}
+                        {assignment.user?.vendor ? (
+                          <VendorPreviewLink
+                            vendorId={assignment.user.vendor.id}
+                            name={assignment.user.vendor.name}
+                          />
+                        ) : (
+                          t("applicationsDetails.internal")
+                        )}
                       </TableCell>
                       <TableCell className="align-middle">
                         {assignment.is_primary ? (
@@ -404,7 +498,7 @@ export function ApplicationDetailPage() {
           )}
         </CardContent>
       </Card>
-    </section>
+    </>
   )
 }
 
@@ -453,7 +547,7 @@ function DetailItem({
   href,
 }: {
   label: string
-  value: string
+  value: ReactNode
   href?: string
 }) {
   return (
@@ -462,7 +556,7 @@ function DetailItem({
         {label}
       </dt>
       <dd className="mt-1.5 text-sm font-medium break-words">
-        {href ? (
+        {href && typeof value === "string" ? (
           <a
             href={href}
             target="_blank"

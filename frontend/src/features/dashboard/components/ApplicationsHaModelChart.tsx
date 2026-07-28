@@ -74,6 +74,7 @@ export function ApplicationsHaModelChart({
 
   return (
     <DashboardChartCard
+      widgetKey="applications_by_ha_model"
       title={t("dashboard.charts.applicationsByHaModel")}
       description={t("dashboard.charts.applicationsByHaModelDesc")}
       icon={Server}

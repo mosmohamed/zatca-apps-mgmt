@@ -36,7 +36,14 @@ const pageTitleKeys: Record<string, string> = {
 }
 
 function resolveTitleKey(pathname: string): string {
-  if (pathname.startsWith("/applications-details/")) {
+  if (pathname.endsWith("/edit") && pathname.startsWith("/applications/")) {
+    return "nav.applicationEdit"
+  }
+
+  if (
+    pathname.startsWith("/applications-details/") ||
+    pathname.startsWith("/applications/")
+  ) {
     return "nav.applicationDetail"
   }
 

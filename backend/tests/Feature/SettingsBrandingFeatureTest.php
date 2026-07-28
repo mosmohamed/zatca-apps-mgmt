@@ -35,9 +35,9 @@ class SettingsBrandingFeatureTest extends TestCase
     {
         $this->getJson('/api/v1/settings/public')
             ->assertOk()
-            ->assertJsonPath('data.sidebar_tagline_en', 'Access Management')
-            ->assertJsonPath('data.sidebar_tagline_ar', 'إدارة الصلاحيات')
-            ->assertJsonPath('data.header_subtitle_en', 'ZATCA Applications Operations & Access Management');
+            ->assertJsonPath('data.sidebar_tagline_en', '')
+            ->assertJsonPath('data.sidebar_tagline_ar', '')
+            ->assertJsonPath('data.header_subtitle_en', 'ZATCA Applications Operations');
     }
 
     #[Test]
@@ -64,16 +64,32 @@ class SettingsBrandingFeatureTest extends TestCase
     }
 
     #[Test]
-    public function branding_settings_reject_empty_values(): void
+    public function branding_settings_reject_missing_required_fields(): void
+    {
+        Sanctum::actingAs($this->admin);
+
+        $this->putJson('/api/v1/settings', [
+            'settings' => [
+                'company_name' => '',
+            ],
+        ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['settings.company_name']);
+    }
+
+    #[Test]
+    public function branding_settings_allow_empty_sidebar_taglines(): void
     {
         Sanctum::actingAs($this->admin);
 
         $this->putJson('/api/v1/settings', [
             'settings' => [
                 'sidebar_tagline_en' => '',
+                'sidebar_tagline_ar' => '',
             ],
         ])
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors(['settings.sidebar_tagline_en']);
+            ->assertOk()
+            ->assertJsonPath('data.sidebar_tagline_en', '')
+            ->assertJsonPath('data.sidebar_tagline_ar', '');
     }
 }

@@ -30,8 +30,6 @@ class Application extends Model
         'code',
         'status_id',
         'criticality_id',
-        'business_owner',
-        'technical_owner',
         'support_type_id',
         'ha_model',
         'documentation_url',
@@ -136,5 +134,39 @@ class Application extends Model
     {
         return $this->belongsToMany(Technology::class)
             ->withTimestamps();
+    }
+
+    /**
+     * ZATCA Management stakeholders for this application.
+     *
+     * @return BelongsToMany<User, $this>
+     */
+    public function businessOwners(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'application_business_owners')
+            ->withTimestamps()
+            ->orderBy('first_name')
+            ->orderBy('last_name');
+    }
+
+    /**
+     * Technical owners for this application.
+     *
+     * @return BelongsToMany<User, $this>
+     */
+    public function technicalOwners(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'application_technical_owners')
+            ->withTimestamps()
+            ->orderBy('first_name')
+            ->orderBy('last_name');
+    }
+
+    /**
+     * @return HasMany<ApplicationEnvironment, $this>
+     */
+    public function applicationEnvironments(): HasMany
+    {
+        return $this->hasMany(ApplicationEnvironment::class);
     }
 }

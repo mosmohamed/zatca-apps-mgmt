@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\Setting;
 use App\Models\User;
+use App\Support\DashboardWidgetLayout;
 use App\Support\DashboardWidgets;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -67,6 +68,10 @@ class SettingsService
             $config,
         );
 
+        $settings[DashboardWidgetLayout::SETTING_KEY] = DashboardWidgetLayout::normalize(
+            $settings[DashboardWidgetLayout::SETTING_KEY] ?? null,
+        );
+
         if ($user instanceof User && $user->can('settings.update')) {
             $settings['dashboard_widgets_by_role'] = $config['roles'];
             $settings['dashboard_widget_roles'] = Role::query()
@@ -95,6 +100,10 @@ class SettingsService
                     $value = $this->normalizeIncomingDashboardWidgets($value);
                 }
 
+                if ($key === DashboardWidgetLayout::SETTING_KEY) {
+                    $value = DashboardWidgetLayout::normalize($value);
+                }
+
                 $setting = Setting::query()->where('key', $key)->first();
 
                 if ($setting === null && $key === DashboardWidgets::SETTING_KEY) {
@@ -107,6 +116,20 @@ class SettingsService
                         'type' => 'json',
                         'group' => 'dashboard',
                         'label' => 'Dashboard Widgets Visibility',
+                        'is_public' => true,
+                    ]);
+                }
+
+                if ($setting === null && $key === DashboardWidgetLayout::SETTING_KEY) {
+                    $setting = Setting::query()->create([
+                        'key' => DashboardWidgetLayout::SETTING_KEY,
+                        'value' => $this->stringifyValue(
+                            DashboardWidgetLayout::defaults(),
+                            'json',
+                        ),
+                        'type' => 'json',
+                        'group' => 'dashboard',
+                        'label' => 'Dashboard Widget Layout',
                         'is_public' => true,
                     ]);
                 }
@@ -214,7 +237,10 @@ class SettingsService
     private function stringifyValue(mixed $value, string $type): ?string
     {
         if ($value === null) {
-            return null;
+            return match ($type) {
+                'string' => '',
+                default => null,
+            };
         }
 
         return match ($type) {

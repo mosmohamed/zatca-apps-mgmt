@@ -127,8 +127,6 @@ class LegacyApplicationImportSeeder extends Seeder
                         'status_id' => $statusId,
                         'criticality_id' => $criticalityMediumId,
                         'support_type_id' => $supportBusinessHoursId,
-                        'technical_owner' => $whoSupport !== '' ? $whoSupport : null,
-                        'business_owner' => $remarks !== '' ? $remarks : $application->business_owner,
                         'updated_by' => $admin->id,
                     ]);
                     $application->save();
@@ -140,6 +138,11 @@ class LegacyApplicationImportSeeder extends Seeder
                             $supportRole,
                             $admin,
                         );
+                        $this->syncOwnersFromNames($application, $whoSupport, 'technical');
+                    }
+
+                    if ($remarks !== '') {
+                        $this->syncOwnersFromNames($application, $remarks, 'business');
                     }
 
                     $imported++;
@@ -311,6 +314,47 @@ class LegacyApplicationImportSeeder extends Seeder
                 ],
             );
         }
+    }
+
+    private function syncOwnersFromNames(
+        Application $application,
+        string $rawNames,
+        string $kind,
+    ): void {
+        $chunks = preg_split('/\s*[-,]\s*/u', $rawNames) ?: [];
+        $userIds = [];
+
+        foreach ($chunks as $chunk) {
+            $normalized = trim((string) preg_replace('/\s+/u', ' ', (string) $chunk));
+            if ($normalized === '') {
+                continue;
+            }
+
+            $needle = mb_strtolower($normalized, 'UTF-8');
+            $userId = User::query()
+                ->whereRaw(
+                    'LOWER(CONCAT(TRIM(first_name), \' \', TRIM(last_name))) = ?',
+                    [$needle]
+                )
+                ->value('id');
+
+            if ($userId !== null) {
+                $userIds[] = (int) $userId;
+            }
+        }
+
+        $userIds = array_values(array_unique($userIds));
+        if ($userIds === []) {
+            return;
+        }
+
+        if ($kind === 'business') {
+            $application->businessOwners()->syncWithoutDetaching($userIds);
+
+            return;
+        }
+
+        $application->technicalOwners()->syncWithoutDetaching($userIds);
     }
 
     /**

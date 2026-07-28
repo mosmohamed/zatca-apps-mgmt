@@ -73,6 +73,7 @@ export function LicenseStatusDonutChart({
 
   return (
     <DashboardChartCard
+      widgetKey="license_status_distribution"
       title={t("dashboard.charts.licenseStatus")}
       description={t("dashboard.charts.licenseStatusDesc")}
       icon={ShieldCheck}

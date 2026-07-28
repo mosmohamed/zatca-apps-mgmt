@@ -2,6 +2,7 @@ import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Eye, Pencil } from "lucide-react"
 
+import { ApplicationPreviewLink } from "@/components/entity-preview/ApplicationPreviewLink"
 import { EnterpriseDataTable } from "@/components/EnterpriseDataTable"
 import { Button } from "@/components/ui/button"
 import { ApplicationAssignmentEditDialog } from "@/features/assignments/components/ApplicationAssignmentEditDialog"
@@ -54,9 +55,12 @@ export function AssignmentsPage() {
             sortable: true,
             sortKey: "name_en",
             cell: (row) => (
-              <div>
-                <div className="font-medium">
-                  {isArabic ? row.name_ar : row.name_en}
+              <div className="min-w-0">
+                <div className="truncate font-medium">
+                  <ApplicationPreviewLink
+                    applicationId={row.id}
+                    name={isArabic ? row.name_ar : row.name_en}
+                  />
                 </div>
                 {/* <div className="font-mono text-xs text-muted-foreground">
                   {row.code}

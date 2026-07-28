@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\ActivityLogController;
 use App\Http\Controllers\Api\V1\ApplicationController;
+use App\Http\Controllers\Api\V1\ApplicationInfrastructureController;
 use App\Http\Controllers\Api\V1\ApplicationStatusController;
 use App\Http\Controllers\Api\V1\AppRoleController;
 use App\Http\Controllers\Api\V1\AssignmentController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CriticalityController;
 use App\Http\Controllers\Api\V1\DashboardController;
+use App\Http\Controllers\Api\V1\DashboardLayoutController;
 use App\Http\Controllers\Api\V1\DepartmentController;
+use App\Http\Controllers\Api\V1\EntityPreviewController;
 use App\Http\Controllers\Api\V1\ExportController;
 use App\Http\Controllers\Api\V1\GlobalSearchController;
 use App\Http\Controllers\Api\V1\JobTitleController;
@@ -35,6 +38,10 @@ Route::prefix('v1')->group(function (): void {
         Route::post('auth/logout', [AuthController::class, 'logout']);
 
         Route::get('dashboard', [DashboardController::class, 'index']);
+
+        Route::get('dashboard/layout', [DashboardLayoutController::class, 'show']);
+        Route::put('dashboard/layout', [DashboardLayoutController::class, 'update']);
+        Route::delete('dashboard/layout', [DashboardLayoutController::class, 'destroy']);
 
         Route::get('search', [GlobalSearchController::class, 'search']);
 
@@ -69,9 +76,31 @@ Route::prefix('v1')->group(function (): void {
         Route::get('settings', [SettingsController::class, 'index']);
         Route::put('settings', [SettingsController::class, 'update']);
 
+        Route::get('users/preview-by-name', [EntityPreviewController::class, 'userByName']);
+        Route::get('users/{user}/preview', [EntityPreviewController::class, 'user']);
+        Route::get('vendors/{vendor}/preview', [EntityPreviewController::class, 'vendor']);
+        Route::get('applications/{application}/preview', [EntityPreviewController::class, 'application']);
+        Route::get('departments/{department}/preview', [EntityPreviewController::class, 'department']);
+
         Route::apiResource('vendors', VendorController::class);
         Route::apiResource('departments', DepartmentController::class);
         Route::apiResource('users', UserController::class);
+        Route::get(
+            'applications/{application}/infrastructure',
+            [ApplicationInfrastructureController::class, 'show'],
+        );
+        Route::post(
+            'applications/{application}/infrastructure/copy-environment',
+            [ApplicationInfrastructureController::class, 'copyEnvironment'],
+        );
+        Route::put(
+            'applications/{application}/environments/{environment}',
+            [ApplicationInfrastructureController::class, 'update'],
+        );
+        Route::delete(
+            'applications/{application}/environments/{environment}',
+            [ApplicationInfrastructureController::class, 'destroy'],
+        );
         Route::apiResource('applications', ApplicationController::class);
         Route::get('assignments/applications-summary', [AssignmentController::class, 'applicationsSummary']);
         Route::get('assignments/application/{application}', [AssignmentController::class, 'applicationMatrix']);

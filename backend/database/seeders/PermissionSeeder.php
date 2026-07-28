@@ -84,6 +84,14 @@ class PermissionSeeder extends Seeder
             'activity-log.view',
             'settings.view',
             'settings.update',
+            'dashboard-layout.manage',
+            'application-infrastructure.view',
+            'application-infrastructure.create',
+            'application-infrastructure.update',
+            'application-infrastructure.delete',
+            'application-infrastructure.view-public',
+            'application-infrastructure.view-operational',
+            'application-infrastructure.copy-environment',
         ];
 
         foreach ($permissions as $permission) {
@@ -112,6 +120,8 @@ class PermissionSeeder extends Seeder
             'applications.view',
             'assignments.view',
             'settings.view',
+            'dashboard-layout.manage',
+            'application-infrastructure.view',
         ]);
     }
 }

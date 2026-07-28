@@ -116,6 +116,7 @@ class DashboardService
 
         $employeesPerApplication = ApplicationAssignment::query()
             ->select(
+                'applications.id',
                 'applications.name_en',
                 'applications.name_ar',
                 DB::raw('COUNT(DISTINCT application_assignments.user_id) as count'),
@@ -129,6 +130,7 @@ class DashboardService
             ->limit(10)
             ->get()
             ->map(static fn ($row): array => [
+                'id' => (int) $row->id,
                 'name_en' => (string) $row->name_en,
                 'name_ar' => (string) $row->name_ar,
                 'count' => (int) $row->count,

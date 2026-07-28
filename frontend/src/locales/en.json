@@ -1,14 +1,15 @@
 {
   "app": {
     "name": "ZATCA OPS",
-    "tagline": "Access Management",
-    "subtitle": "ZATCA Applications Operations & Access Management",
+    "tagline": "",
+    "subtitle": "ZATCA Applications Operations",
     "fallbackTitle": "ZATCA OPS"
   },
   "nav": {
     "dashboard": "Dashboard",
     "applicationsDetails": "Applications Details",
     "applicationDetail": "Application Detail",
+    "applicationEdit": "Edit Application",
     "assignments": "Assignments",
     "masterData": "Master Data",
     "applications": "Applications",
@@ -73,7 +74,10 @@
     "selectAll": "Select all",
     "selectRow": "Select row",
     "selectedCount": "{{count}} selected",
-    "deleteSelected": "Delete selected"
+    "deleteSelected": "Delete selected",
+    "copied": "Copied to clipboard.",
+    "copyFailed": "Could not copy to the clipboard.",
+    "copyValue": "Copy {{label}}"
   },
   "validation": {
     "required": "{{field}} is required.",
@@ -100,7 +104,16 @@
     "haModelInvalid": "Select a valid High Availability (HA) Model.",
     "categoryRequired": "Category is required.",
     "passwordConfirmationRequired": "Password confirmation is required.",
-    "passwordConfirmationMismatch": "Password confirmation does not match."
+    "passwordConfirmationMismatch": "Password confirmation does not match.",
+    "ipInvalid": "Enter a valid IPv4 or IPv6 address.",
+    "hostnameInvalid": "Enter a valid host name.",
+    "cidrInvalid": "Enter a valid CIDR range, for example 10.0.0.0/24.",
+    "portInvalid": "Enter a port between 1 and 65535.",
+    "integerInvalid": "Enter a whole number of 0 or more.",
+    "dateInvalid": "Enter a valid date.",
+    "optionInvalid": "Select one of the available options.",
+    "maxLength": "Use {{max}} characters or fewer.",
+    "requiredWhenPublished": "Required when the environment is published to the internet."
   },
   "auth": {
     "signIn": "Sign in",
@@ -199,6 +212,53 @@
       "emptyDepartments": "Create departments and applications to populate this chart.",
       "emptyLicenses": "Add licenses to populate these charts.",
       "emptyHaModel": "Assign High Availability models to applications to populate this chart."
+    },
+    "layout": {
+      "dragHandle": "Drag to reorder widget",
+      "resetLayout": "Reset layout",
+      "resetSuccess": "Dashboard layout restored to default.",
+      "resetFailed": "Failed to reset the dashboard layout.",
+      "saveFailed": "Failed to save the dashboard layout.",
+      "hint": "Drag the handle on a widget to reorder your dashboard. The order is saved for your account.",
+      "emptyTitle": "No widgets enabled",
+      "emptyDescription": "Dashboard widgets are disabled for your role. Ask an administrator to enable them in Settings."
+    }
+  },
+  "entityPreview": {
+    "loadFailed": "The preview could not be loaded.",
+    "copiedField": "{{label}} copied to clipboard.",
+    "fields": {
+      "email": "Email",
+      "phone": "Phone",
+      "extension": "Extension",
+      "teams": "Microsoft Teams",
+      "roles": "Roles",
+      "code": "Code",
+      "department": "Department",
+      "type": "Type",
+      "businessOwner": "Business owner",
+      "technicalOwner": "Technical owner",
+      "haModel": "HA model",
+      "documentationUrl": "Documentation",
+      "repositoryUrl": "Repository",
+      "contactPersonEmail": "Contact person email",
+      "contactPersonPhone": "Contact person phone"
+    },
+    "user": {
+      "dialogLabel": "Preview of {{name}}",
+      "noJobTitle": "No job title",
+      "internal": "Internal",
+      "assignmentsCount": "{{value}} active application assignments",
+      "unmatchedName": "No matching user profile was found for this name."
+    },
+    "vendor": {
+      "dialogLabel": "Preview of {{name}}",
+      "usersCount": "{{active}} active of {{total}} linked users"
+    },
+    "application": {
+      "dialogLabel": "Preview of {{name}}",
+      "activeUsers": "{{value}} active users",
+      "technologies": "{{value}} technologies"
     }
   },
   "errors": {
@@ -227,7 +287,6 @@
     "description": "Manage the IT application inventory with search, sort, and pagination.",
     "new": "New application",
     "create": "Create application",
-    "edit": "Edit application",
     "searchPlaceholder": "Search name, code, owner...",
     "emptyTitle": "No applications found",
     "emptyCreate": "Create the first application to start your inventory.",
@@ -270,6 +329,9 @@
       "technologiesPlaceholder": "Select technologies",
       "technologiesSearch": "Search technologies...",
       "technologiesEmpty": "No technologies found.",
+      "ownersPlaceholder": "Select users",
+      "ownersSearch": "Search by name, email, job title...",
+      "ownersEmpty": "No users found.",
       "documentationUrl": "Documentation URL",
       "repositoryUrl": "Repository URL",
       "saving": "Saving...",
@@ -285,7 +347,303 @@
       "deleteFailed": "Failed to delete application."
     },
     "bulkDeleteTitle": "Delete selected applications?",
-    "bulkDeleteConfirm": "Delete {{count}} selected applications? This soft-deletes the records."
+    "bulkDeleteConfirm": "Delete {{count}} selected applications? This soft-deletes the records.",
+    "edit": {
+      "subtitle": "Update the application record and describe where it runs in each environment.",
+      "backToDetail": "Back to application",
+      "viewDetails": "View details",
+      "unsavedBadge": "Unsaved changes",
+      "discard": "Discard changes",
+      "discardTitle": "Discard unsaved changes?",
+      "discardDescription": "Your changes on this page have not been saved yet and will be lost.",
+      "leave": "Leave page",
+      "loadFailedTitle": "Could not load form options",
+      "loadFailedDescription": "Department and related dropdowns failed to load. Refresh the page and try again.",
+      "tabs": {
+        "main": "Main data",
+        "infrastructure": "Infrastructure details"
+      }
+    },
+    "infrastructure": {
+      "environmentSwitcher": "Environment",
+      "configured": "Configured",
+      "notConfigured": "Not set",
+      "notSpecified": "Not specified",
+      "profileConfigured": "This environment has an infrastructure profile.",
+      "profileMissing": "This environment has not been described yet.",
+      "readOnlyNotice": "You have read access to infrastructure details but cannot change them.",
+      "saveEnvironment": "Save environment",
+      "deleteProfile": "Delete environment profile",
+      "deleteProfileTitle": "Delete environment profile?",
+      "deleteProfileDescription": "The {{environment}} profile and all of its components will be removed. The records are soft deleted and can be restored by describing the environment again.",
+      "addRecord": "Add {{item}}",
+      "emptyCollection": "No {{item}} records yet.",
+      "emptySection": "Nothing recorded in this section yet.",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "removeRecordTitle": "Remove {{item}}?",
+      "removeRecordDescription": "The record is removed from the list and deleted when you save this environment.",
+      "forbiddenTitle": "Infrastructure not available",
+      "forbiddenDescription": "You do not have permission to view infrastructure details for this application.",
+      "loadFailedTitle": "Could not load infrastructure",
+      "loadFailedDescription": "The infrastructure tree could not be loaded. Try again in a moment.",
+      "noEnvironmentsTitle": "No environments configured",
+      "noEnvironmentsDescription": "No active environments are available. Ask an administrator to seed the environment master data.",
+      "emptyProfileTitle": "Nothing recorded yet",
+      "emptyProfileDescription": "The {{environment}} environment has not been described for this application.",
+      "copy": {
+        "action": "Copy from environment",
+        "title": "Copy environment profile",
+        "description": "Clone a completed environment into {{target}} instead of typing it again.",
+        "sourceLabel": "Source environment",
+        "sourcePlaceholder": "Select an environment to copy from",
+        "noSources": "No other environment has an infrastructure profile to copy yet.",
+        "overwriteWarning": "This environment already has a profile. Copying replaces every value and component with the source environment's data.",
+        "confirm": "Copy environment",
+        "copying": "Copying..."
+      },
+      "toast": {
+        "saved": "Environment infrastructure saved successfully.",
+        "saveFailed": "Failed to save the environment infrastructure.",
+        "deleted": "Environment profile deleted successfully.",
+        "deleteFailed": "Failed to delete the environment profile.",
+        "copied": "Environment profile copied successfully.",
+        "copyFailed": "Failed to copy the environment profile."
+      },
+      "sections": {
+        "hosting": {
+          "title": "Hosting",
+          "description": "Where the application is deployed and which platform runs it."
+        },
+        "internet": {
+          "title": "Internet publishing",
+          "description": "Public exposure, edge protection and published endpoints."
+        },
+        "operational": {
+          "title": "Monitoring & operations",
+          "description": "Observability, ownership, backup and recovery targets."
+        }
+      },
+      "collections": {
+        "servers": {
+          "title": "Servers",
+          "item": "Server",
+          "description": "Virtual machines and nodes running the application."
+        },
+        "databases": {
+          "title": "Databases",
+          "item": "Database",
+          "description": "Database instances, roles and connection endpoints."
+        },
+        "networks": {
+          "title": "Networks",
+          "item": "Network",
+          "description": "Subnets, VLANs and firewall requirements."
+        },
+        "dns_records": {
+          "title": "DNS records",
+          "item": "DNS record",
+          "description": "Internal and external names pointing at the application."
+        },
+        "listeners": {
+          "title": "Listeners",
+          "item": "Listener",
+          "description": "Ports, protocols and health checks exposed by the application."
+        },
+        "load_balancers": {
+          "title": "Load balancers",
+          "item": "Load balancer",
+          "description": "Virtual servers, pools and traffic distribution."
+        },
+        "integrations": {
+          "title": "Integrations",
+          "item": "Integration",
+          "description": "Interfaces exchanged with other systems."
+        },
+        "message_brokers": {
+          "title": "Message brokers",
+          "item": "Message broker",
+          "description": "Topics, queues and consumer groups used by the application."
+        },
+        "storage_resources": {
+          "title": "Storage resources",
+          "item": "Storage resource",
+          "description": "Shares, buckets and volumes attached to the application."
+        }
+      },
+      "options": {
+        "databaseRole": {
+          "primary": "Primary",
+          "replica": "Replica",
+          "standby": "Standby"
+        },
+        "dnsScope": {
+          "internal": "Internal",
+          "external": "External"
+        },
+        "loadBalancerType": {
+          "f5": "F5",
+          "cloud": "Cloud",
+          "nginx": "NGINX",
+          "haproxy": "HAProxy",
+          "other": "Other"
+        },
+        "vipVisibility": {
+          "private": "Private",
+          "public": "Public"
+        },
+        "integrationDirection": {
+          "inbound": "Inbound",
+          "outbound": "Outbound",
+          "bidirectional": "Bidirectional"
+        }
+      },
+      "fields": {
+        "active_standby_status": "Active/standby status",
+        "api_gateway": "API gateway",
+        "api_url": "API URL",
+        "apm_tool": "APM tool",
+        "authentication_type": "Authentication type",
+        "availability_zone": "Availability zone",
+        "backend_pool": "Backend pool",
+        "backup_enabled": "Backup enabled",
+        "backup_policy": "Backup policy",
+        "broker_name": "Broker name",
+        "broker_type": "Broker type",
+        "broker_url": "Broker URL",
+        "capacity": "Capacity",
+        "cdn_enabled": "CDN enabled",
+        "cdn_provider": "CDN provider",
+        "certificate_expires_at": "Certificate expiry",
+        "certificate_name": "Certificate name",
+        "certificate_reference": "Certificate reference",
+        "cicd_pipeline_url": "CI/CD pipeline URL",
+        "cidr": "CIDR",
+        "cloud_account": "Cloud account",
+        "cloud_provider": "Cloud provider",
+        "cluster_ip": "Cluster IP",
+        "cluster_name": "Cluster name",
+        "connection_type": "Connection type",
+        "consumer_group": "Consumer group",
+        "cpu": "CPU",
+        "dashboard_url": "Dashboard URL",
+        "data_center": "Data center",
+        "data_classification": "Data classification",
+        "database_engine": "Database engine",
+        "database_name": "Database name",
+        "database_owner": "Database owner",
+        "database_role": "Database role",
+        "database_schema": "Schema",
+        "database_type": "Database type",
+        "database_version": "Database version",
+        "deployment_type": "Deployment type",
+        "destination_network": "Destination network",
+        "destination_system": "Destination system",
+        "direction": "Direction",
+        "disaster_recovery_enabled": "Disaster recovery enabled",
+        "disaster_recovery_environment": "Disaster recovery environment",
+        "dns_name": "DNS name",
+        "dns_scope": "DNS scope",
+        "dns_server": "DNS server",
+        "documentation_url": "Documentation URL",
+        "exposure_type": "Exposure type",
+        "external_port": "External port",
+        "f5_partition": "F5 partition",
+        "firewall_requirement": "Firewall requirement",
+        "fqdn": "FQDN",
+        "gateway": "Gateway",
+        "ha_model": "HA model",
+        "health_check_path": "Health check path",
+        "health_check_port": "Health check port",
+        "health_check_protocol": "Health check protocol",
+        "health_check_url": "Health check URL",
+        "health_monitor": "Health monitor",
+        "hosting_model": "Hosting model",
+        "hostname": "Host name",
+        "instance_name": "Instance name",
+        "integration_name": "Integration name",
+        "internet_facing_lb": "Internet facing load balancer",
+        "internet_notes": "Internet notes",
+        "lb_method": "Load balancing method",
+        "lb_name": "Load balancer name",
+        "lb_type": "Load balancer type",
+        "listener_ip": "Listener IP",
+        "listener_name": "Listener name",
+        "listener_port": "Listener port",
+        "logging_enabled": "Logging enabled",
+        "logging_platform": "Logging platform",
+        "management_ip": "Management IP",
+        "memory": "Memory",
+        "monitoring_enabled": "Monitoring enabled",
+        "monitoring_tool": "Monitoring tool",
+        "mount_path": "Mount path",
+        "namespace": "Namespace",
+        "network_ip": "Network IP",
+        "network_name": "Network name",
+        "network_route": "Route",
+        "network_type": "Network type",
+        "network_zone": "Network zone",
+        "node_name": "Node name",
+        "notes": "Notes",
+        "on_call_group": "On-call group",
+        "operating_system": "Operating system",
+        "operational_notes": "Operational notes",
+        "operations_owner": "Operations owner",
+        "owner": "Owner",
+        "persistence_config": "Persistence configuration",
+        "persistence_profile": "Persistence profile",
+        "pool_members": "Pool members",
+        "pool_name": "Pool name",
+        "port": "Port",
+        "private_ip": "Private IP",
+        "protocol": "Protocol",
+        "public_domain": "Public domain",
+        "public_ip": "Public IP",
+        "public_url": "Public URL",
+        "publication_owner": "Publication owner",
+        "published_to_internet": "Published to internet",
+        "queue": "Queue",
+        "read_write_role": "Read/write role",
+        "record_type": "Record type",
+        "region": "Region",
+        "replication": "Replication",
+        "repository_url": "Repository URL",
+        "resource_group": "Resource group",
+        "retention_period": "Retention period",
+        "retry_policy": "Retry policy",
+        "rpo": "RPO",
+        "rto": "RTO",
+        "runbook_url": "Runbook URL",
+        "secret_reference": "Secret reference",
+        "security_zone": "Security zone",
+        "server_name": "Server name",
+        "server_role": "Server role",
+        "service_name": "Service name",
+        "source_network": "Source network",
+        "source_system": "Source system",
+        "ssl_profile": "SSL profile",
+        "status": "Status",
+        "storage": "Storage",
+        "storage_endpoint": "Storage endpoint",
+        "storage_name": "Storage name",
+        "storage_type": "Storage type",
+        "subnet": "Subnet",
+        "support_team": "Support team",
+        "target": "Target",
+        "tenant": "Tenant",
+        "timeout": "Timeout (seconds)",
+        "tls_certificate": "TLS certificate",
+        "tls_enabled": "TLS enabled",
+        "topic": "Topic",
+        "vip_ip": "VIP IP",
+        "vip_name": "VIP name",
+        "vip_visibility": "VIP visibility",
+        "vlan": "VLAN",
+        "vm_name": "VM name",
+        "waf_enabled": "WAF enabled",
+        "waf_provider": "WAF provider"
+      }
+    }
   },
   "vendors": {
     "title": "Vendors",
@@ -884,6 +1242,11 @@
     "documentation": "Documentation",
     "repository": "Repository",
     "internal": "Internal",
+    "editApplication": "Edit application",
+    "tabs": {
+      "mainData": "Main Data",
+      "infrastructure": "Infrastructure Details"
+    },
     "filters": {
       "title": "Filters",
       "searchPlaceholder": "Search name, code, owner...",
@@ -1124,6 +1487,49 @@
       "rolePlaceholder": "Select a role",
       "roleHint": "Widget visibility applies only to users assigned to the selected role.",
       "noRoles": "No roles are available yet. Create a role first, then configure its dashboard widgets.",
+      "layoutCardTitle": "Widget layout",
+      "layoutCardDescription": "Configure grid size, height, chrome, and default order for every dashboard widget. This is separate from each user's drag-and-drop order and from role visibility.",
+      "layoutTitle": "Layout configuration",
+      "layoutDescription": "Adjust spans and presentation. Changes apply after you save settings.",
+      "livePreview": "Live preview",
+      "resetLayout": "Reset to default",
+      "recommendedLayout": "Restore recommended layout",
+      "defaultOrder": "Default order",
+      "defaultOrderHint": "Used when a user has not saved a personal order. Personal drag-and-drop order never changes width or height.",
+      "headerWidget": "header",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "sizePreset": "Width preset",
+      "presets": {
+        "full": "Full width",
+        "half": "Half width",
+        "third": "Third width",
+        "custom": "Custom"
+      },
+      "spanDesktop": "Desktop columns (of 6)",
+      "spanTablet": "Tablet columns (of 2)",
+      "spanLabel": "{{value}}/6",
+      "chartHeight": "Chart height (px)",
+      "minHeight": "Minimum height (px)",
+      "maxHeight": "Maximum height (px)",
+      "maxHeightNone": "No maximum",
+      "overflow": "Content overflow",
+      "overflowOptions": {
+        "auto": "Scroll when needed",
+        "hidden": "Clip overflow",
+        "visible": "Allow overflow"
+      },
+      "legendPosition": "Legend position",
+      "legendOptions": {
+        "bottom": "Bottom",
+        "top": "Top",
+        "hidden": "Hidden"
+      },
+      "showHeader": "Show header",
+      "showDescription": "Show description",
+      "showLegend": "Show legend",
+      "showFilters": "Show filters",
+      "showStatistics": "Show statistics",
       "widgets": {
         "top_technologies": "Top technologies",
         "employees_per_application": "Employees per application",
@@ -1162,6 +1568,64 @@
     "toast": {
       "updated": "Settings updated successfully.",
       "updateFailed": "Failed to update settings."
+    }
+  },
+  "preview": {
+    "errorTitle": "Preview unavailable",
+    "errorDescription": "This summary could not be loaded right now.",
+    "retry": "Try again",
+    "openDetails": "Open details for {{name}}",
+    "showDetails": "Show a summary for {{name}}",
+    "user": {
+      "cardLabel": "Employee summary for {{name}}",
+      "title": "Employee",
+      "email": "Email",
+      "phone": "Phone",
+      "extension": "Extension",
+      "teams": "Teams",
+      "vendor": "Vendor",
+      "internal": "Internal employee",
+      "roles": "Roles",
+      "noRoles": "No roles assigned",
+      "activeAssignments": "active assignments",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "vendor": {
+      "cardLabel": "Vendor summary for {{name}}",
+      "title": "Vendor",
+      "email": "Email",
+      "phone": "Phone",
+      "contactEmail": "Contact email",
+      "contactPhone": "Contact phone",
+      "remarks": "Remarks",
+      "users": "users",
+      "activeUsers": "active",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "application": {
+      "cardLabel": "Application summary for {{name}}",
+      "title": "Application",
+      "code": "Code",
+      "department": "Department",
+      "type": "Type",
+      "status": "Status",
+      "criticality": "Criticality",
+      "supportType": "Support type",
+      "haModel": "HA model",
+      "businessOwner": "Business owner",
+      "technicalOwner": "Technical owner",
+      "links": "Links",
+      "documentation": "Documentation",
+      "repository": "Repository",
+      "teamMembers": "team members",
+      "technologies": "technologies"
+    },
+    "department": {
+      "cardLabel": "Department summary for {{name}}",
+      "title": "Department",
+      "applications": "applications"
     }
   }
 }

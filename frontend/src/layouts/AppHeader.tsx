@@ -2,13 +2,11 @@ import { LogOut, Menu, PanelLeftClose, PanelLeftOpen, Search } from "lucide-reac
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
-import { AppLogo } from "@/components/AppLogo"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/features/auth/hooks/use-auth"
 import { useSettings } from "@/features/settings/hooks/use-settings"
-import { useTheme } from "@/hooks/use-theme"
 import { useSidebar } from "@/layouts/SidebarContext"
 
 type AppHeaderProps = {
@@ -17,21 +15,13 @@ type AppHeaderProps = {
 }
 
 /**
- * Shared app chrome header.
- *
- * Layout strategy (enterprise dashboard):
- * - Mobile (<640px) / tablet (<1024px): two-column grid — title cluster | actions.
- *   Logo is hidden so branding never wraps under the title or search.
- * - Desktop (≥1024px): three-column grid — title | logo | actions.
- *   Logo sits in its own column (no absolute positioning), so it cannot
- *   overlap or push other header elements onto a second line.
+ * Shared app chrome header (logo lives in the sidebar).
  */
 export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
   const { t, i18n } = useTranslation()
   const { isExpanded, toggleExpanded, toggleMobile } = useSidebar()
   const { user, logout, isSuperAdmin } = useAuth()
   const { settings } = useSettings()
-  const { theme } = useTheme()
   const navigate = useNavigate()
 
   async function handleLogout() {
@@ -39,14 +29,12 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
     navigate("/login", { replace: true })
   }
 
-  const logoVariant = theme === "dark" ? "onDark" : "default"
   const headerSubtitle = i18n.language.startsWith("ar")
     ? settings.header_subtitle_ar
     : settings.header_subtitle_en
 
   return (
-    <header className="sticky top-0 z-30 grid h-16 max-w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 overflow-hidden border-b border-stroke bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:gap-x-3 sm:px-4 md:px-6 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-x-4">
-      {/* Start: sidebar controls + page title */}
+    <header className="sticky top-0 z-30 grid h-16 max-w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 overflow-hidden border-b border-stroke bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:gap-x-3 sm:px-4 md:px-6 lg:gap-x-4">
       <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
         <Button
           variant="ghost"
@@ -80,16 +68,6 @@ export function AppHeader({ title, onOpenSearch }: AppHeaderProps) {
         </div>
       </div>
 
-      {/* Center: brand logo — desktop only; own grid column prevents wrap/overlap */}
-      <div className="hidden min-w-0 items-center justify-center px-2 lg:flex">
-        <AppLogo
-          className="justify-center"
-          imgClassName="h-8 max-h-8 w-auto max-w-[9rem] shrink-0 object-contain xl:h-9 xl:max-w-[10rem]"
-          variant={logoVariant}
-        />
-      </div>
-
-      {/* End: search + utilities */}
       <div className="flex shrink-0 items-center justify-end gap-1 sm:gap-1.5 md:gap-2 lg:gap-3">
         {onOpenSearch ? (
           <>

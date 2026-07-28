@@ -41,7 +41,7 @@ const ENTITY_ICONS: Record<SearchEntityType, typeof AppWindow> = {
 function resolveRoute(item: SearchResultItem): string {
   switch (item.type) {
     case "applications":
-      return `/applications-details/${item.id}`
+      return `/applications/${item.id}`
     case "vendors":
       return `/vendors?q=${encodeURIComponent(item.title)}`
     case "users":

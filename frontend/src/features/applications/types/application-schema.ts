@@ -29,8 +29,8 @@ export function createApplicationFormSchema(t: TFunction) {
       .number()
       .int()
       .positive(t("validation.criticalityRequired")),
-    business_owner: z.string().trim().max(255).optional().nullable(),
-    technical_owner: z.string().trim().max(255).optional().nullable(),
+    business_owners: z.array(z.number().int().positive()),
+    technical_owners: z.array(z.number().int().positive()),
     support_type_id: z
       .number()
       .int()

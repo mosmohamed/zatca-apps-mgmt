@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Models\Setting;
 use App\Support\DashboardWidgets;
+use App\Support\DashboardWidgetLayout;
 use Illuminate\Database\Seeder;
 
 class SettingsSeeder extends Seeder
@@ -15,7 +16,7 @@ class SettingsSeeder extends Seeder
         $settings = [
             [
                 'key' => 'company_name',
-                'value' => 'ZATCA IT Portfolio',
+                'value' => 'CENTRIX',
                 'type' => 'string',
                 'group' => 'general',
                 'label' => 'Company Name',
@@ -31,7 +32,7 @@ class SettingsSeeder extends Seeder
             ],
             [
                 'key' => 'sidebar_tagline_en',
-                'value' => 'Access Management',
+                'value' => '',
                 'type' => 'string',
                 'group' => 'branding',
                 'label' => 'Sidebar Tagline (English)',
@@ -39,7 +40,7 @@ class SettingsSeeder extends Seeder
             ],
             [
                 'key' => 'sidebar_tagline_ar',
-                'value' => 'إدارة الصلاحيات',
+                'value' => '',
                 'type' => 'string',
                 'group' => 'branding',
                 'label' => 'Sidebar Tagline (Arabic)',
@@ -47,7 +48,7 @@ class SettingsSeeder extends Seeder
             ],
             [
                 'key' => 'header_subtitle_en',
-                'value' => 'ZATCA Applications Operations & Access Management',
+                'value' => 'ZATCA Applications Operations',
                 'type' => 'string',
                 'group' => 'branding',
                 'label' => 'Header Subtitle (English)',
@@ -55,7 +56,7 @@ class SettingsSeeder extends Seeder
             ],
             [
                 'key' => 'header_subtitle_ar',
-                'value' => 'نظام ادارة التطبيقات وإدارة الصلاحيات في هيئة الزكاة والضريبة والجمارك',
+                'value' => 'نظام ادارة التطبيقات في هيئة الزكاة والضريبة والجمارك',
                 'type' => 'string',
                 'group' => 'branding',
                 'label' => 'Header Subtitle (Arabic)',
@@ -91,6 +92,14 @@ class SettingsSeeder extends Seeder
                 'type' => 'json',
                 'group' => 'dashboard',
                 'label' => 'Dashboard Widgets Visibility',
+                'is_public' => true,
+            ],
+            [
+                'key' => DashboardWidgetLayout::SETTING_KEY,
+                'value' => json_encode(DashboardWidgetLayout::defaults(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                'type' => 'json',
+                'group' => 'dashboard',
+                'label' => 'Dashboard Widget Layout',
                 'is_public' => true,
             ],
             [

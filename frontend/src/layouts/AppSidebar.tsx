@@ -20,8 +20,8 @@ import {
   Users,
 } from "lucide-react"
 
+import { AppLogo } from "@/components/AppLogo"
 import { useAuth } from "@/features/auth/hooks/use-auth"
-import { useSettings } from "@/features/settings/hooks/use-settings"
 import { cn } from "@/lib/utils"
 import { useSidebar } from "@/layouts/SidebarContext"
 
@@ -88,14 +88,10 @@ const secondaryNavItems: NavItem[] = [
 ]
 
 export function AppSidebar() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const { can } = useAuth()
-  const { settings } = useSettings()
   const { isExpanded, isMobileOpen, closeMobile } = useSidebar()
   const [masterDataOpen, setMasterDataOpen] = useState(true)
-  const sidebarTagline = i18n.language.startsWith("ar")
-    ? settings.sidebar_tagline_ar
-    : settings.sidebar_tagline_en
 
   const visibleMasterDataNavItems = masterDataNavItems.filter(
     (item) => !item.permission || can(item.permission)
@@ -125,39 +121,37 @@ export function AppSidebar() {
 
       <aside
         className={cn(
-          "fixed inset-y-0 start-0 z-50 flex h-screen flex-col bg-sidebar text-sidebar-foreground transition-all duration-300",
+          "fixed inset-y-0 start-0 z-50 flex h-screen flex-col overflow-hidden bg-sidebar text-sidebar-foreground transition-all duration-300",
           isExpanded ? "w-72" : "w-[5.25rem]",
           isMobileOpen
             ? "translate-x-0"
             : "-translate-x-full lg:translate-x-0 rtl:translate-x-full lg:rtl:translate-x-0"
         )}
       >
-        <div className="flex h-16 items-center border-b border-sidebar-border px-4">
-          {isExpanded ? (
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold leading-tight text-sidebar-foreground">
-                {settings.company_name}
-              </p>
-              <p className="truncate text-xs text-sidebar-foreground/70">
-                {sidebarTagline}
-              </p>
-            </div>
-          ) : (
-            <p
-              className="mx-auto max-w-full truncate text-center text-xs font-semibold text-sidebar-foreground"
-              title={settings.company_name}
-            >
-              {settings.company_name
-                .split(/\s+/)
-                .filter(Boolean)
-                .slice(0, 2)
-                .map((part) => part.charAt(0).toUpperCase())
-                .join("") || "IT"}
-            </p>
+        <div
+          className={cn(
+            "flex shrink-0 flex-col items-center justify-center border-b border-sidebar-border",
+            isExpanded ? "gap-2 px-4 py-5" : "px-2 py-4"
           )}
+        >
+          <AppLogo
+            variant="onDark"
+            className="justify-center"
+            imgClassName={cn(
+              "shrink-0 object-contain",
+              isExpanded
+                ? "h-10 max-h-10 w-auto max-w-[13rem]"
+                : "h-8 max-h-8 w-auto max-w-[2.75rem]"
+            )}
+          />
+          {isExpanded ? (
+            <p className="text-center text-sm font-semibold tracking-[0.18em] text-white">
+              CENTRIX
+            </p>
+          ) : null}
         </div>
 
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+        <nav className="sidebar-nav-scroll min-h-0 flex-1 space-y-1 overflow-x-hidden overflow-y-auto px-3 py-4">
           {primaryNavItems.map((item) => {
             const Icon = item.icon
             return (

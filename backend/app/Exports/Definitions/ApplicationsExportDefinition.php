@@ -42,7 +42,7 @@ final class ApplicationsExportDefinition implements ExportDefinitionInterface
      */
     public function searchColumns(): array
     {
-        return ['name_ar', 'name_en', 'code', 'business_owner', 'technical_owner', 'ha_model'];
+        return ['name_ar', 'name_en', 'code', 'ha_model'];
     }
 
     /**
@@ -110,14 +110,14 @@ final class ApplicationsExportDefinition implements ExportDefinitionInterface
             ExportColumn::make(
                 'business_owner',
                 'ZATCA Management',
-                static fn (Application $m): string => (string) ($m->business_owner ?? '-'),
-                20,
+                static fn (Application $m): string => $m->businessOwners->pluck('full_name')->implode(', ') ?: '-',
+                24,
             ),
             ExportColumn::make(
                 'technical_owner',
                 'Technical Owner',
-                static fn (Application $m): string => (string) ($m->technical_owner ?? '-'),
-                20,
+                static fn (Application $m): string => $m->technicalOwners->pluck('full_name')->implode(', ') ?: '-',
+                24,
             ),
             ExportColumn::make(
                 'technologies',
@@ -167,6 +167,8 @@ final class ApplicationsExportDefinition implements ExportDefinitionInterface
             'criticality',
             'supportType',
             'technologies',
+            'businessOwners',
+            'technicalOwners',
         ]);
 
         return $query;

@@ -13,22 +13,22 @@ return new class extends Migration
     private const array SETTINGS = [
         [
             'key' => 'sidebar_tagline_en',
-            'value' => 'Access Management',
+            'value' => '',
             'label' => 'Sidebar Tagline (English)',
         ],
         [
             'key' => 'sidebar_tagline_ar',
-            'value' => 'إدارة الصلاحيات',
+            'value' => '',
             'label' => 'Sidebar Tagline (Arabic)',
         ],
         [
             'key' => 'header_subtitle_en',
-            'value' => 'ZATCA Applications Operations & Access Management',
+            'value' => 'ZATCA Applications Operations',
             'label' => 'Header Subtitle (English)',
         ],
         [
             'key' => 'header_subtitle_ar',
-            'value' => 'نظام ادارة التطبيقات وإدارة الصلاحيات في هيئة الزكاة والضريبة والجمارك',
+            'value' => 'نظام ادارة التطبيقات في هيئة الزكاة والضريبة والجمارك',
             'label' => 'Header Subtitle (Arabic)',
         ],
     ];

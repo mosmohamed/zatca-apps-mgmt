@@ -1,5 +1,11 @@
 import { Suspense, lazy } from "react"
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useParams,
+} from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { Toaster } from "sonner"
 
@@ -38,6 +44,13 @@ const ApplicationDetailPage = lazy(() =>
   import("@/features/applications/pages/ApplicationDetailPage").then(
     (module) => ({
       default: module.ApplicationDetailPage,
+    })
+  )
+)
+const ApplicationEditPage = lazy(() =>
+  import("@/features/applications/pages/ApplicationEditPage").then(
+    (module) => ({
+      default: module.ApplicationEditPage,
     })
   )
 )
@@ -119,6 +132,13 @@ const SettingsPage = lazy(() =>
   }))
 )
 
+/** Keeps bookmarks to the previous detail URL working. */
+function LegacyApplicationDetailRedirect() {
+  const { id } = useParams()
+
+  return <Navigate to={`/applications/${id ?? ""}`} replace />
+}
+
 function RouteFallback() {
   return (
     <div className="flex min-h-[40vh] items-center justify-center text-sm text-muted-foreground">
@@ -156,9 +176,17 @@ function AppRoutes() {
                   />
                   <Route
                     path="applications-details/:id"
-                    element={<ApplicationDetailPage />}
+                    element={<LegacyApplicationDetailRedirect />}
                   />
                   <Route path="applications" element={<ApplicationsPage />} />
+                  <Route
+                    path="applications/:id"
+                    element={<ApplicationDetailPage />}
+                  />
+                  <Route
+                    path="applications/:id/edit"
+                    element={<ApplicationEditPage />}
+                  />
                   <Route path="vendors" element={<VendorsPage />} />
                   <Route path="users" element={<UsersPage />} />
                   <Route path="departments" element={<DepartmentsPage />} />

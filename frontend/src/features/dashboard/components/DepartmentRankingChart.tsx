@@ -102,6 +102,7 @@ export function DepartmentRankingChart({ items }: DepartmentRankingChartProps) {
 
   return (
     <DashboardChartCard
+      widgetKey="applications_by_department"
       title={t("dashboard.charts.applicationsByDepartment")}
       description={t("dashboard.charts.applicationsByDepartmentDesc")}
       icon={Building2}
@@ -113,7 +114,7 @@ export function DepartmentRankingChart({ items }: DepartmentRankingChartProps) {
           description={t("dashboard.charts.emptyDepartments")}
         />
       ) : (
-        <div className="max-h-[320px] space-y-0.5 overflow-y-auto pe-1">
+        <div className="max-h-[var(--dashboard-chart-height,240px)] space-y-0.5 overflow-y-auto pe-1">
           {rows.map((row, index) => (
             <div
               key={row.key}

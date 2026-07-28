@@ -9,6 +9,8 @@ export type PublicSettings = {
   session_timeout_minutes: number
   /** Effective widgets for the current authenticated user (or defaults when guest). */
   dashboard_widgets: import("@/features/dashboard/types/dashboard-widgets").DashboardWidgetsConfig
+  /** Org-wide widget presentation (spans, chrome, chart heights). Separate from user order. */
+  dashboard_widget_layout: import("@/features/dashboard/types/widget-layout-config").DashboardWidgetLayoutConfig
   /** Present for users with settings.update — per-role visibility maps. */
   dashboard_widgets_by_role?: import("@/features/dashboard/types/dashboard-widgets").DashboardWidgetsByRole
   /** Present for users with settings.update — dynamic role list for the settings UI. */
@@ -28,5 +30,6 @@ export type UpdateSettingsPayload = Partial<
       | {
           roles: import("@/features/dashboard/types/dashboard-widgets").DashboardWidgetsByRole
         }
+    dashboard_widget_layout?: import("@/features/dashboard/types/widget-layout-config").DashboardWidgetLayoutConfig
   }
 >

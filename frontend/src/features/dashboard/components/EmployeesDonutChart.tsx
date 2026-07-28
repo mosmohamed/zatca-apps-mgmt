@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { Users } from "lucide-react"
 import { Label, Pie, PieChart, Sector } from "recharts"
@@ -31,6 +32,7 @@ type EmployeesDonutChartProps = {
 
 export function EmployeesDonutChart({ items }: EmployeesDonutChartProps) {
   const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
   const isArabic = i18n.language.startsWith("ar")
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
@@ -40,6 +42,7 @@ export function EmployeesDonutChart({ items }: EmployeesDonutChartProps) {
         const key = toChartKey(item, index)
         return {
           key,
+          id: item.id,
           name: localizeChartName(item, isArabic),
           count: item.count,
           fill: colorForIndex(index),
@@ -63,12 +66,21 @@ export function EmployeesDonutChart({ items }: EmployeesDonutChartProps) {
     [chartData]
   )
 
-  const active = activeIndex === null ? null : chartData[activeIndex] ?? null
+  const active = activeIndex === null ? null : (chartData[activeIndex] ?? null)
   const activeShare =
     active && total > 0 ? Math.round((active.count / total) * 100) : 0
 
+  function openApplication(applicationId: number | string | undefined | null) {
+    const id = Number(applicationId)
+    if (!Number.isFinite(id) || id <= 0) {
+      return
+    }
+    navigate(`/applications/${id}`)
+  }
+
   return (
     <DashboardChartCard
+      widgetKey="employees_per_application"
       title={t("dashboard.charts.employeesPerApplication")}
       description={t("dashboard.charts.employeesPerApplicationDesc")}
       icon={Users}
@@ -101,6 +113,7 @@ export function EmployeesDonutChart({ items }: EmployeesDonutChartProps) {
                 stroke="hsl(var(--card))"
                 onMouseEnter={(_, index) => setActiveIndex(index)}
                 onMouseLeave={() => setActiveIndex(null)}
+                onClick={(_, index) => openApplication(chartData[index]?.id)}
                 className="cursor-pointer outline-none"
                 shape={(props) => {
                   const {
@@ -203,6 +216,7 @@ export function EmployeesDonutChart({ items }: EmployeesDonutChartProps) {
                     onMouseLeave={() => setActiveIndex(null)}
                     onFocus={() => setActiveIndex(index)}
                     onBlur={() => setActiveIndex(null)}
+                    onClick={() => openApplication(item.id)}
                     className={cn(
                       "flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-start transition-colors",
                       isActive ? "bg-muted/60" : "hover:bg-muted/40"

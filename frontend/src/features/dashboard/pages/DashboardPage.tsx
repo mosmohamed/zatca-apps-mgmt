@@ -1,38 +1,41 @@
-import { useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
+import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core"
+import {
+  arrayMove,
+  rectSortingStrategy,
+  SortableContext,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable"
 import {
   Activity,
   AppWindow,
   Cpu,
   KeyRound,
   Link2,
+  RotateCcw,
   Truck,
   Users,
 } from "lucide-react"
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
   PolarAngleAxis,
   PolarGrid,
   Radar,
   RadarChart,
-  XAxis,
-  YAxis,
 } from "recharts"
 
 import { EmptyState } from "@/components/EmptyState"
 import { LoadingSkeleton } from "@/components/LoadingSkeleton"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import {
   ChartContainer,
   ChartTooltip,
@@ -40,6 +43,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import { useAuth } from "@/features/auth/hooks/use-auth"
+import { ApplicationsByStatusChart } from "@/features/dashboard/components/ApplicationsByStatusChart"
 import { ApplicationsHaModelChart } from "@/features/dashboard/components/ApplicationsHaModelChart"
 import { DashboardChartCard } from "@/features/dashboard/components/DashboardChartCard"
 import { DashboardKpiCard } from "@/features/dashboard/components/DashboardKpiCard"
@@ -49,15 +53,34 @@ import { EmployeesDonutChart } from "@/features/dashboard/components/EmployeesDo
 import { LicenseEnvironmentBars } from "@/features/dashboard/components/LicenseEnvironmentBars"
 import { LicenseStatusDonutChart } from "@/features/dashboard/components/LicenseStatusDonutChart"
 import { LicenseUsageRadialChart } from "@/features/dashboard/components/LicenseUsageRadialChart"
+import { SortableDashboardWidget } from "@/features/dashboard/components/SortableDashboardWidget"
 import { useDashboard } from "@/features/dashboard/hooks/use-dashboard"
-import type { DashboardChartItem } from "@/features/dashboard/services/dashboard-service"
+import {
+  useDashboardLayout,
+  useResetDashboardLayout,
+  useUpdateDashboardLayout,
+} from "@/features/dashboard/hooks/use-dashboard-layout"
+import { DashboardWidgetLayoutContext } from "@/features/dashboard/hooks/use-widget-layout"
+import {
+  DASHBOARD_HEADER_WIDGET_KEYS,
+  DASHBOARD_WIDGET_KEYS,
+  type DashboardWidgetKey,
+  type DashboardWidgetsConfig,
+} from "@/features/dashboard/types/dashboard-widgets"
+import {
+  DEFAULT_DASHBOARD_WIDGET_LAYOUT,
+  normalizeDashboardWidgetLayout,
+} from "@/features/dashboard/types/widget-layout-config"
 import {
   CHART_TICK_STYLE,
-  colorForIndex,
   localizeChartName,
-  toChartKey,
-  withLocalizedColors,
 } from "@/features/dashboard/utils/chart-labels"
+import {
+  DASHBOARD_BOARD_GRID_CLASS,
+  dashboardWidgetLayoutItem,
+  dashboardWidgetShellStyle,
+  dashboardWidgetSpanClassFromItem,
+} from "@/features/dashboard/utils/widget-layout"
 import { useSettings } from "@/features/settings/hooks/use-settings"
 import { formatDateTime } from "@/utils/format"
 
@@ -66,42 +89,69 @@ const CHART_ANIMATION = {
   animationBegin: 160,
 }
 
-function buildNamedChartConfig(
-  items: DashboardChartItem[],
-  valueLabel: string,
-  isArabic: boolean
-): ChartConfig {
-  const config: ChartConfig = {
-    count: { label: valueLabel },
+const HEADER_WIDGET_KEYS: readonly string[] = DASHBOARD_HEADER_WIDGET_KEYS
+
+/**
+ * Board widgets are the intersection of the role-scoped visibility setting and
+ * the per-user saved order. Widgets enabled after the layout was saved are
+ * appended at the end, mirroring the reconciliation done by the API.
+ */
+function resolveVisibleWidgets(
+  order: DashboardWidgetKey[],
+  widgets: DashboardWidgetsConfig
+): DashboardWidgetKey[] {
+  const enabled = DASHBOARD_WIDGET_KEYS.filter(
+    (key) => !HEADER_WIDGET_KEYS.includes(key) && widgets[key]
+  )
+  const enabledSet = new Set<DashboardWidgetKey>(enabled)
+  const seen = new Set<DashboardWidgetKey>()
+  const result: DashboardWidgetKey[] = []
+
+  for (const key of order) {
+    if (enabledSet.has(key) && !seen.has(key)) {
+      result.push(key)
+      seen.add(key)
+    }
   }
 
-  items.forEach((item, index) => {
-    const key = toChartKey(item, index)
-    config[key] = {
-      label: localizeChartName(item, isArabic),
-      color: colorForIndex(index),
+  for (const key of enabled) {
+    if (!seen.has(key)) {
+      result.push(key)
     }
-  })
+  }
 
-  return config
+  return result
 }
 
 export function DashboardPage() {
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language.startsWith("ar")
-  const { isSuperAdmin } = useAuth()
+  const { can, isSuperAdmin } = useAuth()
   const { settings } = useSettings()
   const navigate = useNavigate()
   const dashboardQuery = useDashboard()
-  const [activeStatus, setActiveStatus] = useState<string>("all")
+  const [orderOverride, setOrderOverride] = useState<
+    DashboardWidgetKey[] | null
+  >(null)
   const widgets = settings.dashboard_widgets
+  const widgetLayout = useMemo(
+    () =>
+      normalizeDashboardWidgetLayout(
+        settings.dashboard_widget_layout ?? DEFAULT_DASHBOARD_WIDGET_LAYOUT
+      ),
+    [settings.dashboard_widget_layout]
+  )
+
+  const canManageLayout = can("dashboard-layout.manage")
+  const layoutQuery = useDashboardLayout(canManageLayout)
+  const updateLayoutMutation = useUpdateDashboardLayout()
+  const resetLayoutMutation = useResetDashboardLayout()
 
   const data = dashboardQuery.data
   const totals = data?.totals
 
   const technologyUsage = data?.charts.technologies_usage ?? []
-  const employeesPerApplication =
-    data?.charts.employees_per_application ?? []
+  const employeesPerApplication = data?.charts.employees_per_application ?? []
   const applicationsByStatus = data?.charts.applications_by_status ?? []
   const applicationsByDepartment =
     data?.charts.applications_by_department ?? []
@@ -112,27 +162,50 @@ export function DashboardPage() {
   const licensesByEnvironment = data?.charts.licenses_by_environment ?? []
   const recentActivity = data?.recent_activity ?? []
 
-  const showTopRow =
-    widgets.top_technologies || widgets.employees_per_application
-  const showStatusRow =
-    widgets.applications_by_status || widgets.applications_by_department
-  const showInfrastructureRow =
-    widgets.applications_by_ha_model ||
-    widgets.license_usage ||
-    widgets.license_status_distribution ||
-    widgets.licenses_by_environment
-  const infrastructureWidgetCount = [
-    widgets.applications_by_ha_model,
-    widgets.license_usage,
-    widgets.license_status_distribution,
-    widgets.licenses_by_environment,
-  ].filter(Boolean).length
-  const infrastructureGridClass =
-    infrastructureWidgetCount >= 3
-      ? "grid gap-4 lg:grid-cols-2 xl:grid-cols-3"
-      : infrastructureWidgetCount === 2
-        ? "grid gap-4 lg:grid-cols-2"
-        : "grid gap-4"
+  const savedOrder = useMemo(
+    () => layoutQuery.data?.widget_order ?? [],
+    [layoutQuery.data]
+  )
+
+  const visibleWidgets = useMemo(
+    () => resolveVisibleWidgets(orderOverride ?? savedOrder, widgets),
+    [orderOverride, savedOrder, widgets]
+  )
+
+  useEffect(() => {
+    if (!layoutQuery.data?.is_custom) {
+      setOrderOverride(null)
+    }
+  }, [layoutQuery.data?.is_custom])
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event
+
+      if (!over || active.id === over.id) {
+        return
+      }
+
+      const oldIndex = visibleWidgets.indexOf(active.id as DashboardWidgetKey)
+      const newIndex = visibleWidgets.indexOf(over.id as DashboardWidgetKey)
+
+      if (oldIndex < 0 || newIndex < 0) {
+        return
+      }
+
+      const next = arrayMove(visibleWidgets, oldIndex, newIndex)
+      setOrderOverride(next)
+      updateLayoutMutation.mutate({ widget_order: next })
+    },
+    [updateLayoutMutation, visibleWidgets]
+  )
 
   const technologiesRadarData = useMemo(
     () =>
@@ -154,35 +227,6 @@ export function DashboardPage() {
     [t]
   )
 
-  const statusSourceData = useMemo(
-    () => withLocalizedColors(applicationsByStatus, isArabic),
-    [applicationsByStatus, isArabic]
-  )
-
-  const statusChartData = useMemo(() => {
-    if (activeStatus === "all") {
-      return statusSourceData
-    }
-    return statusSourceData.filter(
-      (item) => (item.key ?? item.name) === activeStatus
-    )
-  }, [activeStatus, statusSourceData])
-
-  const statusTotal = useMemo(
-    () => applicationsByStatus.reduce((sum, item) => sum + item.count, 0),
-    [applicationsByStatus]
-  )
-
-  const statusConfig = useMemo(
-    () =>
-      buildNamedChartConfig(
-        applicationsByStatus,
-        t("dashboard.charts.applicationsLabel"),
-        isArabic
-      ),
-    [applicationsByStatus, isArabic, t]
-  )
-
   if (dashboardQuery.isLoading) {
     return <LoadingSkeleton rows={10} />
   }
@@ -192,7 +236,7 @@ export function DashboardPage() {
       label: t("dashboard.kpi.applications"),
       value: totals?.applications ?? 0,
       icon: AppWindow,
-      to: "/applications",
+      to: "/applications-details",
       accent: {
         card: "border-sky-500/20 bg-sky-500/[0.04] dark:border-sky-400/25 dark:bg-sky-400/[0.06]",
         strip: "bg-sky-500/80 dark:bg-sky-400/70",
@@ -245,6 +289,129 @@ export function DashboardPage() {
     },
   ]
 
+  function renderWidget(key: DashboardWidgetKey): ReactNode {
+    switch (key) {
+      case "top_technologies":
+        return (
+          <DashboardChartCard
+            widgetKey="top_technologies"
+            title={t("dashboard.charts.topTechnologies")}
+            description={t("dashboard.charts.topTechnologiesDesc")}
+            icon={Cpu}
+            accentClassName="from-violet-500/12 via-transparent to-transparent"
+          >
+            {technologiesRadarData.length === 0 ? (
+              <EmptyState
+                title={t("dashboard.charts.emptyTitle")}
+                description={t("dashboard.charts.emptyTechnologies")}
+              />
+            ) : (
+              <ChartContainer
+                config={technologiesConfig}
+                className="mx-auto aspect-square max-h-[var(--dashboard-chart-height,320px)]"
+              >
+                <RadarChart data={technologiesRadarData}>
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent />}
+                  />
+                  <PolarGrid
+                    gridType="circle"
+                    radialLines={false}
+                    stroke="var(--border)"
+                  />
+                  <PolarAngleAxis
+                    dataKey="technology"
+                    tick={CHART_TICK_STYLE}
+                  />
+                  <Radar
+                    dataKey="count"
+                    fill="var(--color-count)"
+                    fillOpacity={0.45}
+                    stroke="var(--color-count)"
+                    strokeWidth={2}
+                    {...CHART_ANIMATION}
+                  />
+                </RadarChart>
+              </ChartContainer>
+            )}
+          </DashboardChartCard>
+        )
+      case "employees_per_application":
+        return <EmployeesDonutChart items={employeesPerApplication} />
+      case "applications_by_status":
+        return <ApplicationsByStatusChart items={applicationsByStatus} />
+      case "applications_by_department":
+        return <DepartmentRankingChart items={applicationsByDepartment} />
+      case "applications_by_ha_model":
+        return <ApplicationsHaModelChart items={applicationsByHaModel} />
+      case "license_usage":
+        return <LicenseUsageRadialChart items={licenseUsage} />
+      case "license_status_distribution":
+        return <LicenseStatusDonutChart items={licenseStatusDistribution} />
+      case "licenses_by_environment":
+        return <LicenseEnvironmentBars items={licensesByEnvironment} />
+      case "recent_activity":
+        return (
+          <DashboardChartCard
+            widgetKey="recent_activity"
+            title={t("dashboard.recentTitle")}
+            description={t("dashboard.recentDescription")}
+            icon={Activity}
+            accentClassName="from-sky-500/12 via-transparent to-transparent"
+          >
+            {recentActivity.length === 0 ? (
+              <EmptyState
+                title={t("dashboard.recentEmptyTitle")}
+                description={t("dashboard.recentEmptyDescription")}
+              />
+            ) : (
+              <ul className="max-h-[var(--dashboard-chart-height,240px)] space-y-0 overflow-y-auto pe-1">
+                {recentActivity.map((activity) => (
+                  <li
+                    key={activity.id}
+                    className="border-b border-stroke py-2.5 last:border-b-0"
+                  >
+                    <p className="text-sm font-medium leading-snug">
+                      {activity.description}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {activity.causer?.name ?? t("common.user")}
+                      {activity.created_at
+                        ? ` · ${formatDateTime(activity.created_at)}`
+                        : ""}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </DashboardChartCard>
+        )
+      default:
+        return null
+    }
+  }
+
+  const board = (
+    <DashboardWidgetLayoutContext.Provider value={widgetLayout}>
+      <div className={DASHBOARD_BOARD_GRID_CLASS}>
+        {visibleWidgets.map((key) => {
+          const layoutItem = dashboardWidgetLayoutItem(widgetLayout, key)
+          return (
+            <SortableDashboardWidget
+              key={key}
+              id={key}
+              className={dashboardWidgetSpanClassFromItem(layoutItem)}
+              style={dashboardWidgetShellStyle(layoutItem)}
+            >
+              {renderWidget(key)}
+            </SortableDashboardWidget>
+          )
+        })}
+      </div>
+    </DashboardWidgetLayoutContext.Provider>
+  )
+
   return (
     <section className="space-y-6">
       <DashboardLiveHeader
@@ -267,258 +434,48 @@ export function DashboardPage() {
         ))}
       </div>
 
-      {showTopRow ? (
-        <div className="grid gap-4 xl:grid-cols-2">
-          {widgets.top_technologies ? (
-            <DashboardChartCard
-              title={t("dashboard.charts.topTechnologies")}
-              description={t("dashboard.charts.topTechnologiesDesc")}
-              icon={Cpu}
-              accentClassName="from-violet-500/12 via-transparent to-transparent"
+      {canManageLayout && visibleWidgets.length > 0 ? (
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-xs text-muted-foreground">
+            {t("dashboard.layout.hint")}
+          </p>
+          {layoutQuery.data?.is_custom ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={resetLayoutMutation.isPending}
+              onClick={() => {
+                resetLayoutMutation.mutate(undefined, {
+                  onSuccess: () => setOrderOverride(null),
+                })
+              }}
             >
-              {technologiesRadarData.length === 0 ? (
-                <EmptyState
-                  title={t("dashboard.charts.emptyTitle")}
-                  description={t("dashboard.charts.emptyTechnologies")}
-                />
-              ) : (
-                <ChartContainer
-                  config={technologiesConfig}
-                  className="mx-auto aspect-square max-h-[320px]"
-                >
-                  <RadarChart data={technologiesRadarData}>
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent />}
-                    />
-                    <PolarGrid
-                      gridType="circle"
-                      radialLines={false}
-                      stroke="var(--border)"
-                    />
-                    <PolarAngleAxis
-                      dataKey="technology"
-                      tick={CHART_TICK_STYLE}
-                    />
-                    <Radar
-                      dataKey="count"
-                      fill="var(--color-count)"
-                      fillOpacity={0.45}
-                      stroke="var(--color-count)"
-                      strokeWidth={2}
-                      {...CHART_ANIMATION}
-                    />
-                  </RadarChart>
-                </ChartContainer>
-              )}
-            </DashboardChartCard>
-          ) : null}
-
-          {widgets.employees_per_application ? (
-            <EmployeesDonutChart items={employeesPerApplication} />
+              <RotateCcw />
+              {t("dashboard.layout.resetLayout")}
+            </Button>
           ) : null}
         </div>
       ) : null}
 
-      {showStatusRow ? (
-        <div className="grid gap-4 xl:grid-cols-2">
-          {widgets.applications_by_status ? (
-            <Card className="relative overflow-hidden border-stroke/80 py-0 shadow-sm transition-shadow duration-300 hover:shadow-md">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 bg-gradient-to-br from-sky-500/10 via-transparent to-transparent"
-              />
-              <CardHeader className="relative z-10 flex flex-col items-stretch border-b border-stroke/60 bg-card/40 p-0 backdrop-blur-sm sm:flex-row">
-                <div className="flex flex-1 flex-col justify-center gap-1 px-5 py-5 sm:py-6">
-                  <CardTitle className="text-base">
-                    {t("dashboard.charts.applicationsByStatus")}
-                  </CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">
-                    {t("dashboard.charts.applicationsByStatusDesc")}
-                  </CardDescription>
-                </div>
-                <div className="flex flex-wrap">
-                  <button
-                    type="button"
-                    data-active={activeStatus === "all"}
-                    className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t border-stroke px-5 py-4 text-start even:border-s data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-s sm:px-6 sm:py-6"
-                    onClick={() => setActiveStatus("all")}
-                  >
-                    <span className="text-xs text-muted-foreground">
-                      {t("dashboard.charts.allStatuses")}
-                    </span>
-                    <span className="text-lg font-bold leading-none sm:text-2xl">
-                      {statusTotal.toLocaleString()}
-                    </span>
-                  </button>
-                  {statusSourceData.map((status) => {
-                    const filterKey = status.key ?? status.name
-                    return (
-                      <button
-                        key={filterKey}
-                        type="button"
-                        data-active={activeStatus === filterKey}
-                        className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t border-stroke px-5 py-4 text-start even:border-s data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-s sm:px-6 sm:py-6"
-                        onClick={() => setActiveStatus(filterKey)}
-                      >
-                        <span className="text-xs text-muted-foreground">
-                          {status.name}
-                        </span>
-                        <span className="text-lg font-bold leading-none sm:text-2xl">
-                          {status.count.toLocaleString()}
-                        </span>
-                      </button>
-                    )
-                  })}
-                </div>
-              </CardHeader>
-              <CardContent className="relative z-10 px-2 pb-5 sm:p-5">
-                {statusChartData.length === 0 ? (
-                  <EmptyState
-                    title={t("dashboard.charts.emptyTitle")}
-                    description={t("dashboard.charts.emptyStatus")}
-                  />
-                ) : (
-                  <ChartContainer
-                    config={statusConfig}
-                    className="aspect-auto h-[280px] w-full"
-                  >
-                    <BarChart
-                      accessibilityLayer
-                      data={statusChartData}
-                      margin={{ left: 12, right: 12 }}
-                    >
-                      <defs>
-                        {statusChartData.map((entry) => (
-                          <linearGradient
-                            key={`grad-${entry.key}`}
-                            id={`status-grad-${entry.key}`}
-                            x1="0"
-                            y1="0"
-                            x2="0"
-                            y2="1"
-                          >
-                            <stop
-                              offset="0%"
-                              stopColor={entry.fill}
-                              stopOpacity={1}
-                            />
-                            <stop
-                              offset="100%"
-                              stopColor={entry.fill}
-                              stopOpacity={0.35}
-                            />
-                          </linearGradient>
-                        ))}
-                      </defs>
-                      <CartesianGrid vertical={false} strokeDasharray="3 6" />
-                      <XAxis
-                        dataKey="name"
-                        tickLine={false}
-                        axisLine={false}
-                        tickMargin={8}
-                        tick={CHART_TICK_STYLE}
-                      />
-                      <YAxis
-                        allowDecimals={false}
-                        tickLine={false}
-                        axisLine={false}
-                        tick={CHART_TICK_STYLE}
-                      />
-                      <ChartTooltip
-                        content={
-                          <ChartTooltipContent
-                            className="w-[150px]"
-                            nameKey="count"
-                          />
-                        }
-                      />
-                      <Bar
-                        dataKey="count"
-                        radius={[10, 10, 4, 4]}
-                        {...CHART_ANIMATION}
-                      >
-                        {statusChartData.map((entry) => (
-                          <Cell
-                            key={entry.key}
-                            fill={`url(#status-grad-${entry.key})`}
-                          />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ChartContainer>
-                )}
-              </CardContent>
-            </Card>
-          ) : null}
-
-          {widgets.applications_by_department ? (
-            <DepartmentRankingChart items={applicationsByDepartment} />
-          ) : null}
-        </div>
-      ) : null}
-
-      {showInfrastructureRow ? (
-        <div className={infrastructureGridClass}>
-          {widgets.applications_by_ha_model ? (
-            <ApplicationsHaModelChart items={applicationsByHaModel} />
-          ) : null}
-          {widgets.license_usage ? (
-            <LicenseUsageRadialChart items={licenseUsage} />
-          ) : null}
-          {widgets.license_status_distribution ? (
-            <LicenseStatusDonutChart items={licenseStatusDistribution} />
-          ) : null}
-          {widgets.licenses_by_environment ? (
-            <LicenseEnvironmentBars items={licensesByEnvironment} />
-          ) : null}
-        </div>
-      ) : null}
-
-      {widgets.recent_activity ? (
-        <Card className="border-stroke/80 shadow-sm">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <span className="flex size-8 items-center justify-center rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-300">
-                <Activity className="size-4" />
-              </span>
-              <div>
-                <CardTitle>{t("dashboard.recentTitle")}</CardTitle>
-                <CardDescription>
-                  {t("dashboard.recentDescription")}
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {recentActivity.length === 0 ? (
-              <EmptyState
-                title={t("dashboard.recentEmptyTitle")}
-                description={t("dashboard.recentEmptyDescription")}
-              />
-            ) : (
-              <ul className="max-h-72 space-y-0 overflow-y-auto pe-1">
-                {recentActivity.map((activity) => (
-                  <li
-                    key={activity.id}
-                    className="border-b border-stroke py-3 last:border-b-0"
-                  >
-                    <p className="text-sm font-medium leading-snug">
-                      {activity.description}
-                    </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {activity.causer?.name ?? t("common.user")}
-                      {activity.created_at
-                        ? ` · ${formatDateTime(activity.created_at)}`
-                        : ""}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </CardContent>
-        </Card>
-      ) : null}
+      {visibleWidgets.length === 0 ? (
+        <EmptyState
+          title={t("dashboard.layout.emptyTitle")}
+          description={t("dashboard.layout.emptyDescription")}
+        />
+      ) : canManageLayout ? (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext items={visibleWidgets} strategy={rectSortingStrategy}>
+            {board}
+          </SortableContext>
+        </DndContext>
+      ) : (
+        board
+      )}
 
       <div className="flex flex-wrap gap-2">
         {isSuperAdmin ? (

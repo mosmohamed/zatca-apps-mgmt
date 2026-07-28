@@ -37,8 +37,6 @@ class ApplicationFactory extends Factory
             'criticality_id' => fn (): int => $this->resolveCriticalityId(),
             'support_type_id' => fn (): int => $this->resolveSupportTypeId(),
             'ha_model' => fake()->optional()->randomElement(HaModel::values()),
-            'business_owner' => fake()->optional()->name(),
-            'technical_owner' => fake()->optional()->name(),
             'documentation_url' => fake()->optional()->url(),
             'repository_url' => fake()->optional()->url(),
             'created_by' => null,

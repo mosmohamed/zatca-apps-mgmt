@@ -38,6 +38,11 @@ import {
   DEFAULT_DASHBOARD_WIDGETS,
   normalizeDashboardWidgetsByRole,
 } from "@/features/dashboard/types/dashboard-widgets"
+import {
+  DEFAULT_DASHBOARD_WIDGET_LAYOUT,
+  normalizeDashboardWidgetLayout,
+} from "@/features/dashboard/types/widget-layout-config"
+import { DashboardWidgetLayoutEditor } from "@/features/settings/components/DashboardWidgetLayoutEditor"
 import { useSettings } from "@/features/settings/hooks/use-settings"
 import {
   createSettingsFormSchema,
@@ -75,6 +80,14 @@ export function SettingsPage() {
     [roleOptions, settings.dashboard_widgets_by_role]
   )
 
+  const layoutDefaults = useMemo(
+    () =>
+      normalizeDashboardWidgetLayout(
+        settings.dashboard_widget_layout ?? DEFAULT_DASHBOARD_WIDGET_LAYOUT
+      ),
+    [settings.dashboard_widget_layout]
+  )
+
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsFormSchema),
     defaultValues: {
@@ -86,6 +99,7 @@ export function SettingsPage() {
       default_timezone: settings.default_timezone,
       default_pagination_size: settings.default_pagination_size,
       dashboard_widgets_by_role: byRoleDefaults,
+      dashboard_widget_layout: layoutDefaults,
     },
   })
 
@@ -100,9 +114,10 @@ export function SettingsPage() {
         default_timezone: settings.default_timezone,
         default_pagination_size: settings.default_pagination_size,
         dashboard_widgets_by_role: byRoleDefaults,
+        dashboard_widget_layout: layoutDefaults,
       })
     }
-  }, [isLoading, settings, form, byRoleDefaults])
+  }, [isLoading, settings, form, byRoleDefaults, layoutDefaults])
 
   useEffect(() => {
     if (roleOptions.length === 0) {
@@ -131,6 +146,7 @@ export function SettingsPage() {
         dashboard_widgets: {
           roles: values.dashboard_widgets_by_role,
         },
+        dashboard_widget_layout: values.dashboard_widget_layout,
       })
     } catch (error) {
       const fieldErrors = getApiFieldErrors(error)
@@ -354,6 +370,7 @@ export function SettingsPage() {
             </TabsContent>
 
             <TabsContent value="dashboard">
+              <div className="space-y-4">
               <Card>
                 <CardHeader>
                   <CardTitle>{t("settings.dashboard.title")}</CardTitle>
@@ -452,6 +469,33 @@ export function SettingsPage() {
                   )}
                 </CardContent>
               </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t("settings.dashboard.layoutCardTitle")}</CardTitle>
+                  <CardDescription>
+                    {t("settings.dashboard.layoutCardDescription")}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <FormField
+                    control={form.control}
+                    name="dashboard_widget_layout"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <DashboardWidgetLayoutEditor
+                            value={field.value}
+                            onChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+              </div>
             </TabsContent>
 
             <TabsContent value="security">

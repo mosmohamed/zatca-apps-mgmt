@@ -27,6 +27,23 @@ export type ApplicationTypeSummary = {
   code: string
 }
 
+export type ApplicationOwner = {
+  id: number
+  full_name: string
+  email: string
+  phone?: string | null
+  is_active?: boolean
+  job_title?: {
+    id: number
+    name_en: string
+    name_ar: string
+  } | null
+  vendor?: {
+    id: number
+    name: string
+  } | null
+}
+
 export type Application = {
   id: number
   department_id: number
@@ -38,8 +55,8 @@ export type Application = {
   criticality_id: number
   support_type_id: number
   ha_model: HaModel | null
-  business_owner: string | null
-  technical_owner: string | null
+  business_owners?: ApplicationOwner[]
+  technical_owners?: ApplicationOwner[]
   documentation_url: string | null
   repository_url: string | null
   created_by: number | null
@@ -71,8 +88,8 @@ export type ApplicationPayload = {
   code: string
   status_id: number
   criticality_id: number
-  business_owner?: string | null
-  technical_owner?: string | null
+  business_owners?: number[]
+  technical_owners?: number[]
   support_type_id: number
   ha_model?: HaModel | null
   documentation_url?: string | null

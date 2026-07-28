@@ -9,12 +9,34 @@ use App\Models\User;
 use App\Traits\SearchTrait;
 use App\Traits\SortTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class ApplicationService
 {
     use SearchTrait;
     use SortTrait;
+
+    /**
+     * @return list<string>
+     */
+    private static function detailRelations(): array
+    {
+        return [
+            'department',
+            'applicationType',
+            'status',
+            'criticality',
+            'supportType',
+            'technologies',
+            'businessOwners.jobTitle',
+            'businessOwners.vendor',
+            'technicalOwners.jobTitle',
+            'technicalOwners.vendor',
+            'creator',
+            'updater',
+        ];
+    }
 
     /**
      * @param  array{search?: string|null, sort?: string|null, per_page?: int|null, page?: int|null}  $filters
@@ -25,22 +47,32 @@ class ApplicationService
         $perPage = max(1, min((int) ($filters['per_page'] ?? 15), 100));
         $page = max(1, (int) ($filters['page'] ?? 1));
 
-        $query = Application::query()->with([
-            'department',
-            'applicationType',
-            'status',
-            'criticality',
-            'supportType',
-            'technologies',
-            'creator',
-            'updater',
-        ]);
+        $query = Application::query()->with(self::detailRelations());
 
-        $this->applyColumnSearch(
-            $query,
-            $filters['search'] ?? null,
-            ['name_ar', 'name_en', 'code', 'business_owner', 'technical_owner', 'ha_model'],
-        );
+        $search = $filters['search'] ?? null;
+        if (is_string($search) && trim($search) !== '') {
+            $term = '%'.trim($search).'%';
+            $query->where(static function (Builder $builder) use ($term): void {
+                $builder
+                    ->where('name_ar', 'like', $term)
+                    ->orWhere('name_en', 'like', $term)
+                    ->orWhere('code', 'like', $term)
+                    ->orWhere('ha_model', 'like', $term)
+                    ->orWhereHas('businessOwners', static function (Builder $owners) use ($term): void {
+                        $owners
+                            ->where('first_name', 'like', $term)
+                            ->orWhere('last_name', 'like', $term)
+                            ->orWhere('email', 'like', $term);
+                    })
+                    ->orWhereHas('technicalOwners', static function (Builder $owners) use ($term): void {
+                        $owners
+                            ->where('first_name', 'like', $term)
+                            ->orWhere('last_name', 'like', $term)
+                            ->orWhere('email', 'like', $term);
+                    });
+            });
+        }
+
         $this->applyColumnSort(
             $query,
             $filters['sort'] ?? null,
@@ -54,16 +86,7 @@ class ApplicationService
     public function find(int $id): Application
     {
         return Application::query()
-            ->with([
-                'department',
-                'applicationType',
-                'status',
-                'criticality',
-                'supportType',
-                'technologies',
-                'creator',
-                'updater',
-            ])
+            ->with(self::detailRelations())
             ->findOrFail($id);
     }
 
@@ -72,8 +95,10 @@ class ApplicationService
      */
     public function create(array $data, User $actor): Application
     {
-        return DB::transaction(static function () use ($data, $actor): Application {
-            $technologyIds = self::extractTechnologyIds($data);
+        return DB::transaction(function () use ($data, $actor): Application {
+            $technologyIds = self::extractIdList($data, 'technologies');
+            $businessOwnerIds = self::extractIdList($data, 'business_owners');
+            $technicalOwnerIds = self::extractIdList($data, 'technical_owners');
 
             $data['created_by'] = $actor->id;
             $data['updated_by'] = $actor->id;
@@ -85,16 +110,17 @@ class ApplicationService
                 $application->technologies()->sync($technologyIds);
             }
 
-            return $application->load([
-                'department',
-                'applicationType',
-                'status',
-                'criticality',
-                'supportType',
-                'technologies',
-                'creator',
-                'updater',
-            ]);
+            if ($businessOwnerIds !== null) {
+                $application->businessOwners()->sync($businessOwnerIds);
+            }
+
+            if ($technicalOwnerIds !== null) {
+                $application->technicalOwners()->sync($technicalOwnerIds);
+            }
+
+            $this->logOwnerSync($application, $actor, $businessOwnerIds, $technicalOwnerIds, true);
+
+            return $application->load(self::detailRelations());
         });
     }
 
@@ -103,8 +129,10 @@ class ApplicationService
      */
     public function update(Application $application, array $data, User $actor): Application
     {
-        return DB::transaction(static function () use ($application, $data, $actor): Application {
-            $technologyIds = self::extractTechnologyIds($data);
+        return DB::transaction(function () use ($application, $data, $actor): Application {
+            $technologyIds = self::extractIdList($data, 'technologies');
+            $businessOwnerIds = self::extractIdList($data, 'business_owners');
+            $technicalOwnerIds = self::extractIdList($data, 'technical_owners');
 
             $data['updated_by'] = $actor->id;
 
@@ -114,16 +142,27 @@ class ApplicationService
                 $application->technologies()->sync($technologyIds);
             }
 
-            return $application->refresh()->load([
-                'department',
-                'applicationType',
-                'status',
-                'criticality',
-                'supportType',
-                'technologies',
-                'creator',
-                'updater',
-            ]);
+            $previousBusiness = $application->businessOwners()->pluck('users.id')->map(static fn ($id): int => (int) $id)->all();
+            $previousTechnical = $application->technicalOwners()->pluck('users.id')->map(static fn ($id): int => (int) $id)->all();
+
+            if ($businessOwnerIds !== null) {
+                $application->businessOwners()->sync($businessOwnerIds);
+            }
+
+            if ($technicalOwnerIds !== null) {
+                $application->technicalOwners()->sync($technicalOwnerIds);
+            }
+
+            $this->logOwnerChanges(
+                $application,
+                $actor,
+                $previousBusiness,
+                $businessOwnerIds,
+                $previousTechnical,
+                $technicalOwnerIds,
+            );
+
+            return $application->refresh()->load(self::detailRelations());
         });
     }
 
@@ -139,16 +178,7 @@ class ApplicationService
         return DB::transaction(static function () use ($application): Application {
             $application->restore();
 
-            return $application->refresh()->load([
-                'department',
-                'applicationType',
-                'status',
-                'criticality',
-                'supportType',
-                'technologies',
-                'creator',
-                'updater',
-            ]);
+            return $application->refresh()->load(self::detailRelations());
         });
     }
 
@@ -156,14 +186,14 @@ class ApplicationService
      * @param  array<string, mixed>  $data
      * @return list<int>|null
      */
-    private static function extractTechnologyIds(array &$data): ?array
+    private static function extractIdList(array &$data, string $key): ?array
     {
-        if (! array_key_exists('technologies', $data)) {
+        if (! array_key_exists($key, $data)) {
             return null;
         }
 
-        $raw = $data['technologies'];
-        unset($data['technologies']);
+        $raw = $data[$key];
+        unset($data[$key]);
 
         if (! is_array($raw)) {
             return [];
@@ -173,5 +203,83 @@ class ApplicationService
             static fn (mixed $id): int => (int) $id,
             $raw,
         )));
+    }
+
+    /**
+     * @param  list<int>|null  $businessOwnerIds
+     * @param  list<int>|null  $technicalOwnerIds
+     */
+    private function logOwnerSync(
+        Application $application,
+        User $actor,
+        ?array $businessOwnerIds,
+        ?array $technicalOwnerIds,
+        bool $created,
+    ): void {
+        if ($businessOwnerIds === null && $technicalOwnerIds === null) {
+            return;
+        }
+
+        activity()
+            ->performedOn($application)
+            ->causedBy($actor)
+            ->event($created ? 'created' : 'updated')
+            ->withProperties([
+                'business_owners' => $businessOwnerIds,
+                'technical_owners' => $technicalOwnerIds,
+            ])
+            ->log($created ? 'application.owners_set' : 'application.owners_updated');
+    }
+
+    /**
+     * @param  list<int>  $previousBusiness
+     * @param  list<int>|null  $nextBusiness
+     * @param  list<int>  $previousTechnical
+     * @param  list<int>|null  $nextTechnical
+     */
+    private function logOwnerChanges(
+        Application $application,
+        User $actor,
+        array $previousBusiness,
+        ?array $nextBusiness,
+        array $previousTechnical,
+        ?array $nextTechnical,
+    ): void {
+        $businessChanged = $nextBusiness !== null
+            && $this->sortedIds($previousBusiness) !== $this->sortedIds($nextBusiness);
+        $technicalChanged = $nextTechnical !== null
+            && $this->sortedIds($previousTechnical) !== $this->sortedIds($nextTechnical);
+
+        if (! $businessChanged && ! $technicalChanged) {
+            return;
+        }
+
+        activity()
+            ->performedOn($application)
+            ->causedBy($actor)
+            ->event('updated')
+            ->withProperties([
+                'old' => [
+                    'business_owners' => $previousBusiness,
+                    'technical_owners' => $previousTechnical,
+                ],
+                'attributes' => [
+                    'business_owners' => $nextBusiness ?? $previousBusiness,
+                    'technical_owners' => $nextTechnical ?? $previousTechnical,
+                ],
+            ])
+            ->log('application.owners_updated');
+    }
+
+    /**
+     * @param  list<int>  $ids
+     * @return list<int>
+     */
+    private function sortedIds(array $ids): array
+    {
+        $normalized = array_values(array_unique(array_map(static fn (int $id): int => $id, $ids)));
+        sort($normalized);
+
+        return $normalized;
     }
 }

@@ -65,7 +65,7 @@ export function ApplicationDetailsCard({
 
   return (
     <Link
-      to={`/applications-details/${card.id}`}
+      to={`/applications/${card.id}`}
       style={style}
       className={cn(
         "group relative block cursor-pointer overflow-hidden rounded-2xl border border-stroke/90 bg-card outline-none",

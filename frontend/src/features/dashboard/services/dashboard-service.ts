@@ -12,6 +12,7 @@ export type DashboardTotals = {
 }
 
 export type DashboardChartItem = {
+  id?: number
   key?: string
   name?: string
   name_en?: string

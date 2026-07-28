@@ -16,6 +16,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import { DashboardChartCard } from "@/features/dashboard/components/DashboardChartCard"
+import { useDashboardWidgetLayoutItem } from "@/features/dashboard/hooks/use-widget-layout"
 import type { DashboardChartItem } from "@/features/dashboard/services/dashboard-service"
 import {
   localizeChartName,
@@ -72,6 +73,7 @@ export function LicenseUsageRadialChart({
 }: LicenseUsageRadialChartProps) {
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language.startsWith("ar")
+  const layout = useDashboardWidgetLayoutItem("license_usage")
 
   const chartData = useMemo(() => {
     const max = Math.max(...items.map((item) => item.count), 1)
@@ -102,6 +104,7 @@ export function LicenseUsageRadialChart({
 
   return (
     <DashboardChartCard
+      widgetKey="license_usage"
       title={t("dashboard.charts.licenseUsage")}
       description={t("dashboard.charts.licenseUsageDesc")}
       icon={KeyRound}
@@ -116,7 +119,7 @@ export function LicenseUsageRadialChart({
         <div className="space-y-4">
           <ChartContainer
             config={config}
-            className="mx-auto aspect-square max-h-[240px] w-full"
+            className="mx-auto aspect-square max-h-[var(--dashboard-chart-height,240px)] w-full"
           >
             <RadialBarChart
               data={chartData}
@@ -145,17 +148,19 @@ export function LicenseUsageRadialChart({
             </RadialBarChart>
           </ChartContainer>
 
-          <div className="grid grid-cols-3 gap-2">
-            {chartData.map((item, index) => (
-              <MetricChip
-                key={item.key}
-                label={item.name}
-                value={item.count}
-                color={item.fill}
-                index={index}
-              />
-            ))}
-          </div>
+          {layout.show_statistics || layout.show_legend ? (
+            <div className="grid grid-cols-3 gap-2">
+              {chartData.map((item, index) => (
+                <MetricChip
+                  key={item.key}
+                  label={item.name}
+                  value={item.count}
+                  color={item.fill}
+                  index={index}
+                />
+              ))}
+            </div>
+          ) : null}
         </div>
       )}
     </DashboardChartCard>

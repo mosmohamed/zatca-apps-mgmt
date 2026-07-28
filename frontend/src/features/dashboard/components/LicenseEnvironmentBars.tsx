@@ -86,6 +86,7 @@ export function LicenseEnvironmentBars({
 
   return (
     <DashboardChartCard
+      widgetKey="licenses_by_environment"
       title={t("dashboard.charts.licensesByEnvironment")}
       description={t("dashboard.charts.licensesByEnvironmentDesc")}
       icon={Layers3}

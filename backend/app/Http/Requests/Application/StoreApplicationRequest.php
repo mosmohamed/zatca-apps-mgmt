@@ -32,14 +32,24 @@ class StoreApplicationRequest extends FormRequest
             'code' => ['required', 'string', 'max:100', Rule::unique('applications', 'code')],
             'status_id' => ['required', 'integer', Rule::exists('application_statuses', 'id')],
             'criticality_id' => ['required', 'integer', Rule::exists('criticalities', 'id')],
-            'business_owner' => ['nullable', 'string', 'max:255'],
-            'technical_owner' => ['nullable', 'string', 'max:255'],
+            'business_owners' => ['sometimes', 'array'],
+            'business_owners.*' => [
+                'integer',
+                'distinct',
+                Rule::exists('users', 'id')->whereNull('deleted_at'),
+            ],
+            'technical_owners' => ['sometimes', 'array'],
+            'technical_owners.*' => [
+                'integer',
+                'distinct',
+                Rule::exists('users', 'id')->whereNull('deleted_at'),
+            ],
             'support_type_id' => ['required', 'integer', Rule::exists('support_types', 'id')],
             'ha_model' => ['nullable', 'string', Rule::in(HaModel::values())],
             'documentation_url' => ['nullable', 'url', 'max:2048'],
             'repository_url' => ['nullable', 'url', 'max:2048'],
             'technologies' => ['sometimes', 'array'],
-            'technologies.*' => ['integer', Rule::exists('technologies', 'id')->whereNull('deleted_at')],
+            'technologies.*' => ['integer', 'distinct', Rule::exists('technologies', 'id')->whereNull('deleted_at')],
         ];
     }
 }

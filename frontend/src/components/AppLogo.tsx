@@ -33,7 +33,9 @@ export function AppLogo({
           <p className="truncate text-sm font-semibold leading-tight">
             {t("app.name")}
           </p>
-          <p className="truncate text-xs opacity-70">{t("app.tagline")}</p>
+          {t("app.tagline") ? (
+            <p className="truncate text-xs opacity-70">{t("app.tagline")}</p>
+          ) : null}
         </div>
       ) : null}
     </div>
