@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\Application;
 use App\Models\Department;
 use App\Traits\SearchTrait;
 use App\Traits\SortTrait;
@@ -66,4 +67,23 @@ class DepartmentService
             $department->delete();
         });
     }
+
+    /**
+     * @return array{
+     *     total: int,
+     *     with_applications: int,
+     *     without_applications: int,
+     *     applications: int
+     * }
+     */
+    public function statistics(): array
+    {
+        return [
+            'total' => Department::query()->count(),
+            'with_applications' => Department::query()->has('applications')->count(),
+            'without_applications' => Department::query()->doesntHave('applications')->count(),
+            'applications' => Application::query()->count(),
+        ];
+    }
+
 }

@@ -35,6 +35,17 @@ class UserController extends BaseApiController
         );
     }
 
+
+    public function statistics(): JsonResponse
+    {
+        $this->authorize('viewAny', User::class);
+
+        return $this->successResponse(
+            $this->userService->statistics(),
+            __('messages.users.stats'),
+        );
+    }
+
     public function store(StoreUserRequest $request): JsonResponse
     {
         /** @var User $actor */

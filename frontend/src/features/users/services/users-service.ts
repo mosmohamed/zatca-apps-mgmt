@@ -1,6 +1,6 @@
 import { api } from "@/lib/axios"
 import type { ApiEnvelope, ListQueryParams, PaginatedData } from "@/types/api"
-import type { ManagedUser, UserPayload } from "@/features/users/types/user"
+import type { ManagedUser, UserPayload, UserStatistics } from "@/features/users/types/user"
 
 function toQuery(params: ListQueryParams): Record<string, string | number> {
   const query: Record<string, string | number> = {
@@ -43,5 +43,12 @@ export const usersService = {
 
   async remove(id: number): Promise<void> {
     await api.delete<ApiEnvelope<null>>(`/users/${id}`)
+  },
+
+  async statistics(): Promise<UserStatistics> {
+    const { data } = await api.get<ApiEnvelope<UserStatistics>>(
+      "/users/statistics"
+    )
+    return data.data
   },
 }

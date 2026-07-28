@@ -1,4 +1,3 @@
-import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
 import { UserPreviewLink } from "@/components/entity-preview/UserPreviewLink"

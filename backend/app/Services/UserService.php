@@ -188,4 +188,35 @@ class UserService
                 });
         });
     }
+
+    /**
+     * @return array{
+     *     total: int,
+     *     active: int,
+     *     inactive: int,
+     *     with_open_assignments: int
+     * }
+     */
+    public function statistics(): array
+    {
+        $totals = User::query()
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw('SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active')
+            ->selectRaw('SUM(CASE WHEN is_active = 0 THEN 1 ELSE 0 END) as inactive')
+            ->first();
+
+        $withAssignments = User::query()
+            ->whereHas('assignments', static function ($query): void {
+                $query->open();
+            })
+            ->count();
+
+        return [
+            'total' => (int) ($totals?->total ?? 0),
+            'active' => (int) ($totals?->active ?? 0),
+            'inactive' => (int) ($totals?->inactive ?? 0),
+            'with_open_assignments' => $withAssignments,
+        ];
+    }
+
 }

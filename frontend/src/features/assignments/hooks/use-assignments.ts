@@ -28,6 +28,7 @@ export const assignmentKeys = {
   matrices: () => [...assignmentKeys.all, "matrix"] as const,
   matrix: (applicationId: number) =>
     [...assignmentKeys.matrices(), applicationId] as const,
+  statistics: () => [...assignmentKeys.all, "statistics"] as const,
 }
 
 export const assignmentLookupKeys = {
@@ -213,3 +214,12 @@ export function useSaveAssignmentMatrix() {
     },
   })
 }
+
+export function useAssignmentStatistics() {
+  return useQuery({
+    queryKey: assignmentKeys.statistics(),
+    queryFn: () => assignmentsService.statistics(),
+    staleTime: 60_000,
+  })
+}
+

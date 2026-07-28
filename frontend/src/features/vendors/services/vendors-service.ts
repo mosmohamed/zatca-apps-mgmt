@@ -1,6 +1,6 @@
 import { api } from "@/lib/axios"
 import type { ApiEnvelope, ListQueryParams, PaginatedData } from "@/types/api"
-import type { Vendor, VendorPayload } from "@/features/vendors/types/vendor"
+import type { Vendor, VendorPayload, VendorStatistics } from "@/features/vendors/types/vendor"
 
 function toQuery(params: ListQueryParams): Record<string, string | number> {
   const query: Record<string, string | number> = {
@@ -43,5 +43,12 @@ export const vendorsService = {
 
   async remove(id: number): Promise<void> {
     await api.delete<ApiEnvelope<null>>(`/vendors/${id}`)
+  },
+
+  async statistics(): Promise<VendorStatistics> {
+    const { data } = await api.get<ApiEnvelope<VendorStatistics>>(
+      "/vendors/statistics"
+    )
+    return data.data
   },
 }

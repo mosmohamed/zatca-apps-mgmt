@@ -46,3 +46,10 @@ export type UserPayload = {
   is_active?: boolean
   roles?: string[]
 }
+
+export type UserStatistics = {
+  total: number
+  active: number
+  inactive: number
+  with_open_assignments: number
+}

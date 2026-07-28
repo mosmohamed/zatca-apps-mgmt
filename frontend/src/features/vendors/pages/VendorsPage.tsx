@@ -11,6 +11,7 @@ import {
 import type { EnterpriseExportConfig } from "@/components/enterprise-data-table/types"
 import { Button } from "@/components/ui/button"
 import { VendorFormDialog } from "@/features/vendors/components/VendorFormDialog"
+import { VendorStatsCards } from "@/features/vendors/components/VendorStatsCards"
 import {
   useDeleteVendor,
   useVendors,
@@ -190,6 +191,8 @@ export function VendorsPage() {
           </Button>
         ) : null}
       </div>
+
+      <VendorStatsCards />
 
       <EnterpriseDataTable
         columns={columns}

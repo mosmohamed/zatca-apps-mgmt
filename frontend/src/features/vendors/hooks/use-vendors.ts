@@ -15,6 +15,7 @@ export const vendorKeys = {
   all: ["vendors"] as const,
   lists: () => [...vendorKeys.all, "list"] as const,
   list: (params: ListQueryParams) => [...vendorKeys.lists(), params] as const,
+  statistics: () => [...vendorKeys.all, "statistics"] as const,
 }
 
 export function useVendors(params: ListQueryParams) {
@@ -70,3 +71,12 @@ export function useDeleteVendor() {
     },
   })
 }
+
+export function useVendorStatistics() {
+  return useQuery({
+    queryKey: vendorKeys.statistics(),
+    queryFn: () => vendorsService.statistics(),
+    staleTime: 60_000,
+  })
+}
+

@@ -35,6 +35,17 @@ class TechnologyController extends BaseApiController
         );
     }
 
+
+    public function statistics(): JsonResponse
+    {
+        $this->authorize('viewAny', Technology::class);
+
+        return $this->successResponse(
+            $this->technologyService->statistics(),
+            __('messages.technologies.stats'),
+        );
+    }
+
     public function store(StoreTechnologyRequest $request): JsonResponse
     {
         $technology = $this->technologyService->create($request->validated());

@@ -276,6 +276,7 @@ return [
 
     'vendors' => [
         'listed' => 'Vendors retrieved successfully.',
+        'stats' => 'Vendor statistics retrieved successfully.',
         'created' => 'Vendor created successfully.',
         'retrieved' => 'Vendor retrieved successfully.',
         'updated' => 'Vendor updated successfully.',
@@ -284,6 +285,7 @@ return [
 
     'departments' => [
         'listed' => 'Departments retrieved successfully.',
+        'stats' => 'Department statistics retrieved successfully.',
         'created' => 'Department created successfully.',
         'retrieved' => 'Department retrieved successfully.',
         'updated' => 'Department updated successfully.',
@@ -292,6 +294,7 @@ return [
 
     'users' => [
         'listed' => 'Users retrieved successfully.',
+        'stats' => 'User statistics retrieved successfully.',
         'created' => 'User created successfully.',
         'retrieved' => 'User retrieved successfully.',
         'updated' => 'User updated successfully.',
@@ -300,6 +303,7 @@ return [
 
     'applications' => [
         'listed' => 'Applications retrieved successfully.',
+        'stats' => 'Application statistics retrieved successfully.',
         'created' => 'Application created successfully.',
         'retrieved' => 'Application retrieved successfully.',
         'updated' => 'Application updated successfully.',
@@ -319,6 +323,7 @@ return [
 
     'assignments' => [
         'listed' => 'Assignments retrieved successfully.',
+        'stats' => 'Assignment statistics retrieved successfully.',
         'summary_listed' => 'Assignment matrix applications retrieved successfully.',
         'matrix_retrieved' => 'Application assignment matrix retrieved successfully.',
         'created' => 'Assignment created successfully.',
@@ -362,6 +367,7 @@ return [
 
     'technologies' => [
         'listed' => 'Technologies retrieved successfully.',
+        'stats' => 'Technology statistics retrieved successfully.',
         'created' => 'Technology created successfully.',
         'retrieved' => 'Technology retrieved successfully.',
         'updated' => 'Technology updated successfully.',

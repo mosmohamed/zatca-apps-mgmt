@@ -26,3 +26,10 @@ export type TechnologyPayload = {
   description?: string | null
   is_active?: boolean
 }
+
+export type TechnologyStatistics = {
+  total: number
+  active: number
+  inactive: number
+  in_use: number
+}

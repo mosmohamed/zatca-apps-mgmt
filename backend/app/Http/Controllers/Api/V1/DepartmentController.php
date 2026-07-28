@@ -35,6 +35,17 @@ class DepartmentController extends BaseApiController
         );
     }
 
+
+    public function statistics(): JsonResponse
+    {
+        $this->authorize('viewAny', Department::class);
+
+        return $this->successResponse(
+            $this->departmentService->statistics(),
+            __('messages.departments.stats'),
+        );
+    }
+
     public function store(StoreDepartmentRequest $request): JsonResponse
     {
         $department = $this->departmentService->create($request->validated());

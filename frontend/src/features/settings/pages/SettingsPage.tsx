@@ -153,7 +153,9 @@ export function SettingsPage() {
         dashboard_widgets: {
           roles: values.dashboard_widgets_by_role,
         },
-        dashboard_widget_layout: values.dashboard_widget_layout,
+        dashboard_widget_layout: normalizeDashboardWidgetLayout(
+          values.dashboard_widget_layout
+        ),
       })
     } catch (error) {
       const fieldErrors = getApiFieldErrors(error)

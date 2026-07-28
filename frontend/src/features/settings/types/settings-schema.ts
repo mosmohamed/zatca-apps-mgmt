@@ -2,26 +2,39 @@ import type { TFunction } from "i18next"
 import { z } from "zod"
 
 import { DASHBOARD_WIDGET_KEYS } from "@/features/dashboard/types/dashboard-widgets"
+import {
+  WIDGET_LEGEND_POSITIONS,
+  WIDGET_OVERFLOWS,
+} from "@/features/dashboard/types/widget-layout-config"
 
 export function createSettingsFormSchema(t: TFunction) {
+  const dashboardWidgetKeySchema = z.enum(DASHBOARD_WIDGET_KEYS)
+
   const dashboardWidgetsShape = Object.fromEntries(
     DASHBOARD_WIDGET_KEYS.map((key) => [key, z.boolean()])
   ) as Record<(typeof DASHBOARD_WIDGET_KEYS)[number], z.ZodBoolean>
 
   const widgetLayoutItemSchema = z.object({
-    span_desktop: z.number().int().min(1).max(6),
-    span_tablet: z.number().int().min(1).max(2),
+    span_desktop: z.union([
+      z.literal(1),
+      z.literal(2),
+      z.literal(3),
+      z.literal(4),
+      z.literal(5),
+      z.literal(6),
+    ]),
+    span_tablet: z.union([z.literal(1), z.literal(2)]),
     span_mobile: z.literal(1),
     min_height_px: z.number().int().min(160).max(800),
     max_height_px: z.number().int().min(160).max(1600).nullable(),
     chart_height_px: z.number().int().min(120).max(640),
-    overflow: z.enum(["auto", "hidden", "visible"]),
+    overflow: z.enum(WIDGET_OVERFLOWS),
     show_header: z.boolean(),
     show_description: z.boolean(),
     show_legend: z.boolean(),
     show_filters: z.boolean(),
     show_statistics: z.boolean(),
-    legend_position: z.enum(["bottom", "top", "hidden"]),
+    legend_position: z.enum(WIDGET_LEGEND_POSITIONS),
   })
 
   const widgetsShape = Object.fromEntries(
@@ -59,7 +72,7 @@ export function createSettingsFormSchema(t: TFunction) {
       z.object(dashboardWidgetsShape)
     ),
     dashboard_widget_layout: z.object({
-      default_order: z.array(z.string()).min(1),
+      default_order: z.array(dashboardWidgetKeySchema).min(1),
       widgets: z.object(widgetsShape),
     }),
   })

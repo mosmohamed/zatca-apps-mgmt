@@ -36,6 +36,17 @@ class ApplicationController extends BaseApiController
         );
     }
 
+
+    public function statistics(): JsonResponse
+    {
+        $this->authorize('viewAny', Application::class);
+
+        return $this->successResponse(
+            $this->applicationService->statistics(),
+            __('messages.applications.stats'),
+        );
+    }
+
     public function store(StoreApplicationRequest $request): JsonResponse
     {
         /** @var User $actor */

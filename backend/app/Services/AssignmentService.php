@@ -324,4 +324,32 @@ class AssignmentService
                 });
         });
     }
+
+    /**
+     * @return array{
+     *     open_assignments: int,
+     *     ended_assignments: int,
+     *     applications_with_assignments: int,
+     *     assigned_users: int
+     * }
+     */
+    public function statistics(): array
+    {
+        $assignedUsers = (int) ApplicationAssignment::query()
+            ->open()
+            ->selectRaw('COUNT(DISTINCT user_id) as aggregate')
+            ->value('aggregate');
+
+        return [
+            'open_assignments' => ApplicationAssignment::query()->open()->count(),
+            'ended_assignments' => ApplicationAssignment::query()->whereNotNull('ended_at')->count(),
+            'applications_with_assignments' => Application::query()
+                ->whereHas('assignments', static function ($query): void {
+                    $query->open();
+                })
+                ->count(),
+            'assigned_users' => $assignedUsers,
+        ];
+    }
+
 }

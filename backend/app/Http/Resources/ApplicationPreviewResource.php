@@ -27,8 +27,16 @@ class ApplicationPreviewResource extends JsonResource
             'name_ar' => $this->name_ar,
             'code' => $this->code,
             'ha_model' => $this->ha_model?->value,
-            'business_owners' => ApplicationOwnerResource::collection($this->whenLoaded('businessOwners')),
-            'technical_owners' => ApplicationOwnerResource::collection($this->whenLoaded('technicalOwners')),
+            'business_owners' => ApplicationOwnerResource::collection(
+                $this->relationLoaded('businessOwners')
+                    ? $this->businessOwners
+                    : collect(),
+            ),
+            'technical_owners' => ApplicationOwnerResource::collection(
+                $this->relationLoaded('technicalOwners')
+                    ? $this->technicalOwners
+                    : collect(),
+            ),
             'documentation_url' => $this->documentation_url,
             'repository_url' => $this->repository_url,
             'department' => $this->localisedLookup($this->department),

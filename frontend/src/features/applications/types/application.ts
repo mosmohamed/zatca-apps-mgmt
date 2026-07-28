@@ -98,3 +98,10 @@ export type ApplicationPayload = {
   repository_url?: string | null
   technologies?: number[]
 }
+
+export type ApplicationStatistics = {
+  total: number
+  active: number
+  maintenance: number
+  with_open_assignments: number
+}

@@ -40,22 +40,20 @@ export type VendorPreview = {
   active_users_count: number
 }
 
+export type ApplicationPreviewOwner = {
+  id: number
+  full_name: string
+  email: string
+}
+
 export type ApplicationPreview = {
   id: number
   name_en: string
   name_ar: string
   code: string
   ha_model: HaModel | null
-  business_owners?: Array<{
-    id: number
-    full_name: string
-    email: string
-  }>
-  technical_owners?: Array<{
-    id: number
-    full_name: string
-    email: string
-  }>
+  business_owners: ApplicationPreviewOwner[]
+  technical_owners: ApplicationPreviewOwner[]
   documentation_url: string | null
   repository_url: string | null
   department: PreviewLookup | null

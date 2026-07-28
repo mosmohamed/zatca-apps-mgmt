@@ -282,4 +282,35 @@ class ApplicationService
 
         return $normalized;
     }
+
+    /**
+     * @return array{
+     *     total: int,
+     *     active: int,
+     *     maintenance: int,
+     *     with_open_assignments: int
+     * }
+     */
+    public function statistics(): array
+    {
+        $statusCounts = Application::query()
+            ->join('application_statuses', 'applications.status_id', '=', 'application_statuses.id')
+            ->whereNull('applications.deleted_at')
+            ->selectRaw('application_statuses.code as code')
+            ->selectRaw('COUNT(*) as aggregate')
+            ->groupBy('application_statuses.code')
+            ->pluck('aggregate', 'code');
+
+        return [
+            'total' => Application::query()->count(),
+            'active' => (int) ($statusCounts['Active'] ?? 0),
+            'maintenance' => (int) ($statusCounts['Maintenance'] ?? 0),
+            'with_open_assignments' => Application::query()
+                ->whereHas('assignments', static function ($query): void {
+                    $query->open();
+                })
+                ->count(),
+        ];
+    }
+
 }

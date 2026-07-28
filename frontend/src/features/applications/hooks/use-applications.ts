@@ -19,6 +19,7 @@ export const applicationKeys = {
     [...applicationKeys.lists(), params] as const,
   details: () => [...applicationKeys.all, "detail"] as const,
   detail: (id: number) => [...applicationKeys.details(), id] as const,
+  statistics: () => [...applicationKeys.all, "statistics"] as const,
 }
 
 export const lookupKeys = {
@@ -161,3 +162,12 @@ export function useDeleteApplication() {
     },
   })
 }
+
+export function useApplicationStatistics() {
+  return useQuery({
+    queryKey: applicationKeys.statistics(),
+    queryFn: () => applicationsService.statistics(),
+    staleTime: 60_000,
+  })
+}
+

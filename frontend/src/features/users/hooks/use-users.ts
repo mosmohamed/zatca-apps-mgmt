@@ -16,6 +16,7 @@ export const userKeys = {
   all: ["users"] as const,
   lists: () => [...userKeys.all, "list"] as const,
   list: (params: ListQueryParams) => [...userKeys.lists(), params] as const,
+  statistics: () => [...userKeys.all, "statistics"] as const,
 }
 
 export const userLookupKeys = {
@@ -83,3 +84,12 @@ export function useDeleteUser() {
     },
   })
 }
+
+export function useUserStatistics() {
+  return useQuery({
+    queryKey: userKeys.statistics(),
+    queryFn: () => usersService.statistics(),
+    staleTime: 60_000,
+  })
+}
+

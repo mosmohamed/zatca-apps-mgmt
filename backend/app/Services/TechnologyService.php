@@ -74,4 +74,29 @@ class TechnologyService
             $technology->delete();
         });
     }
+
+    /**
+     * @return array{
+     *     total: int,
+     *     active: int,
+     *     inactive: int,
+     *     in_use: int
+     * }
+     */
+    public function statistics(): array
+    {
+        $totals = Technology::query()
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw('SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active')
+            ->selectRaw('SUM(CASE WHEN is_active = 0 THEN 1 ELSE 0 END) as inactive')
+            ->first();
+
+        return [
+            'total' => (int) ($totals?->total ?? 0),
+            'active' => (int) ($totals?->active ?? 0),
+            'inactive' => (int) ($totals?->inactive ?? 0),
+            'in_use' => Technology::query()->has('applications')->count(),
+        ];
+    }
+
 }

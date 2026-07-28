@@ -156,14 +156,17 @@ function boundedInt(
   return Math.max(min, Math.min(max, Math.round(n)))
 }
 
+function isDashboardWidgetKey(value: unknown): value is DashboardWidgetKey {
+  return DASHBOARD_WIDGET_KEYS.some((key) => key === value)
+}
+
 function normalizeOrder(value: unknown): DashboardWidgetKey[] {
-  const known = new Set<string>(DASHBOARD_WIDGET_KEYS)
   const ordered: DashboardWidgetKey[] = []
 
   if (Array.isArray(value)) {
     for (const item of value) {
-      if (typeof item === "string" && known.has(item) && !ordered.includes(item as DashboardWidgetKey)) {
-        ordered.push(item as DashboardWidgetKey)
+      if (isDashboardWidgetKey(item) && !ordered.includes(item)) {
+        ordered.push(item)
       }
     }
   }

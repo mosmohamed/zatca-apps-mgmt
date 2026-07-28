@@ -3,6 +3,7 @@ import type { ApiEnvelope, ListQueryParams, PaginatedData } from "@/types/api"
 import type {
   Department,
   DepartmentPayload,
+  DepartmentStatistics,
 } from "@/features/departments/types/department"
 
 function toQuery(params: ListQueryParams): Record<string, string | number> {
@@ -49,5 +50,12 @@ export const departmentsService = {
 
   async remove(id: number): Promise<void> {
     await api.delete<ApiEnvelope<null>>(`/departments/${id}`)
+  },
+
+  async statistics(): Promise<DepartmentStatistics> {
+    const { data } = await api.get<ApiEnvelope<DepartmentStatistics>>(
+      "/departments/statistics"
+    )
+    return data.data
   },
 }

@@ -21,3 +21,10 @@ export type VendorPayload = {
   remarks?: string | null
   status?: boolean
 }
+
+export type VendorStatistics = {
+  total: number
+  active: number
+  inactive: number
+  with_users: number
+}

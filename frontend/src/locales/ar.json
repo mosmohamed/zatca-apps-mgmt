@@ -292,6 +292,12 @@
     "emptyCreate": "أنشئ أول تطبيق لبدء الجرد.",
     "deleteTitle": "حذف التطبيق؟",
     "deleteConfirm": "حذف التطبيق \"{{name}}\"؟ سيتم الحذف الناعم للسجل.",
+    "stats": {
+      "total": "إجمالي التطبيقات",
+      "active": "نشط",
+      "maintenance": "صيانة",
+      "withOpenAssignments": "مع تعيينات"
+    },
     "columns": {
       "name": "الاسم",
       "code": "الرمز",
@@ -657,6 +663,12 @@
     "deleteConfirm": "حذف المورد \"{{name}}\"؟ سيتم الحذف الناعم للسجل.",
     "bulkDeleteTitle": "حذف الموردين المحددين؟",
     "bulkDeleteConfirm": "حذف {{count}} موردين محددين؟ سيتم الحذف الناعم للسجلات.",
+    "stats": {
+      "total": "إجمالي الموردين",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "withUsers": "مع مستخدمين"
+    },
     "columns": {
       "name": "الاسم",
       "email": "البريد الإلكتروني",
@@ -698,6 +710,12 @@
     "emptyTitle": "لم يتم العثور على أقسام",
     "emptyCreate": "أنشئ أول قسم لتصنيف التطبيقات.",
     "deleteConfirm": "حذف القسم \"{{name}}\"؟ سيتم الحذف الناعم للسجل.",
+    "stats": {
+      "total": "إجمالي الأقسام",
+      "withApplications": "مع تطبيقات",
+      "withoutApplications": "بدون تطبيقات",
+      "applications": "التطبيقات المرتبطة"
+    },
     "columns": {
       "nameEn": "الاسم بالإنجليزية",
       "nameAr": "الاسم بالعربية",
@@ -735,6 +753,12 @@
     "deleteConfirm": "حذف المستخدم \"{{name}}\"؟ سيتم الحذف الناعم للحساب.",
     "bulkDeleteTitle": "حذف المستخدمين المحددين؟",
     "bulkDeleteConfirm": "حذف {{count}} مستخدمين محددين؟ سيتم الحذف الناعم للحسابات.",
+    "stats": {
+      "total": "إجمالي المستخدمين",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "withOpenAssignments": "مع تعيينات"
+    },
     "columns": {
       "name": "الاسم",
       "email": "البريد الإلكتروني",
@@ -795,6 +819,12 @@
     "endConfirm": "إنهاء التعيين المفتوح لـ {{user}} على {{application}}؟",
     "end": "إنهاء",
     "internal": "داخلي",
+    "stats": {
+      "openAssignments": "التعيينات المفتوحة",
+      "endedAssignments": "التعيينات المنتهية",
+      "applicationsWithAssignments": "تطبيقات بتعيينات",
+      "assignedUsers": "المستخدمون المعيّنون"
+    },
     "actions": {
       "view": "عرض التعيينات",
       "edit": "تعديل التعيينات"
@@ -1064,6 +1094,12 @@
     "deleteConfirm": "حذف التقنية \"{{name}}\"؟ سيتم الحذف الناعم للسجل.",
     "bulkDeleteTitle": "حذف التقنيات المحددة؟",
     "bulkDeleteConfirm": "حذف {{count}} تقنيات محددة؟ سيتم الحذف الناعم للسجلات.",
+    "stats": {
+      "total": "إجمالي التقنيات",
+      "active": "نشطة",
+      "inactive": "غير نشطة",
+      "inUse": "قيد الاستخدام"
+    },
     "categories": {
       "Frontend": "واجهة أمامية",
       "Backend": "خلفية",

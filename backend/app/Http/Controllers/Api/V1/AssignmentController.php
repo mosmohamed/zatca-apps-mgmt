@@ -88,6 +88,17 @@ class AssignmentController extends BaseApiController
         );
     }
 
+
+    public function statistics(): JsonResponse
+    {
+        $this->authorize('viewAny', ApplicationAssignment::class);
+
+        return $this->successResponse(
+            $this->assignmentService->statistics(),
+            __('messages.assignments.stats'),
+        );
+    }
+
     public function store(StoreApplicationAssignmentRequest $request): JsonResponse
     {
         /** @var User $actor */

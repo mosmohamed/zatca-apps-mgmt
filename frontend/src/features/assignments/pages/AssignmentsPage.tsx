@@ -7,6 +7,7 @@ import { EnterpriseDataTable } from "@/components/EnterpriseDataTable"
 import { Button } from "@/components/ui/button"
 import { ApplicationAssignmentEditDialog } from "@/features/assignments/components/ApplicationAssignmentEditDialog"
 import { ApplicationAssignmentViewDialog } from "@/features/assignments/components/ApplicationAssignmentViewDialog"
+import { AssignmentStatsCards } from "@/features/assignments/components/AssignmentStatsCards"
 import { useApplicationAssignmentsSummary } from "@/features/assignments/hooks/use-assignments"
 import type { AssignmentSummary } from "@/features/assignments/types/assignment"
 import { useAuth } from "@/features/auth/hooks/use-auth"
@@ -49,6 +50,8 @@ export function AssignmentsPage() {
           {t("assignments.description")}
         </p>
       </div>
+
+      <AssignmentStatsCards />
 
       <EnterpriseDataTable<AssignmentSummary>
         columns={[

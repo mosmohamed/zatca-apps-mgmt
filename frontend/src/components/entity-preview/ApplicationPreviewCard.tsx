@@ -27,6 +27,8 @@ export function ApplicationPreviewCard({ data }: { data: ApplicationPreview }) {
   const criticalityName = lookupName(data.criticality)
   const departmentName = lookupName(data.department)
   const typeName = lookupName(data.application_type)
+  const businessOwners = data.business_owners ?? []
+  const technicalOwners = data.technical_owners ?? []
 
   const initials = displayName.trim().slice(0, 2).toUpperCase()
 
@@ -69,8 +71,8 @@ export function ApplicationPreviewCard({ data }: { data: ApplicationPreview }) {
           icon={UserRound}
           label={t("entityPreview.fields.businessOwner")}
           value={
-            (data.business_owners?.length ?? 0) > 0
-              ? data.business_owners.map((owner) => owner.full_name).join(", ")
+            businessOwners.length > 0
+              ? businessOwners.map((owner) => owner.full_name).join(", ")
               : null
           }
         />
@@ -78,8 +80,8 @@ export function ApplicationPreviewCard({ data }: { data: ApplicationPreview }) {
           icon={UserRound}
           label={t("entityPreview.fields.technicalOwner")}
           value={
-            (data.technical_owners?.length ?? 0) > 0
-              ? data.technical_owners.map((owner) => owner.full_name).join(", ")
+            technicalOwners.length > 0
+              ? technicalOwners.map((owner) => owner.full_name).join(", ")
               : null
           }
         />

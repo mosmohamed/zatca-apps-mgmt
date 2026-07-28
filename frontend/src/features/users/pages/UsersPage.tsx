@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { UserFormDialog } from "@/features/users/components/UserFormDialog"
+import { UserStatsCards } from "@/features/users/components/UserStatsCards"
 import {
   useDeleteUser,
   useUpdateUser,
@@ -276,6 +277,8 @@ export function UsersPage() {
           </Button>
         ) : null}
       </div>
+
+      <UserStatsCards />
 
       <EnterpriseDataTable
         columns={columns}

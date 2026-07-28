@@ -123,3 +123,10 @@ export type BulkAssignmentPayload = {
     remarks?: string | null
   }>
 }
+
+export type AssignmentStatistics = {
+  open_assignments: number
+  ended_assignments: number
+  applications_with_assignments: number
+  assigned_users: number
+}

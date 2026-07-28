@@ -10,3 +10,10 @@ export type DepartmentPayload = {
   name_ar: string
   name_en: string
 }
+
+export type DepartmentStatistics = {
+  total: number
+  with_applications: number
+  without_applications: number
+  applications: number
+}

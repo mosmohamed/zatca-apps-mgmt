@@ -10,6 +10,7 @@ import {
 import type { EnterpriseExportConfig } from "@/components/enterprise-data-table/types"
 import { Button } from "@/components/ui/button"
 import { TechnologyFormDialog } from "@/features/technologies/components/TechnologyFormDialog"
+import { TechnologyStatsCards } from "@/features/technologies/components/TechnologyStatsCards"
 import {
   useDeleteTechnology,
   useTechnologies,
@@ -221,6 +222,8 @@ export function TechnologiesPage() {
           </Button>
         ) : null}
       </div>
+
+      <TechnologyStatsCards />
 
       <EnterpriseDataTable
         columns={columns}

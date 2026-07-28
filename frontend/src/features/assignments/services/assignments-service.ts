@@ -5,6 +5,7 @@ import type {
   AssignmentListParams,
   AssignmentMatrixApplication,
   AssignmentPayload,
+  AssignmentStatistics,
   AssignmentSummary,
   AssignmentSummaryParams,
   AssignmentUpdatePayload,
@@ -102,5 +103,12 @@ export const assignmentsService = {
 
   async end(id: number): Promise<void> {
     await api.delete<ApiEnvelope<null>>(`/assignments/${id}`)
+  },
+
+  async statistics(): Promise<AssignmentStatistics> {
+    const { data } = await api.get<ApiEnvelope<AssignmentStatistics>>(
+      "/assignments/statistics"
+    )
+    return data.data
   },
 }

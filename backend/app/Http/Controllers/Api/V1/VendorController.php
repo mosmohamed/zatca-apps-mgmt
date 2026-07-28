@@ -35,6 +35,17 @@ class VendorController extends BaseApiController
         );
     }
 
+
+    public function statistics(): JsonResponse
+    {
+        $this->authorize('viewAny', Vendor::class);
+
+        return $this->successResponse(
+            $this->vendorService->statistics(),
+            __('messages.vendors.stats'),
+        );
+    }
+
     public function store(StoreVendorRequest $request): JsonResponse
     {
         $vendor = $this->vendorService->create($request->validated());

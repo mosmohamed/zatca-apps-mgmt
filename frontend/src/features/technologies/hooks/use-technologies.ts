@@ -17,6 +17,7 @@ export const technologyKeys = {
   lists: () => [...technologyKeys.all, "list"] as const,
   list: (params: ListQueryParams) =>
     [...technologyKeys.lists(), params] as const,
+  statistics: () => [...technologyKeys.all, "statistics"] as const,
 }
 
 export function useTechnologies(params: ListQueryParams) {
@@ -93,3 +94,12 @@ export function useDeleteTechnology() {
     },
   })
 }
+
+export function useTechnologyStatistics() {
+  return useQuery({
+    queryKey: technologyKeys.statistics(),
+    queryFn: () => technologiesService.statistics(),
+    staleTime: 60_000,
+  })
+}
+

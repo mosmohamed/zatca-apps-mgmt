@@ -74,4 +74,29 @@ class VendorService
             return $vendor->refresh();
         });
     }
+
+    /**
+     * @return array{
+     *     total: int,
+     *     active: int,
+     *     inactive: int,
+     *     with_users: int
+     * }
+     */
+    public function statistics(): array
+    {
+        $totals = Vendor::query()
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw('SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as active')
+            ->selectRaw('SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) as inactive')
+            ->first();
+
+        return [
+            'total' => (int) ($totals?->total ?? 0),
+            'active' => (int) ($totals?->active ?? 0),
+            'inactive' => (int) ($totals?->inactive ?? 0),
+            'with_users' => Vendor::query()->has('users')->count(),
+        ];
+    }
+
 }

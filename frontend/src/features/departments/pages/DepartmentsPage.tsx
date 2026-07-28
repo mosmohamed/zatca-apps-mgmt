@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { DepartmentFormDialog } from "@/features/departments/components/DepartmentFormDialog"
+import { DepartmentStatsCards } from "@/features/departments/components/DepartmentStatsCards"
 import {
   useDeleteDepartment,
   useDepartments,
@@ -100,6 +101,8 @@ export function DepartmentsPage() {
           </Button>
         ) : null}
       </div>
+
+      <DepartmentStatsCards />
 
       <div className="rounded-xl border border-stroke bg-card p-4 shadow-sm">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

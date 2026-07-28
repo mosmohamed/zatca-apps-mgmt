@@ -82,8 +82,11 @@ Route::prefix('v1')->group(function (): void {
         Route::get('applications/{application}/preview', [EntityPreviewController::class, 'application']);
         Route::get('departments/{department}/preview', [EntityPreviewController::class, 'department']);
 
+        Route::get('vendors/statistics', [VendorController::class, 'statistics']);
         Route::apiResource('vendors', VendorController::class);
+        Route::get('departments/statistics', [DepartmentController::class, 'statistics']);
         Route::apiResource('departments', DepartmentController::class);
+        Route::get('users/statistics', [UserController::class, 'statistics']);
         Route::apiResource('users', UserController::class);
         Route::get(
             'applications/{application}/infrastructure',
@@ -101,7 +104,9 @@ Route::prefix('v1')->group(function (): void {
             'applications/{application}/environments/{environment}',
             [ApplicationInfrastructureController::class, 'destroy'],
         );
+        Route::get('applications/statistics', [ApplicationController::class, 'statistics']);
         Route::apiResource('applications', ApplicationController::class);
+        Route::get('assignments/statistics', [AssignmentController::class, 'statistics']);
         Route::get('assignments/applications-summary', [AssignmentController::class, 'applicationsSummary']);
         Route::get('assignments/application/{application}', [AssignmentController::class, 'applicationMatrix']);
         Route::post('assignments/bulk', [AssignmentController::class, 'bulkStore']);
@@ -110,6 +115,7 @@ Route::prefix('v1')->group(function (): void {
         Route::apiResource('support-types', SupportTypeController::class);
         Route::apiResource('criticalities', CriticalityController::class);
         Route::apiResource('application-statuses', ApplicationStatusController::class);
+        Route::get('technologies/statistics', [TechnologyController::class, 'statistics']);
         Route::apiResource('technologies', TechnologyController::class);
         Route::get('licenses/statistics', [LicenseController::class, 'statistics']);
         Route::apiResource('licenses', LicenseController::class);

@@ -17,6 +17,7 @@ export const departmentKeys = {
   lists: () => [...departmentKeys.all, "list"] as const,
   list: (params: ListQueryParams) =>
     [...departmentKeys.lists(), params] as const,
+  statistics: () => [...departmentKeys.all, "statistics"] as const,
 }
 
 export function useDepartments(params: ListQueryParams) {
@@ -93,3 +94,12 @@ export function useDeleteDepartment() {
     },
   })
 }
+
+export function useDepartmentStatistics() {
+  return useQuery({
+    queryKey: departmentKeys.statistics(),
+    queryFn: () => departmentsService.statistics(),
+    staleTime: 60_000,
+  })
+}
+

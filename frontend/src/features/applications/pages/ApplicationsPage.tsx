@@ -12,6 +12,7 @@ import {
 import type { EnterpriseExportConfig } from "@/components/enterprise-data-table/types"
 import { Button } from "@/components/ui/button"
 import { ApplicationFormDialog } from "@/features/applications/components/ApplicationFormDialog"
+import { ApplicationStatsCards } from "@/features/applications/components/ApplicationStatsCards"
 import {
   useApplications,
   useDeleteApplication,
@@ -259,6 +260,8 @@ export function ApplicationsPage() {
           </Button>
         ) : null}
       </div>
+
+      <ApplicationStatsCards />
 
       <EnterpriseDataTable
         columns={columns}
