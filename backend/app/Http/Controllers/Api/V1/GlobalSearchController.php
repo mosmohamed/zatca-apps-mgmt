@@ -19,7 +19,10 @@ class GlobalSearchController extends BaseApiController
     {
         $query = $request->query('query');
 
-        $results = $this->globalSearchService->search(is_string($query) ? $query : '');
+        $results = $this->globalSearchService->search(
+            is_string($query) ? $query : '',
+            $request->user(),
+        );
 
         return $this->successResponse($results, __('messages.search.results'));
     }

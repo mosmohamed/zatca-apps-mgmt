@@ -215,7 +215,7 @@ class EntityPreviewFeatureTest extends TestCase
 
         $this->getJson("/api/v1/users/{$target->id}/preview")->assertOk();
         $this->getJson("/api/v1/vendors/{$vendor->id}/preview")->assertForbidden();
-        $this->getJson("/api/v1/applications/{$application->id}/preview")->assertForbidden();
+        $this->getJson("/api/v1/applications/{$application->id}/preview")->assertOk();
         $this->getJson("/api/v1/departments/{$department->id}/preview")->assertForbidden();
     }
 

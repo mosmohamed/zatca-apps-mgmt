@@ -40,7 +40,11 @@ function SortIcon({ column, sort }: { column: SortColumn; sort: string }) {
 
 export function DepartmentsPage() {
   const { t } = useTranslation()
-  const { isSuperAdmin } = useAuth()
+  const { can } = useAuth()
+  const canCreate = can("departments.create")
+  const canUpdate = can("departments.update")
+  const canDelete = can("departments.delete")
+  const canManage = canCreate || canUpdate || canDelete
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [sort, setSort] = useState("name_en")
@@ -89,7 +93,7 @@ export function DepartmentsPage() {
             {t("departments.description")}
           </p>
         </div>
-        {isSuperAdmin ? (
+        {canCreate ? (
           <Button type="button" onClick={openCreate}>
             <Plus />
             {t("departments.new")}
@@ -129,8 +133,8 @@ export function DepartmentsPage() {
                 ? t("common.tryDifferentSearch")
                 : t("departments.emptyCreate")
             }
-            actionLabel={isSuperAdmin ? t("departments.create") : undefined}
-            onAction={isSuperAdmin ? openCreate : undefined}
+            actionLabel={canCreate ? t("departments.create") : undefined}
+            onAction={canCreate ? openCreate : undefined}
           />
         ) : (
           <>
@@ -167,7 +171,7 @@ export function DepartmentsPage() {
                       <SortIcon column="created_at" sort={sort} />
                     </button>
                   </TableHead>
-                  {isSuperAdmin ? (
+                  {canManage ? (
                     <TableHead className="text-end">{t("common.actions")}</TableHead>
                   ) : null}
                 </TableRow>
@@ -182,9 +186,10 @@ export function DepartmentsPage() {
                     <TableCell className="text-muted-foreground">
                       {formatDateTime(department.created_at)}
                     </TableCell>
-                    {isSuperAdmin ? (
+                    {canManage ? (
                       <TableCell className="text-end">
                         <div className="inline-flex gap-1">
+                          {canUpdate ? (
                           <Button
                             type="button"
                             variant="ghost"
@@ -197,6 +202,8 @@ export function DepartmentsPage() {
                           >
                             <Pencil />
                           </Button>
+                          ) : null}
+                          {canDelete ? (
                           <Button
                             type="button"
                             variant="ghost"
@@ -207,6 +214,7 @@ export function DepartmentsPage() {
                           >
                             <Trash2 />
                           </Button>
+                          ) : null}
                         </div>
                       </TableCell>
                     ) : null}
@@ -251,7 +259,7 @@ export function DepartmentsPage() {
         )}
       </div>
 
-      {isSuperAdmin ? (
+      {canManage ? (
         <DepartmentFormDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}

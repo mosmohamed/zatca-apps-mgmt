@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\Application;
+use App\Models\ApplicationAssignment;
 use App\Models\Environment;
 use App\Models\User;
 use Database\Seeders\EnvironmentSeeder;
@@ -36,6 +37,15 @@ class ApplicationInfrastructureFeatureTest extends TestCase
         $this->admin->assignRole('super_admin');
 
         $this->application = Application::factory()->create();
+    }
+
+    private function assignUserToApplication(User $user): void
+    {
+        ApplicationAssignment::factory()->create([
+            'application_id' => $this->application->id,
+            'user_id' => $user->id,
+            'ended_at' => null,
+        ]);
     }
 
     #[Test]
@@ -371,6 +381,7 @@ class ApplicationInfrastructureFeatureTest extends TestCase
 
         $viewer = User::factory()->create(['email' => 'infrastructure-viewer@zatca.sa']);
         $viewer->assignRole('employee');
+        $this->assignUserToApplication($viewer);
 
         Sanctum::actingAs($viewer);
 
@@ -473,6 +484,7 @@ class ApplicationInfrastructureFeatureTest extends TestCase
         $editor = User::factory()->create(['email' => 'infrastructure-editor@zatca.sa']);
         $editor->givePermissionTo('application-infrastructure.view');
         $editor->givePermissionTo('application-infrastructure.update');
+        $this->assignUserToApplication($editor);
 
         Sanctum::actingAs($editor);
 
@@ -519,6 +531,7 @@ class ApplicationInfrastructureFeatureTest extends TestCase
     {
         $viewer = User::factory()->create(['email' => 'infrastructure-readonly@zatca.sa']);
         $viewer->assignRole('employee');
+        $this->assignUserToApplication($viewer);
 
         Sanctum::actingAs($viewer);
 
@@ -534,6 +547,81 @@ class ApplicationInfrastructureFeatureTest extends TestCase
         ])->assertForbidden();
 
         $this->deleteJson($this->environmentUrl('DEV'))->assertForbidden();
+    }
+
+    #[Test]
+    public function unassigned_users_cannot_access_infrastructure_even_with_view_permission(): void
+    {
+        $unassigned = User::factory()->create(['email' => 'infrastructure-unassigned@zatca.sa']);
+        $unassigned->assignRole('employee');
+
+        Sanctum::actingAs($unassigned);
+
+        $this->getJson($this->infrastructureUrl())->assertForbidden();
+        $this->putJson($this->environmentUrl('DEV'), [
+            'hosting' => ['cloud_provider' => 'Azure'],
+        ])->assertForbidden();
+        $this->postJson($this->copyUrl(), [
+            'source_environment_id' => $this->environmentId('DEV'),
+            'target_environment_id' => $this->environmentId('PROD'),
+        ])->assertForbidden();
+        $this->deleteJson($this->environmentUrl('DEV'))->assertForbidden();
+    }
+
+    #[Test]
+    public function ended_assignments_do_not_grant_infrastructure_access(): void
+    {
+        $former = User::factory()->create(['email' => 'infrastructure-former@zatca.sa']);
+        $former->assignRole('employee');
+
+        ApplicationAssignment::factory()->ended()->create([
+            'application_id' => $this->application->id,
+            'user_id' => $former->id,
+        ]);
+
+        Sanctum::actingAs($former);
+
+        $this->getJson($this->infrastructureUrl())->assertForbidden();
+    }
+
+    #[Test]
+    public function application_payload_exposes_infrastructure_visibility_flag(): void
+    {
+        $assigned = User::factory()->create(['email' => 'infrastructure-flag-assigned@zatca.sa']);
+        $assigned->assignRole('employee');
+        $this->assignUserToApplication($assigned);
+
+        $unassigned = User::factory()->create(['email' => 'infrastructure-flag-unassigned@zatca.sa']);
+        $unassigned->assignRole('employee');
+
+        Sanctum::actingAs($assigned);
+        $this->getJson("/api/v1/applications/{$this->application->id}")
+            ->assertOk()
+            ->assertJsonPath('data.can_view_infrastructure', true);
+
+        Sanctum::actingAs($unassigned);
+        $this->getJson("/api/v1/applications/{$this->application->id}")
+            ->assertOk()
+            ->assertJsonPath('data.can_view_infrastructure', false);
+
+        Sanctum::actingAs($this->admin);
+        $this->getJson("/api/v1/applications/{$this->application->id}")
+            ->assertOk()
+            ->assertJsonPath('data.can_view_infrastructure', true);
+    }
+
+    #[Test]
+    public function authenticated_users_can_view_application_main_data_without_applications_view(): void
+    {
+        $user = User::factory()->create(['email' => 'app-main-data@zatca.sa']);
+
+        Sanctum::actingAs($user);
+
+        $this->getJson('/api/v1/applications')->assertOk();
+        $this->getJson("/api/v1/applications/{$this->application->id}")
+            ->assertOk()
+            ->assertJsonPath('data.id', $this->application->id)
+            ->assertJsonPath('data.can_view_infrastructure', false);
     }
 
     /**

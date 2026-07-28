@@ -41,7 +41,11 @@ function SortIcon({ column, sort }: { column: SortColumn; sort: string }) {
 
 export function JobTitlesPage() {
   const { t } = useTranslation()
-  const { isSuperAdmin } = useAuth()
+  const { can } = useAuth()
+  const canCreate = can("job-titles.create")
+  const canUpdate = can("job-titles.update")
+  const canDelete = can("job-titles.delete")
+  const canManage = canCreate || canUpdate || canDelete
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [sort, setSort] = useState("sort_order")
@@ -90,7 +94,7 @@ export function JobTitlesPage() {
             {t("jobTitles.description")}
           </p>
         </div>
-        {isSuperAdmin ? (
+        {canCreate ? (
           <Button type="button" onClick={openCreate}>
             <Plus />
             {t("jobTitles.new")}
@@ -130,8 +134,8 @@ export function JobTitlesPage() {
                 ? t("common.tryDifferentSearch")
                 : t("jobTitles.emptyCreate")
             }
-            actionLabel={isSuperAdmin ? t("jobTitles.create") : undefined}
-            onAction={isSuperAdmin ? openCreate : undefined}
+            actionLabel={canCreate ? t("jobTitles.create") : undefined}
+            onAction={canCreate ? openCreate : undefined}
           />
         ) : (
           <>
@@ -189,7 +193,7 @@ export function JobTitlesPage() {
                       <SortIcon column="created_at" sort={sort} />
                     </button>
                   </TableHead>
-                  {isSuperAdmin ? (
+                  {canManage ? (
                     <TableHead className="text-end">{t("common.actions")}</TableHead>
                   ) : null}
                 </TableRow>
@@ -222,9 +226,10 @@ export function JobTitlesPage() {
                     <TableCell className="text-muted-foreground">
                       {formatDateTime(jobTitle.created_at)}
                     </TableCell>
-                    {isSuperAdmin ? (
+                    {canManage ? (
                       <TableCell className="text-end">
                         <div className="inline-flex gap-1">
+                          {canUpdate ? (
                           <Button
                             type="button"
                             variant="ghost"
@@ -237,6 +242,8 @@ export function JobTitlesPage() {
                           >
                             <Pencil />
                           </Button>
+                          ) : null}
+                          {canDelete ? (
                           <Button
                             type="button"
                             variant="ghost"
@@ -247,6 +254,7 @@ export function JobTitlesPage() {
                           >
                             <Trash2 />
                           </Button>
+                          ) : null}
                         </div>
                       </TableCell>
                     ) : null}
@@ -291,7 +299,7 @@ export function JobTitlesPage() {
         )}
       </div>
 
-      {isSuperAdmin ? (
+      {canManage ? (
         <JobTitleFormDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}

@@ -60,6 +60,10 @@ class GlobalSearchFeatureTest extends TestCase
         $this->assertTrue($applications->contains(fn (array $row): bool => $row['id'] === $application->id));
         $this->assertTrue($vendors->contains(fn (array $row): bool => $row['id'] === $vendor->id));
         $this->assertSame('/vendors?id='.$vendor->id, $vendors->firstWhere('id', $vendor->id)['url']);
+        $this->assertSame(
+            '/applications/'.$application->id,
+            $applications->firstWhere('id', $application->id)['url'],
+        );
     }
 
     #[Test]

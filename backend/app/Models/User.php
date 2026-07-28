@@ -108,4 +108,46 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserDashboardLayout::class);
     }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('super_admin');
+    }
+
+    /**
+     * Whether the user has an active (non-ended) assignment on the application.
+     */
+    public function hasOpenAssignmentTo(Application|int $application): bool
+    {
+        $applicationId = $application instanceof Application
+            ? (int) $application->getKey()
+            : $application;
+
+        return in_array($applicationId, $this->openAssignedApplicationIds(), true);
+    }
+
+    /**
+     * @return list<int>
+     */
+    public function openAssignedApplicationIds(): array
+    {
+        if ($this->openAssignedApplicationIdsCache !== null) {
+            return $this->openAssignedApplicationIdsCache;
+        }
+
+        /** @var list<int> $ids */
+        $ids = $this->assignments()
+            ->open()
+            ->pluck('application_id')
+            ->map(static fn (mixed $id): int => (int) $id)
+            ->values()
+            ->all();
+
+        return $this->openAssignedApplicationIdsCache = $ids;
+    }
+
+    /**
+     * @var list<int>|null
+     */
+    private ?array $openAssignedApplicationIdsCache = null;
 }

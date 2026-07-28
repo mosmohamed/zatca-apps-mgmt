@@ -41,7 +41,11 @@ function SortIcon({ column, sort }: { column: SortColumn; sort: string }) {
 
 export function ApplicationStatusesPage() {
   const { t } = useTranslation()
-  const { isSuperAdmin } = useAuth()
+  const { can } = useAuth()
+  const canCreate = can("application-statuses.create")
+  const canUpdate = can("application-statuses.update")
+  const canDelete = can("application-statuses.delete")
+  const canManage = canCreate || canUpdate || canDelete
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [sort, setSort] = useState("name_en")
@@ -94,7 +98,7 @@ export function ApplicationStatusesPage() {
             {t("applicationStatuses.description")}
           </p>
         </div>
-        {isSuperAdmin ? (
+        {canCreate ? (
           <Button type="button" onClick={openCreate}>
             <Plus />
             {t("applicationStatuses.new")}
@@ -135,9 +139,9 @@ export function ApplicationStatusesPage() {
                 : t("applicationStatuses.emptyCreate")
             }
             actionLabel={
-              isSuperAdmin ? t("applicationStatuses.create") : undefined
+              canCreate ? t("applicationStatuses.create") : undefined
             }
-            onAction={isSuperAdmin ? openCreate : undefined}
+            onAction={canCreate ? openCreate : undefined}
           />
         ) : (
           <>
@@ -194,7 +198,7 @@ export function ApplicationStatusesPage() {
                       <SortIcon column="created_at" sort={sort} />
                     </button>
                   </TableHead>
-                  {isSuperAdmin ? (
+                  {canManage ? (
                     <TableHead className="text-end">{t("common.actions")}</TableHead>
                   ) : null}
                 </TableRow>
@@ -228,9 +232,10 @@ export function ApplicationStatusesPage() {
                     <TableCell className="text-muted-foreground">
                       {formatDateTime(applicationStatus.created_at)}
                     </TableCell>
-                    {isSuperAdmin ? (
+                    {canManage ? (
                       <TableCell className="text-end">
                         <div className="inline-flex gap-1">
+                          {canUpdate ? (
                           <Button
                             type="button"
                             variant="ghost"
@@ -243,6 +248,8 @@ export function ApplicationStatusesPage() {
                           >
                             <Pencil />
                           </Button>
+                          ) : null}
+                          {canDelete ? (
                           <Button
                             type="button"
                             variant="ghost"
@@ -253,6 +260,7 @@ export function ApplicationStatusesPage() {
                           >
                             <Trash2 />
                           </Button>
+                          ) : null}
                         </div>
                       </TableCell>
                     ) : null}
@@ -297,7 +305,7 @@ export function ApplicationStatusesPage() {
         )}
       </div>
 
-      {isSuperAdmin ? (
+      {canManage ? (
         <ApplicationStatusFormDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}

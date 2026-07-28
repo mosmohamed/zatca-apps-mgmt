@@ -41,7 +41,11 @@ function SortIcon({ column, sort }: { column: SortColumn; sort: string }) {
 
 export function SupportTypesPage() {
   const { t } = useTranslation()
-  const { isSuperAdmin } = useAuth()
+  const { can } = useAuth()
+  const canCreate = can("support-types.create")
+  const canUpdate = can("support-types.update")
+  const canDelete = can("support-types.delete")
+  const canManage = canCreate || canUpdate || canDelete
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [sort, setSort] = useState("name_en")
@@ -90,7 +94,7 @@ export function SupportTypesPage() {
             {t("supportTypes.description")}
           </p>
         </div>
-        {isSuperAdmin ? (
+        {canCreate ? (
           <Button type="button" onClick={openCreate}>
             <Plus />
             {t("supportTypes.new")}
@@ -130,8 +134,8 @@ export function SupportTypesPage() {
                 ? t("common.tryDifferentSearch")
                 : t("supportTypes.emptyCreate")
             }
-            actionLabel={isSuperAdmin ? t("supportTypes.create") : undefined}
-            onAction={isSuperAdmin ? openCreate : undefined}
+            actionLabel={canCreate ? t("supportTypes.create") : undefined}
+            onAction={canCreate ? openCreate : undefined}
           />
         ) : (
           <>
@@ -188,7 +192,7 @@ export function SupportTypesPage() {
                       <SortIcon column="created_at" sort={sort} />
                     </button>
                   </TableHead>
-                  {isSuperAdmin ? (
+                  {canManage ? (
                     <TableHead className="text-end">{t("common.actions")}</TableHead>
                   ) : null}
                 </TableRow>
@@ -222,9 +226,10 @@ export function SupportTypesPage() {
                     <TableCell className="text-muted-foreground">
                       {formatDateTime(supportType.created_at)}
                     </TableCell>
-                    {isSuperAdmin ? (
+                    {canManage ? (
                       <TableCell className="text-end">
                         <div className="inline-flex gap-1">
+                          {canUpdate ? (
                           <Button
                             type="button"
                             variant="ghost"
@@ -237,6 +242,8 @@ export function SupportTypesPage() {
                           >
                             <Pencil />
                           </Button>
+                          ) : null}
+                          {canDelete ? (
                           <Button
                             type="button"
                             variant="ghost"
@@ -247,6 +254,7 @@ export function SupportTypesPage() {
                           >
                             <Trash2 />
                           </Button>
+                          ) : null}
                         </div>
                       </TableCell>
                     ) : null}
@@ -291,7 +299,7 @@ export function SupportTypesPage() {
         )}
       </div>
 
-      {isSuperAdmin ? (
+      {canManage ? (
         <SupportTypeFormDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}

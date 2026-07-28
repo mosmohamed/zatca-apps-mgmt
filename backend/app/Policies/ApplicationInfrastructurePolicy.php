@@ -8,12 +8,12 @@ use App\Models\ApplicationEnvironment;
 use App\Models\User;
 
 /**
- * Authorization for the application infrastructure module. Abilities map onto
- * the `application-infrastructure.*` Spatie permissions.
+ * Field-level authorization for infrastructure payloads.
  *
- * `viewPublic` and `viewOperational` are field-level abilities used by the API
- * resources to decide whether internet exposure details and monitoring details
- * are included in the payload.
+ * Application-scoped access (assignment + permission, with Super Admin bypass)
+ * is enforced via {@see ApplicationPolicy} before these abilities are consulted.
+ * `viewPublic` and `viewOperational` only decide which sensitive fields are
+ * included once the caller is already allowed to read the profile.
  */
 class ApplicationInfrastructurePolicy
 {

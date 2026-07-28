@@ -45,11 +45,57 @@ class DashboardService
      *     recent_activity: list<array<string, mixed>>
      * }
      */
-    public function index(): array
+    public function index(?User $actor = null): array
     {
-        return Cache::remember('dashboard.summary', self::CACHE_TTL_SECONDS, function (): array {
+        $summary = Cache::remember('dashboard.summary', self::CACHE_TTL_SECONDS, function (): array {
             return $this->buildSummary();
         });
+
+        return $this->filterForActor($summary, $actor);
+    }
+
+    /**
+     * @param  array<string, mixed>  $summary
+     * @return array<string, mixed>
+     */
+    private function filterForActor(array $summary, ?User $actor): array
+    {
+        $canApplications = $actor instanceof User;
+        $canUsers = $actor instanceof User && $actor->can('users.view');
+        $canVendors = $actor instanceof User && $actor->can('vendors.view');
+        $canTechnologies = $actor instanceof User && $actor->can('technologies.view');
+        $canLicenses = $actor instanceof User && $actor->can('licenses.view');
+        $canAssignments = $actor instanceof User && $actor->can('assignments.view');
+        $canActivity = $actor instanceof User && $actor->can('activity-log.view');
+
+        /** @var array<string, int> $totals */
+        $totals = $summary['totals'];
+        /** @var array<string, mixed> $charts */
+        $charts = $summary['charts'];
+
+        return [
+            'totals' => [
+                'applications' => $canApplications ? $totals['applications'] : 0,
+                'active_users' => $canUsers ? $totals['active_users'] : 0,
+                'vendors' => $canVendors ? $totals['vendors'] : 0,
+                'technologies' => $canTechnologies ? $totals['technologies'] : 0,
+                'licenses' => $canLicenses ? $totals['licenses'] : 0,
+                'assignments' => $canAssignments ? $totals['assignments'] : 0,
+                'open_assignments' => $canAssignments ? $totals['open_assignments'] : 0,
+            ],
+            'charts' => [
+                'applications_by_status' => $canApplications ? $charts['applications_by_status'] : [],
+                'assignments_by_app_role' => $canAssignments ? $charts['assignments_by_app_role'] : [],
+                'technologies_usage' => $canTechnologies ? $charts['technologies_usage'] : [],
+                'employees_per_application' => $canAssignments ? $charts['employees_per_application'] : [],
+                'applications_by_department' => $canApplications ? $charts['applications_by_department'] : [],
+                'applications_by_ha_model' => $canApplications ? $charts['applications_by_ha_model'] : [],
+                'license_usage' => $canLicenses ? $charts['license_usage'] : [],
+                'license_status_distribution' => $canLicenses ? $charts['license_status_distribution'] : [],
+                'licenses_by_environment' => $canLicenses ? $charts['licenses_by_environment'] : [],
+            ],
+            'recent_activity' => $canActivity ? $summary['recent_activity'] : [],
+        ];
     }
 
     /**

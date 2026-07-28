@@ -43,21 +43,71 @@ const masterDataNavItems: NavItem[] = [
     key: "applicationsDetails",
     icon: AppWindow,
   },
-  { to: "/assignments", key: "assignments", icon: Link2 },
-  { to: "/departments", key: "departments", icon: Building2 },
-  { to: "/vendors", key: "vendors", icon: Truck },
-  { to: "/applications", key: "applications", icon: MonitorSmartphone },
-  { to: "/users", key: "users", icon: Users },
-  { to: "/job-titles", key: "jobTitles", icon: Briefcase },
-  { to: "/app-roles", key: "appRoles", icon: Shield },
-  { to: "/support-types", key: "supportTypes", icon: Database },
-  { to: "/criticalities", key: "criticalities", icon: Database },
+  {
+    to: "/assignments",
+    key: "assignments",
+    icon: Link2,
+    permission: "assignments.view",
+  },
+  {
+    to: "/departments",
+    key: "departments",
+    icon: Building2,
+    permission: "departments.view",
+  },
+  {
+    to: "/vendors",
+    key: "vendors",
+    icon: Truck,
+    permission: "vendors.view",
+  },
+  {
+    to: "/applications",
+    key: "applications",
+    icon: MonitorSmartphone,
+  },
+  {
+    to: "/users",
+    key: "users",
+    icon: Users,
+    permission: "users.view",
+  },
+  {
+    to: "/job-titles",
+    key: "jobTitles",
+    icon: Briefcase,
+    permission: "job-titles.view",
+  },
+  {
+    to: "/app-roles",
+    key: "appRoles",
+    icon: Shield,
+    permission: "app-roles.view",
+  },
+  {
+    to: "/support-types",
+    key: "supportTypes",
+    icon: Database,
+    permission: "support-types.view",
+  },
+  {
+    to: "/criticalities",
+    key: "criticalities",
+    icon: Database,
+    permission: "criticalities.view",
+  },
   {
     to: "/application-statuses",
     key: "applicationStatuses",
     icon: Database,
+    permission: "application-statuses.view",
   },
-  { to: "/technologies", key: "technologies", icon: Cpu },
+  {
+    to: "/technologies",
+    key: "technologies",
+    icon: Cpu,
+    permission: "technologies.view",
+  },
   {
     to: "/roles",
     key: "roles",
@@ -175,7 +225,7 @@ export function AppSidebar() {
             )
           })}
 
-          {isExpanded ? (
+          {visibleMasterDataNavItems.length > 0 && isExpanded ? (
             <button
               type="button"
               onClick={() => setMasterDataOpen((current) => !current)}
@@ -194,7 +244,8 @@ export function AppSidebar() {
             </button>
           ) : null}
 
-          {(isExpanded ? masterDataOpen : true)
+          {visibleMasterDataNavItems.length > 0 &&
+          (isExpanded ? masterDataOpen : true)
             ? visibleMasterDataNavItems.map((item) => {
                 const Icon = item.icon
                 return (

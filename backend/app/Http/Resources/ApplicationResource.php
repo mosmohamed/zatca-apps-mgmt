@@ -6,6 +6,7 @@ namespace App\Http\Resources;
 
 use App\Http\Resources\Concerns\FormatsResourceDates;
 use App\Models\Application;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -47,9 +48,24 @@ class ApplicationResource extends JsonResource
             'creator' => new UserResource($this->whenLoaded('creator')),
             'updater' => new UserResource($this->whenLoaded('updater')),
             'assignments' => ApplicationAssignmentResource::collection($this->whenLoaded('assignments')),
+            'can_view_infrastructure' => $this->canViewInfrastructure($request),
             'created_at' => $this->formatDate($this->created_at),
             'updated_at' => $this->formatDate($this->updated_at),
             'deleted_at' => $this->formatDate($this->deleted_at),
         ];
+    }
+
+    private function canViewInfrastructure(Request $request): bool
+    {
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            return false;
+        }
+
+        /** @var Application $application */
+        $application = $this->resource;
+
+        return $user->can('viewInfrastructure', $application);
     }
 }

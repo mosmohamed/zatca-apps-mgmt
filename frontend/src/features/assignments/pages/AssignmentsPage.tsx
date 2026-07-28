@@ -14,7 +14,10 @@ import { useDebouncedValue } from "@/hooks/use-debounced-value"
 
 export function AssignmentsPage() {
   const { t, i18n } = useTranslation()
-  const { isSuperAdmin } = useAuth()
+  const { can } = useAuth()
+  const canUpdate = can("assignments.update")
+  const canCreate = can("assignments.create")
+  const canEditAssignments = canUpdate || canCreate
   const isArabic = i18n.language === "ar"
 
   const [search, setSearch] = useState("")
@@ -99,7 +102,7 @@ export function AssignmentsPage() {
                 >
                   <Eye />
                 </Button>
-                {isSuperAdmin ? (
+                {canEditAssignments ? (
                   <Button
                     type="button"
                     variant="ghost"
@@ -146,7 +149,7 @@ export function AssignmentsPage() {
         }}
       />
 
-      {isSuperAdmin ? (
+      {canEditAssignments ? (
         <ApplicationAssignmentEditDialog
           applicationId={editId}
           open={editId !== null}

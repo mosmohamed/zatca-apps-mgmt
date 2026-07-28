@@ -9,7 +9,6 @@ use App\Http\Requests\ApplicationInfrastructure\UpsertApplicationEnvironmentRequ
 use App\Http\Resources\ApplicationEnvironmentResource;
 use App\Http\Resources\ApplicationInfrastructureResource;
 use App\Models\Application;
-use App\Models\ApplicationEnvironment;
 use App\Models\Environment;
 use App\Models\User;
 use App\Services\ApplicationInfrastructureService;
@@ -25,7 +24,7 @@ class ApplicationInfrastructureController extends BaseApiController
 
     public function show(Application $application): JsonResponse
     {
-        $this->authorize('viewAny', ApplicationEnvironment::class);
+        $this->authorize('viewInfrastructure', $application);
 
         return $this->resourceResponse(
             new ApplicationInfrastructureResource(
@@ -55,7 +54,7 @@ class ApplicationInfrastructureController extends BaseApiController
 
     public function destroy(Application $application, Environment $environment): JsonResponse
     {
-        $this->authorize('delete', ApplicationEnvironment::class);
+        $this->authorize('deleteInfrastructure', $application);
 
         $this->applicationInfrastructureService->deleteProfile($application, $environment);
 

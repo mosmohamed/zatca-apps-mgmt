@@ -54,6 +54,7 @@ class UserService
     {
         return DB::transaction(function () use ($data, $actor): User {
             $roles = $this->extractRoles($data);
+            unset($data['password_confirmation']);
 
             /** @var User $user */
             $user = User::query()->create($data);
@@ -73,6 +74,7 @@ class UserService
     {
         return DB::transaction(function () use ($user, $data, $actor): User {
             $roles = $this->extractRoles($data);
+            unset($data['password_confirmation']);
 
             if (array_key_exists('password', $data) && ($data['password'] === null || $data['password'] === '')) {
                 unset($data['password']);

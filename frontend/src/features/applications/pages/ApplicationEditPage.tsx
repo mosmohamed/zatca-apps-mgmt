@@ -49,12 +49,12 @@ export function ApplicationEditPage() {
 
   const applicationId = Number(params.id)
   const canUpdate = can("applications.update")
-  const canViewInfrastructure = can("application-infrastructure.view")
 
   const applicationQuery = useApplication(applicationId)
   const updateMutation = useUpdateApplication()
   const application = applicationQuery.data
   const lookups = useApplicationFormLookups(application)
+  const canViewInfrastructure = Boolean(application?.can_view_infrastructure)
 
   const applicationFormSchema = useMemo(
     () => createApplicationFormSchema(t),
@@ -69,7 +69,9 @@ export function ApplicationEditPage() {
   const [infrastructureDirty, setInfrastructureDirty] = useState(false)
   const [pendingLeave, setPendingLeave] = useState<string | null>(null)
 
-  const activeTab = resolveTab(searchParams.get("tab"))
+  const activeTab = resolveTab(
+    canViewInfrastructure ? searchParams.get("tab") : null
+  )
   const mainDirty = form.formState.isDirty
   const hasUnsavedChanges = mainDirty || infrastructureDirty
 
@@ -85,12 +87,25 @@ export function ApplicationEditPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- avoid resetting on every application object refresh
   }, [application?.id, lookups.isReady])
 
+  useEffect(() => {
+    if (!canViewInfrastructure && searchParams.get("tab") === "infrastructure") {
+      const nextParams = new URLSearchParams(searchParams)
+      nextParams.delete("tab")
+      setSearchParams(nextParams, { replace: true })
+    }
+  }, [canViewInfrastructure, searchParams, setSearchParams])
+
   const handleInfrastructureDirtyChange = useCallback((dirty: boolean) => {
     setInfrastructureDirty(dirty)
   }, [])
 
   function changeTab(value: string) {
     const next = resolveTab(value)
+
+    if (next === "infrastructure" && !canViewInfrastructure) {
+      return
+    }
+
     const nextParams = new URLSearchParams(searchParams)
 
     if (next === "main") {
@@ -235,10 +250,12 @@ export function ApplicationEditPage() {
             <SlidersHorizontal />
             {t("applications.edit.tabs.main")}
           </TabsTrigger>
-          <TabsTrigger value="infrastructure" disabled={!canViewInfrastructure}>
-            <Server />
-            {t("applications.edit.tabs.infrastructure")}
-          </TabsTrigger>
+          {canViewInfrastructure ? (
+            <TabsTrigger value="infrastructure">
+              <Server />
+              {t("applications.edit.tabs.infrastructure")}
+            </TabsTrigger>
+          ) : null}
         </TabsList>
 
         <TabsContent value="main">
@@ -284,12 +301,14 @@ export function ApplicationEditPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="infrastructure">
-          <ApplicationInfrastructureTab
-            applicationId={application.id}
-            onDirtyChange={handleInfrastructureDirtyChange}
-          />
-        </TabsContent>
+        {canViewInfrastructure ? (
+          <TabsContent value="infrastructure">
+            <ApplicationInfrastructureTab
+              applicationId={application.id}
+              onDirtyChange={handleInfrastructureDirtyChange}
+            />
+          </TabsContent>
+        ) : null}
       </Tabs>
 
       <ConfirmAlertDialog

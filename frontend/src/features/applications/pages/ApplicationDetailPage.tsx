@@ -105,6 +105,10 @@ export function ApplicationDetailPage() {
     )
   }
 
+  const canViewInfrastructure = Boolean(application.can_view_infrastructure)
+  const activeTab: DetailTab =
+    tab === "infrastructure" && !canViewInfrastructure ? "main" : tab
+
   const displayName = isArabic ? application.name_ar : application.name_en
   const departmentName = application.department
     ? isArabic
@@ -210,14 +214,19 @@ export function ApplicationDetailPage() {
         </div>
       </div>
 
-      <Tabs value={tab} onValueChange={(value) => setTab(value as DetailTab)}>
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => setTab(value as DetailTab)}
+      >
         <TabsList className="w-full sm:w-auto">
           <TabsTrigger value="main">
             {t("applicationsDetails.tabs.mainData")}
           </TabsTrigger>
-          <TabsTrigger value="infrastructure">
-            {t("applicationsDetails.tabs.infrastructure")}
-          </TabsTrigger>
+          {canViewInfrastructure ? (
+            <TabsTrigger value="infrastructure">
+              {t("applicationsDetails.tabs.infrastructure")}
+            </TabsTrigger>
+          ) : null}
         </TabsList>
 
         <TabsContent value="main" className="space-y-5">
@@ -231,9 +240,11 @@ export function ApplicationDetailPage() {
           />
         </TabsContent>
 
-        <TabsContent value="infrastructure">
-          <ApplicationInfrastructureView applicationId={application.id} />
-        </TabsContent>
+        {canViewInfrastructure ? (
+          <TabsContent value="infrastructure">
+            <ApplicationInfrastructureView applicationId={application.id} />
+          </TabsContent>
+        ) : null}
       </Tabs>
     </section>
   )

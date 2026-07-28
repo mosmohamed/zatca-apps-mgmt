@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import {
   closestCenter,
@@ -98,11 +98,17 @@ const HEADER_WIDGET_KEYS: readonly string[] = DASHBOARD_HEADER_WIDGET_KEYS
  */
 function resolveVisibleWidgets(
   order: DashboardWidgetKey[],
-  widgets: DashboardWidgetsConfig
+  widgets: DashboardWidgetsConfig,
+  can: (permission: string) => boolean
 ): DashboardWidgetKey[] {
-  const enabled = DASHBOARD_WIDGET_KEYS.filter(
-    (key) => !HEADER_WIDGET_KEYS.includes(key) && widgets[key]
-  )
+  const enabled = DASHBOARD_WIDGET_KEYS.filter((key) => {
+    if (HEADER_WIDGET_KEYS.includes(key) || !widgets[key]) {
+      return false
+    }
+
+    const permission = DASHBOARD_WIDGET_PERMISSIONS[key]
+    return permission === null || can(permission)
+  })
   const enabledSet = new Set<DashboardWidgetKey>(enabled)
   const seen = new Set<DashboardWidgetKey>()
   const result: DashboardWidgetKey[] = []
@@ -123,10 +129,28 @@ function resolveVisibleWidgets(
   return result
 }
 
+const DASHBOARD_WIDGET_PERMISSIONS: Record<
+  DashboardWidgetKey,
+  string | null
+> = {
+  top_technologies: "technologies.view",
+  employees_per_application: "assignments.view",
+  applications_by_status: null,
+  applications_by_department: null,
+  applications_by_ha_model: null,
+  license_usage: "licenses.view",
+  license_status_distribution: "licenses.view",
+  licenses_by_environment: "licenses.view",
+  recent_activity: "activity-log.view",
+  weather: null,
+  local_time: null,
+  prayer_times: null,
+}
+
 export function DashboardPage() {
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language.startsWith("ar")
-  const { can, isSuperAdmin } = useAuth()
+  const { can } = useAuth()
   const { settings } = useSettings()
   const navigate = useNavigate()
   const dashboardQuery = useDashboard()
@@ -168,8 +192,8 @@ export function DashboardPage() {
   )
 
   const visibleWidgets = useMemo(
-    () => resolveVisibleWidgets(orderOverride ?? savedOrder, widgets),
-    [orderOverride, savedOrder, widgets]
+    () => resolveVisibleWidgets(orderOverride ?? savedOrder, widgets, can),
+    [can, orderOverride, savedOrder, widgets]
   )
 
   useEffect(() => {
@@ -237,6 +261,7 @@ export function DashboardPage() {
       value: totals?.applications ?? 0,
       icon: AppWindow,
       to: "/applications-details",
+      permission: null as string | null,
       accent: {
         card: "border-sky-500/20 bg-sky-500/[0.04] dark:border-sky-400/25 dark:bg-sky-400/[0.06]",
         strip: "bg-sky-500/80 dark:bg-sky-400/70",
@@ -248,6 +273,7 @@ export function DashboardPage() {
       value: totals?.active_users ?? 0,
       icon: Users,
       to: "/users",
+      permission: "users.view",
       accent: {
         card: "border-emerald-500/20 bg-emerald-500/[0.04] dark:border-emerald-400/25 dark:bg-emerald-400/[0.06]",
         strip: "bg-emerald-500/80 dark:bg-emerald-400/70",
@@ -259,6 +285,7 @@ export function DashboardPage() {
       value: totals?.vendors ?? 0,
       icon: Truck,
       to: "/vendors",
+      permission: "vendors.view",
       accent: {
         card: "border-amber-500/20 bg-amber-500/[0.04] dark:border-amber-400/25 dark:bg-amber-400/[0.06]",
         strip: "bg-amber-500/80 dark:bg-amber-400/70",
@@ -270,6 +297,7 @@ export function DashboardPage() {
       value: totals?.technologies ?? 0,
       icon: Cpu,
       to: "/technologies",
+      permission: "technologies.view",
       accent: {
         card: "border-violet-500/20 bg-violet-500/[0.04] dark:border-violet-400/25 dark:bg-violet-400/[0.06]",
         strip: "bg-violet-500/80 dark:bg-violet-400/70",
@@ -281,13 +309,38 @@ export function DashboardPage() {
       value: totals?.licenses ?? 0,
       icon: KeyRound,
       to: "/licenses",
+      permission: "licenses.view",
       accent: {
         card: "border-cyan-500/20 bg-cyan-500/[0.04] dark:border-cyan-400/25 dark:bg-cyan-400/[0.06]",
         strip: "bg-cyan-500/80 dark:bg-cyan-400/70",
         icon: "text-cyan-600/12 dark:text-cyan-300/15",
       },
     },
-  ]
+  ].filter((item) => item.permission === null || can(item.permission))
+
+  const quickActions = [
+    {
+      label: t("dashboard.goToAssignments"),
+      to: "/assignments",
+      permission: "assignments.view",
+      variant: "default" as const,
+      icon: Link2,
+    },
+    {
+      label: t("dashboard.manageApplications"),
+      to: "/applications",
+      permission: null as string | null,
+      variant: "outline" as const,
+      icon: null,
+    },
+    {
+      label: t("dashboard.manageTechnologies"),
+      to: "/technologies",
+      permission: "technologies.view",
+      variant: "outline" as const,
+      icon: Cpu,
+    },
+  ].filter((item) => item.permission === null || can(item.permission))
 
   function renderWidget(key: DashboardWidgetKey): ReactNode {
     switch (key) {
@@ -478,26 +531,23 @@ export function DashboardPage() {
       )}
 
       <div className="flex flex-wrap gap-2">
-        {isSuperAdmin ? (
-          <>
-            <Button onClick={() => navigate("/assignments")}>
-              <Link2 className="size-4" />
-              {t("dashboard.goToAssignments")}
-            </Button>
-            <Button variant="outline" onClick={() => navigate("/applications")}>
-              {t("dashboard.manageApplications")}
-            </Button>
-            <Button variant="outline" onClick={() => navigate("/technologies")}>
-              <Cpu className="size-4" />
-              {t("dashboard.manageTechnologies")}
-            </Button>
-          </>
+        {quickActions.length > 0 ? (
+          quickActions.map((action) => {
+            const Icon = action.icon
+            return (
+              <Button
+                key={action.to}
+                variant={action.variant}
+                onClick={() => navigate(action.to)}
+              >
+                {Icon ? <Icon className="size-4" /> : null}
+                {action.label}
+              </Button>
+            )
+          })
         ) : (
           <div className="rounded-xl border border-stroke bg-card p-4 text-sm text-muted-foreground">
             {t("dashboard.needAccess")}
-            <Button asChild variant="link" className="ms-1 h-auto p-0">
-              <Link to="/assignments">{t("dashboard.viewMyAssignments")}</Link>
-            </Button>
           </div>
         )}
       </div>

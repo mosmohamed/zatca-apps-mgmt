@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Services\DashboardService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class DashboardController extends BaseApiController
 {
@@ -14,10 +15,10 @@ class DashboardController extends BaseApiController
     ) {
     }
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         return $this->successResponse(
-            $this->dashboardService->index(),
+            $this->dashboardService->index($request->user()),
             __('messages.dashboard.retrieved'),
         );
     }

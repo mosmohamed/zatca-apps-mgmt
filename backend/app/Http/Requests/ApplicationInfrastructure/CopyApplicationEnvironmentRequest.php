@@ -6,7 +6,7 @@ namespace App\Http\Requests\ApplicationInfrastructure;
 
 use App\Http\Requests\Concerns\HasInfrastructureValidationMessages;
 use App\Http\Requests\Concerns\NormalizesBooleanInput;
-use App\Models\ApplicationEnvironment;
+use App\Models\Application;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -17,7 +17,13 @@ class CopyApplicationEnvironmentRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return $this->user()?->can('copyEnvironment', ApplicationEnvironment::class) ?? false;
+        $application = $this->route('application');
+
+        if (! $application instanceof Application) {
+            return false;
+        }
+
+        return $this->user()?->can('copyInfrastructure', $application) ?? false;
     }
 
     protected function prepareForValidation(): void

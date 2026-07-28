@@ -41,7 +41,11 @@ function SortIcon({ column, sort }: { column: SortColumn; sort: string }) {
 
 export function AppRolesPage() {
   const { t } = useTranslation()
-  const { isSuperAdmin } = useAuth()
+  const { can } = useAuth()
+  const canCreate = can("app-roles.create")
+  const canUpdate = can("app-roles.update")
+  const canDelete = can("app-roles.delete")
+  const canManage = canCreate || canUpdate || canDelete
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [sort, setSort] = useState("sort_order")
@@ -90,7 +94,7 @@ export function AppRolesPage() {
             {t("appRoles.description")}
           </p>
         </div>
-        {isSuperAdmin ? (
+        {canCreate ? (
           <Button type="button" onClick={openCreate}>
             <Plus />
             {t("appRoles.new")}
@@ -130,8 +134,8 @@ export function AppRolesPage() {
                 ? t("common.tryDifferentSearch")
                 : t("appRoles.emptyCreate")
             }
-            actionLabel={isSuperAdmin ? t("appRoles.create") : undefined}
-            onAction={isSuperAdmin ? openCreate : undefined}
+            actionLabel={canCreate ? t("appRoles.create") : undefined}
+            onAction={canCreate ? openCreate : undefined}
           />
         ) : (
           <>
@@ -179,7 +183,7 @@ export function AppRolesPage() {
                       <SortIcon column="created_at" sort={sort} />
                     </button>
                   </TableHead>
-                  {isSuperAdmin ? (
+                  {canManage ? (
                     <TableHead className="text-end">{t("common.actions")}</TableHead>
                   ) : null}
                 </TableRow>
@@ -209,9 +213,10 @@ export function AppRolesPage() {
                     <TableCell className="text-muted-foreground">
                       {formatDateTime(appRole.created_at)}
                     </TableCell>
-                    {isSuperAdmin ? (
+                    {canManage ? (
                       <TableCell className="text-end">
                         <div className="inline-flex gap-1">
+                          {canUpdate ? (
                           <Button
                             type="button"
                             variant="ghost"
@@ -224,6 +229,8 @@ export function AppRolesPage() {
                           >
                             <Pencil />
                           </Button>
+                          ) : null}
+                          {canDelete ? (
                           <Button
                             type="button"
                             variant="ghost"
@@ -234,6 +241,7 @@ export function AppRolesPage() {
                           >
                             <Trash2 />
                           </Button>
+                          ) : null}
                         </div>
                       </TableCell>
                     ) : null}
@@ -278,7 +286,7 @@ export function AppRolesPage() {
         )}
       </div>
 
-      {isSuperAdmin ? (
+      {canManage ? (
         <AppRoleFormDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}

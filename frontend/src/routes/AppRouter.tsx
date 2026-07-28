@@ -18,6 +18,7 @@ import {
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { GuestRoute } from "@/features/auth/components/GuestRoute"
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute"
+import { RequirePermission } from "@/features/auth/components/RequirePermission"
 import { AuthProvider } from "@/features/auth/hooks/use-auth"
 import { LoginPage } from "@/features/auth/pages/LoginPage"
 import { SettingsProvider } from "@/features/settings/hooks/use-settings"
@@ -169,7 +170,16 @@ function AppRoutes() {
               <Route element={<ProtectedRoute />}>
                 <Route element={<DefaultLayout />}>
                   <Route index element={<DashboardPage />} />
-                  <Route path="assignments" element={<AssignmentsPage />} />
+
+                  <Route
+                    element={
+                      <RequirePermission permission="assignments.view" />
+                    }
+                  >
+                    <Route path="assignments" element={<AssignmentsPage />} />
+                  </Route>
+
+                  {/* Application main data is available to every authenticated user. */}
                   <Route
                     path="applications-details"
                     element={<ApplicationsDetailsPage />}
@@ -183,27 +193,124 @@ function AppRoutes() {
                     path="applications/:id"
                     element={<ApplicationDetailPage />}
                   />
+
                   <Route
-                    path="applications/:id/edit"
-                    element={<ApplicationEditPage />}
-                  />
-                  <Route path="vendors" element={<VendorsPage />} />
-                  <Route path="users" element={<UsersPage />} />
-                  <Route path="departments" element={<DepartmentsPage />} />
-                  <Route path="job-titles" element={<JobTitlesPage />} />
-                  <Route path="app-roles" element={<AppRolesPage />} />
-                  <Route path="support-types" element={<SupportTypesPage />} />
-                  <Route path="criticalities" element={<CriticalitiesPage />} />
+                    element={
+                      <RequirePermission permission="applications.update" />
+                    }
+                  >
+                    <Route
+                      path="applications/:id/edit"
+                      element={<ApplicationEditPage />}
+                    />
+                  </Route>
+
                   <Route
-                    path="application-statuses"
-                    element={<ApplicationStatusesPage />}
-                  />
-                  <Route path="technologies" element={<TechnologiesPage />} />
-                  <Route path="licenses" element={<LicensesPage />} />
-                  <Route path="licenses/:id" element={<LicenseDetailPage />} />
-                  <Route path="roles" element={<RolesPage />} />
-                  <Route path="activity-log" element={<ActivityLogPage />} />
-                  <Route path="settings" element={<SettingsPage />} />
+                    element={<RequirePermission permission="vendors.view" />}
+                  >
+                    <Route path="vendors" element={<VendorsPage />} />
+                  </Route>
+
+                  <Route
+                    element={<RequirePermission permission="users.view" />}
+                  >
+                    <Route path="users" element={<UsersPage />} />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="departments.view" />
+                    }
+                  >
+                    <Route path="departments" element={<DepartmentsPage />} />
+                  </Route>
+
+                  <Route
+                    element={<RequirePermission permission="job-titles.view" />}
+                  >
+                    <Route path="job-titles" element={<JobTitlesPage />} />
+                  </Route>
+
+                  <Route
+                    element={<RequirePermission permission="app-roles.view" />}
+                  >
+                    <Route path="app-roles" element={<AppRolesPage />} />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="support-types.view" />
+                    }
+                  >
+                    <Route
+                      path="support-types"
+                      element={<SupportTypesPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="criticalities.view" />
+                    }
+                  >
+                    <Route
+                      path="criticalities"
+                      element={<CriticalitiesPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="application-statuses.view" />
+                    }
+                  >
+                    <Route
+                      path="application-statuses"
+                      element={<ApplicationStatusesPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="technologies.view" />
+                    }
+                  >
+                    <Route
+                      path="technologies"
+                      element={<TechnologiesPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={<RequirePermission permission="licenses.view" />}
+                  >
+                    <Route path="licenses" element={<LicensesPage />} />
+                    <Route
+                      path="licenses/:id"
+                      element={<LicenseDetailPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={<RequirePermission permission="roles.view" />}
+                  >
+                    <Route path="roles" element={<RolesPage />} />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="activity-log.view" />
+                    }
+                  >
+                    <Route path="activity-log" element={<ActivityLogPage />} />
+                  </Route>
+
+                  <Route
+                    element={<RequirePermission permission="settings.view" />}
+                  >
+                    <Route path="settings" element={<SettingsPage />} />
+                  </Route>
+
                   <Route path="403" element={<ForbiddenPage />} />
                   <Route path="500" element={<ServerErrorPage />} />
                   <Route path="404" element={<NotFoundPage />} />

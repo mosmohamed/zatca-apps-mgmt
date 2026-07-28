@@ -44,6 +44,7 @@ import {
 } from "@/features/dashboard/types/widget-layout-config"
 import { DashboardWidgetLayoutEditor } from "@/features/settings/components/DashboardWidgetLayoutEditor"
 import { useSettings } from "@/features/settings/hooks/use-settings"
+import { useAuth } from "@/features/auth/hooks/use-auth"
 import {
   createSettingsFormSchema,
   type SettingsFormValues,
@@ -65,6 +66,8 @@ const TIMEZONE_OPTIONS = [
 
 export function SettingsPage() {
   const { t } = useTranslation()
+  const { can } = useAuth()
+  const canUpdateSettings = can("settings.update")
   const { settings, isLoading, isSaving, updateSettings } = useSettings()
   const [selectedRoleId, setSelectedRoleId] = useState<string>("")
 
@@ -134,6 +137,10 @@ export function SettingsPage() {
   }, [roleOptions])
 
   async function onSubmit(values: SettingsFormValues) {
+    if (!canUpdateSettings) {
+      return
+    }
+
     try {
       await updateSettings({
         company_name: values.company_name,
@@ -181,6 +188,10 @@ export function SettingsPage() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <fieldset
+            disabled={!canUpdateSettings}
+            className="min-w-0 space-y-4 disabled:opacity-90"
+          >
           <Tabs defaultValue="general">
             <TabsList>
               <TabsTrigger value="general">{t("settings.tabs.general")}</TabsTrigger>
@@ -524,11 +535,14 @@ export function SettingsPage() {
               </Card>
             </TabsContent>
           </Tabs>
+          </fieldset>
 
           <div className="flex justify-end">
-            <Button type="submit" disabled={isSaving}>
-              {isSaving ? t("settings.saving") : t("common.save")}
-            </Button>
+            {canUpdateSettings ? (
+              <Button type="submit" disabled={isSaving}>
+                {isSaving ? t("settings.saving") : t("common.save")}
+              </Button>
+            ) : null}
           </div>
         </form>
       </Form>

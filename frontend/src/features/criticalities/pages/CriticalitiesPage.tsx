@@ -41,7 +41,11 @@ function SortIcon({ column, sort }: { column: SortColumn; sort: string }) {
 
 export function CriticalitiesPage() {
   const { t } = useTranslation()
-  const { isSuperAdmin } = useAuth()
+  const { can } = useAuth()
+  const canCreate = can("criticalities.create")
+  const canUpdate = can("criticalities.update")
+  const canDelete = can("criticalities.delete")
+  const canManage = canCreate || canUpdate || canDelete
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [sort, setSort] = useState("name_en")
@@ -90,7 +94,7 @@ export function CriticalitiesPage() {
             {t("criticalities.description")}
           </p>
         </div>
-        {isSuperAdmin ? (
+        {canCreate ? (
           <Button type="button" onClick={openCreate}>
             <Plus />
             {t("criticalities.new")}
@@ -130,8 +134,8 @@ export function CriticalitiesPage() {
                 ? t("common.tryDifferentSearch")
                 : t("criticalities.emptyCreate")
             }
-            actionLabel={isSuperAdmin ? t("criticalities.create") : undefined}
-            onAction={isSuperAdmin ? openCreate : undefined}
+            actionLabel={canCreate ? t("criticalities.create") : undefined}
+            onAction={canCreate ? openCreate : undefined}
           />
         ) : (
           <>
@@ -188,7 +192,7 @@ export function CriticalitiesPage() {
                       <SortIcon column="created_at" sort={sort} />
                     </button>
                   </TableHead>
-                  {isSuperAdmin ? (
+                  {canManage ? (
                     <TableHead className="text-end">{t("common.actions")}</TableHead>
                   ) : null}
                 </TableRow>
@@ -222,9 +226,10 @@ export function CriticalitiesPage() {
                     <TableCell className="text-muted-foreground">
                       {formatDateTime(criticality.created_at)}
                     </TableCell>
-                    {isSuperAdmin ? (
+                    {canManage ? (
                       <TableCell className="text-end">
                         <div className="inline-flex gap-1">
+                          {canUpdate ? (
                           <Button
                             type="button"
                             variant="ghost"
@@ -237,6 +242,8 @@ export function CriticalitiesPage() {
                           >
                             <Pencil />
                           </Button>
+                          ) : null}
+                          {canDelete ? (
                           <Button
                             type="button"
                             variant="ghost"
@@ -247,6 +254,7 @@ export function CriticalitiesPage() {
                           >
                             <Trash2 />
                           </Button>
+                          ) : null}
                         </div>
                       </TableCell>
                     ) : null}
@@ -291,7 +299,7 @@ export function CriticalitiesPage() {
         )}
       </div>
 
-      {isSuperAdmin ? (
+      {canManage ? (
         <CriticalityFormDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}

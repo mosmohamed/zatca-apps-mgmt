@@ -9,6 +9,7 @@ use App\Models\Department;
 use App\Models\User;
 use App\Models\Vendor;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class GlobalSearchService
 {
@@ -24,20 +25,34 @@ class GlobalSearchService
      *     departments: list<array{id: int, title: string, subtitle: string, url: string}>,
      * }
      */
-    public function search(string $query): array
+    public function search(string $query, ?User $actor = null): array
     {
         $term = trim($query);
+        $actor ??= Auth::user();
 
         if (mb_strlen($term) < self::MIN_QUERY_LENGTH) {
             return $this->emptyResults();
         }
 
         return [
-            'applications' => $this->searchApplications($term),
-            'users' => $this->searchUsers($term),
-            'vendors' => $this->searchVendors($term),
-            'departments' => $this->searchDepartments($term),
+            'applications' => $actor instanceof User
+                ? $this->searchApplications($term)
+                : [],
+            'users' => $this->can($actor, 'users.view')
+                ? $this->searchUsers($term)
+                : [],
+            'vendors' => $this->can($actor, 'vendors.view')
+                ? $this->searchVendors($term)
+                : [],
+            'departments' => $this->can($actor, 'departments.view')
+                ? $this->searchDepartments($term)
+                : [],
         ];
+    }
+
+    private function can(?User $actor, string $permission): bool
+    {
+        return $actor instanceof User && $actor->can($permission);
     }
 
     /**
@@ -67,7 +82,7 @@ class GlobalSearchService
                     'subtitle' => $haModel !== null
                         ? $application->code.' · '.$haModel
                         : $application->code,
-                    'url' => '/applications-details/'.$application->id,
+                    'url' => '/applications/'.$application->id,
                 ];
             })
             ->all();

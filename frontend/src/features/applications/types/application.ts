@@ -61,6 +61,8 @@ export type Application = {
   repository_url: string | null
   created_by: number | null
   updated_by: number | null
+  /** Server-computed: assignment + infra permission (or super admin). */
+  can_view_infrastructure?: boolean
   department?: DepartmentSummary
   application_type?: ApplicationTypeSummary
   status?: LookupItem

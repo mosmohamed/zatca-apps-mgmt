@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next"
 import { ApplicationPreviewCard } from "@/components/entity-preview/ApplicationPreviewCard"
 import { EntityHoverCard } from "@/components/entity-preview/EntityHoverCard"
 import { PreviewTrigger } from "@/components/entity-preview/PreviewTrigger"
-import { useAuth } from "@/features/auth/hooks/use-auth"
 import { useApplicationPreview } from "@/features/entity-preview/hooks/use-entity-preview"
 import { getApiErrorMessage } from "@/lib/api-errors"
 import { cn } from "@/lib/utils"
@@ -31,15 +30,13 @@ export function ApplicationPreviewLink({
   side,
 }: ApplicationPreviewLinkProps) {
   const { t } = useTranslation()
-  const { can } = useAuth()
-  const canView = can("applications.view")
   const [isOpen, setIsOpen] = useState(false)
 
   const id =
     typeof applicationId === "number" && applicationId > 0 ? applicationId : null
-  const query = useApplicationPreview(id, isOpen && canView)
+  const query = useApplicationPreview(id, isOpen && id !== null)
 
-  if (!canView || id === null) {
+  if (id === null) {
     return <span className={cn("truncate", className)}>{name}</span>
   }
 

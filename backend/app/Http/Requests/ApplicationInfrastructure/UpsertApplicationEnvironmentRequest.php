@@ -78,11 +78,18 @@ class UpsertApplicationEnvironmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        $application = $this->route('application');
+
+        if (! $application instanceof Application) {
+            return false;
+        }
+
         $profile = $this->existingProfile();
+        $ability = $profile !== null && ! $profile->trashed()
+            ? 'updateInfrastructure'
+            : 'createInfrastructure';
 
-        $ability = $profile !== null && ! $profile->trashed() ? 'update' : 'create';
-
-        return $this->user()?->can($ability, ApplicationEnvironment::class) ?? false;
+        return $this->user()?->can($ability, $application) ?? false;
     }
 
     protected function prepareForValidation(): void
