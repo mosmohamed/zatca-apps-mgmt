@@ -246,6 +246,10 @@ Keep these credentials ready for the app environment.
 8. Deploy → watch build logs
 9. After green health check, open the domain
 
+#### Build cache (important)
+
+Use Coolify’s **normal deploy** so Docker BuildKit can reuse the PHP-extension and Composer layers. Do **not** enable **Force Rebuild (no cache)** / `--no-cache` for routine deploys — only use it when debugging a broken layer. See [docs/DOCKER_BUILD.md](docs/DOCKER_BUILD.md).
+
 #### Reset database (empty / disposable DB only)
 
 In Coolify → your app resource → **Terminal** (or Execute Command on the `app` container):

@@ -9,7 +9,7 @@ by changing environment configuration only (no application code changes).
 |-----------------|--------|--------------|---------------|
 | `mysql` | MySQL 8.0+ / MariaDB 10.6+ | `3306` | `pdo_mysql` |
 | `mariadb` | MariaDB | `3306` | `pdo_mysql` |
-| `sqlsrv` | Microsoft SQL Server 2019+ | `1433` | `pdo_sqlsrv` + `sqlsrv` + ODBC Driver 18 |
+| `sqlsrv` | Microsoft SQL Server 2019+ | `1433` | `pdo_sqlsrv` (+ `sqlsrv`) + ODBC Driver 18 |
 
 SQLite is supported for automated tests only (`phpunit.xml`).
 
@@ -53,7 +53,9 @@ Notes:
 - Create an empty database first (`CREATE DATABASE it_portfolio_system;`).
 - For local/dev TLS with self-signed certs, set `DB_TRUST_SERVER_CERTIFICATE=true`.
 - Production should use a trusted certificate and prefer `DB_TRUST_SERVER_CERTIFICATE=false`.
-- PHP requires the **Microsoft ODBC Driver 18 for SQL Server** and the `sqlsrv` / `pdo_sqlsrv` PECL extensions.
+- PHP requires the **Microsoft ODBC Driver 18 for SQL Server**.
+- Laravel’s `sqlsrv` connection uses PDO only, so **`pdo_sqlsrv` is required**. The procedural **`sqlsrv`** extension is also installed in Docker (Microsoft’s recommended pair / project compatibility) but is not used by Eloquent.
+- Both PECL packages are pinned to **5.13.1** (PHP 8.4+) in the production Dockerfile.
 - The production Docker image installs these extensions so the same container can target MySQL or MSSQL.
 
 Fresh install:
