@@ -22,7 +22,7 @@
     "criticalities": "Criticalities",
     "applicationStatuses": "Application Statuses",
     "technologies": "Technologies",
-    "operationInfra": "Operation Infra",
+    "operationInfra": "Infra Operations",
     "infraCategories": "Infra Categories",
     "infraTeamAssignments": "Team Assignments",
     "infraTeamsDetails": "Infra Teams Details",
@@ -1670,7 +1670,7 @@
   },
   "operationInfra": {
     "categories": {
-      "title": "Operation Infra Categories",
+      "title": "Infra Operations Categories",
       "description": "Manage infrastructure streams (categories) and their subcategories, plus support levels.",
       "searchPlaceholder": "Search categories by name or code...",
       "newRoot": "New category",
