@@ -92,6 +92,18 @@ class PermissionSeeder extends Seeder
             'application-infrastructure.view-public',
             'application-infrastructure.view-operational',
             'application-infrastructure.copy-environment',
+            'infra-levels.view',
+            'infra-levels.create',
+            'infra-levels.update',
+            'infra-levels.delete',
+            'infra-categories.view',
+            'infra-categories.create',
+            'infra-categories.update',
+            'infra-categories.delete',
+            'infra-team-assignments.view',
+            'infra-team-assignments.create',
+            'infra-team-assignments.update',
+            'infra-team-assignments.delete',
         ];
 
         foreach ($permissions as $permission) {
@@ -122,6 +134,9 @@ class PermissionSeeder extends Seeder
             'settings.view',
             'dashboard-layout.manage',
             'application-infrastructure.view',
+            'infra-levels.view',
+            'infra-categories.view',
+            'infra-team-assignments.view',
         ]);
     }
 }

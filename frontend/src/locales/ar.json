@@ -22,6 +22,10 @@
     "criticalities": "مستويات الأهمية",
     "applicationStatuses": "حالات التطبيق",
     "technologies": "التقنيات",
+    "operationInfra": "البنية التشغيلية",
+    "infraCategories": "تصنيفات البنية التشغيلية",
+    "infraTeamAssignments": "تعيينات الفريق",
+    "infraTeamsDetails": "تفاصيل فرق البنية التشغيلية",
     "licenses": "التراخيص",
     "licenseDetail": "تفاصيل الترخيص",
     "roles": "الأدوار والصلاحيات",
@@ -1663,6 +1667,220 @@
       "cardLabel": "ملخص الإدارة {{name}}",
       "title": "إدارة",
       "applications": "تطبيق"
+    }
+  },
+  "operationInfra": {
+    "categories": {
+      "title": "تصنيفات البنية التشغيلية",
+      "description": "إدارة تصنيفات البنية التحتية (المسارات) وتصنيفاتها الفرعية، بالإضافة إلى مستويات الدعم.",
+      "searchPlaceholder": "البحث عن التصنيفات بالاسم أو الرمز...",
+      "newRoot": "تصنيف جديد",
+      "addSub": "إضافة تصنيف فرعي",
+      "expand": "توسيع",
+      "collapse": "طي",
+      "emptyTitle": "لا توجد تصنيفات",
+      "emptyCreate": "أنشئ أول تصنيف للبنية التحتية.",
+      "deleteConfirm": "حذف التصنيف \"{{name}}\"؟ قد تتأثر التصنيفات الفرعية والتعيينات.",
+      "stats": {
+        "total": "إجمالي التصنيفات",
+        "parents": "التصنيفات الرئيسية",
+        "subcategories": "التصنيفات الفرعية",
+        "withoutAssignments": "بدون تعيينات"
+      },
+      "filters": {
+        "allTypes": "جميع أنواع التصنيفات",
+        "allStatuses": "جميع الحالات"
+      },
+      "types": {
+        "parent": "تصنيف رئيسي",
+        "subcategory": "تصنيف فرعي"
+      },
+      "tabs": {
+        "categories": "التصنيفات",
+        "levels": "المستويات"
+      },
+      "columns": {
+        "name": "الاسم",
+        "type": "النوع",
+        "parent": "التصنيف الرئيسي",
+        "code": "الرمز",
+        "assignments": "التعيينات",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط",
+        "created": "تاريخ الإنشاء"
+      },
+      "form": {
+        "createTitle": "تصنيف جديد",
+        "editTitle": "تعديل التصنيف",
+        "createSubTitle": "تصنيف فرعي جديد",
+        "editSubTitle": "تعديل التصنيف الفرعي",
+        "rootDescription": "التصنيفات الرئيسية تمثل مسارات البنية التحتية الأساسية.",
+        "subDescription": "التصنيفات الفرعية تنتمي إلى تصنيف رئيسي وتمثل مساراً محدداً.",
+        "parentLabel": "التصنيف الرئيسي",
+        "nameEn": "الاسم بالإنجليزية",
+        "nameAr": "الاسم بالعربية",
+        "code": "الرمز",
+        "description": "الوصف",
+        "descriptionPlaceholder": "وصف اختياري",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط",
+        "saving": "جارٍ الحفظ...",
+        "createSubmit": "إنشاء التصنيف",
+        "updateSubmit": "حفظ التغييرات"
+      },
+      "toast": {
+        "created": "تم إنشاء التصنيف بنجاح.",
+        "updated": "تم تحديث التصنيف بنجاح.",
+        "deleted": "تم حذف التصنيف بنجاح.",
+        "createFailed": "فشل إنشاء التصنيف.",
+        "updateFailed": "فشل تحديث التصنيف.",
+        "deleteFailed": "فشل حذف التصنيف."
+      }
+    },
+    "levels": {
+      "new": "مستوى جديد",
+      "searchPlaceholder": "البحث عن المستويات بالاسم أو الرمز أو الملاحظة...",
+      "emptyTitle": "لا توجد مستويات",
+      "emptyCreate": "أنشئ أول مستوى دعم.",
+      "deleteConfirm": "حذف المستوى \"{{name}}\"؟",
+      "columns": {
+        "nameEn": "الاسم بالإنجليزية",
+        "nameAr": "الاسم بالعربية",
+        "code": "الرمز",
+        "note": "ملاحظة",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط"
+      },
+      "form": {
+        "createTitle": "مستوى جديد",
+        "editTitle": "تعديل المستوى",
+        "createDescription": "أضف مستوى دعم يُستخدم في تعيينات فرق البنية التحتية.",
+        "editDescription": "تحديث تفاصيل المستوى.",
+        "nameEn": "الاسم بالإنجليزية",
+        "nameAr": "الاسم بالعربية",
+        "code": "الرمز",
+        "noteEn": "ملاحظة بالإنجليزية",
+        "noteAr": "ملاحظة بالعربية",
+        "notePlaceholder": "ملاحظة اختيارية تظهر عند التمرير",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط",
+        "saving": "جارٍ الحفظ...",
+        "createSubmit": "إنشاء المستوى",
+        "updateSubmit": "حفظ التغييرات"
+      },
+      "toast": {
+        "created": "تم إنشاء المستوى بنجاح.",
+        "updated": "تم تحديث المستوى بنجاح.",
+        "deleted": "تم حذف المستوى بنجاح.",
+        "createFailed": "فشل إنشاء المستوى.",
+        "updateFailed": "فشل تحديث المستوى.",
+        "deleteFailed": "فشل حذف المستوى."
+      }
+    },
+    "assignments": {
+      "title": "تعيينات فريق البنية التشغيلية",
+      "description": "عرض وإدارة المستخدمين المعيّنين لكل مسار بنية تحتية ومستوى دعم.",
+      "new": "تعيين جديد",
+      "searchPlaceholder": "البحث عن المسارات بالاسم أو الرمز...",
+      "emptyTitle": "لا توجد مسارات",
+      "emptyCreate": "أنشئ تصنيفات البنية التحتية أولاً لإدارة تعيينات الفريق.",
+      "emptyFiltered": "جرّب مصطلح بحث مختلف.",
+      "deleteConfirm": "إزالة تعيين {{name}}؟",
+      "stats": {
+        "total": "إجمالي التعيينات",
+        "uniqueUsers": "المستخدمون المعيّنون",
+        "assignedCategories": "التصنيفات المعيّنة",
+        "unassignedCategories": "التصنيفات غير المعيّنة"
+      },
+      "actions": {
+        "view": "عرض التعيينات",
+        "edit": "تعديل التعيينات"
+      },
+      "filters": {
+        "allCategories": "جميع التصنيفات",
+        "allLevels": "جميع المستويات"
+      },
+      "columns": {
+        "stream": "المسار",
+        "user": "المستخدم",
+        "level": "المستوى",
+        "assignedUsers": "المستخدمون المعيّنون"
+      },
+      "view": {
+        "title": "تعيينات المسار",
+        "description": "المستخدمون المعيّنون حالياً لهذا المسار.",
+        "empty": "لا يوجد مستخدمون معيّنون لهذا المسار بعد."
+      },
+      "edit": {
+        "title": "تعديل التعيينات — {{name}}",
+        "titleFallback": "تعديل التعيينات",
+        "description": "أضف أو أزل المستخدمين وحدد مستوى الدعم لكل مستخدم في هذا المسار.",
+        "deleteConfirm": "إزالة {{user}} من هذا المسار؟",
+        "save": "حفظ التغييرات",
+        "saving": "جارٍ الحفظ..."
+      },
+      "form": {
+        "createTitle": "تعيين جديد",
+        "editTitle": "تعديل التعيين",
+        "createDescription": "تعيين مستخدم واحد أو أكثر إلى تصنيف ومستوى دعم.",
+        "editDescription": "تحديث التصنيف أو المستخدم أو المستوى لهذا التعيين.",
+        "category": "التصنيف",
+        "user": "المستخدم",
+        "users": "المستخدمون",
+        "level": "المستوى",
+        "selectLevel": "اختر مستوى",
+        "selectUsers": "اختر مستخدمًا واحدًا أو أكثر",
+        "searchCategories": "البحث عن التصنيفات...",
+        "searchUsers": "البحث عن المستخدمين...",
+        "noCategories": "لا توجد تصنيفات.",
+        "noUsers": "لا يوجد مستخدمون.",
+        "addUser": "إضافة مستخدم",
+        "saving": "جارٍ الحفظ...",
+        "createSubmit": "إنشاء التعيينات",
+        "updateSubmit": "حفظ التغييرات"
+      },
+      "validation": {
+        "categoryRequired": "التصنيف مطلوب.",
+        "levelRequired": "المستوى مطلوب.",
+        "duplicateUserLevel": "هذا المستخدم معيّن بالفعل على هذا المستوى."
+      },
+      "toast": {
+        "created": "تم إنشاء التعيينات بنجاح.",
+        "updated": "تم تحديث التعيين بنجاح.",
+        "deleted": "تمت إزالة التعيين بنجاح.",
+        "matrixSaved": "تم حفظ تعيينات المسار بنجاح.",
+        "createFailed": "فشل إنشاء التعيين.",
+        "updateFailed": "فشل تحديث التعيين.",
+        "deleteFailed": "فشل إزالة التعيين."
+      }
+    },
+    "details": {
+      "title": "تفاصيل فرق البنية التشغيلية",
+      "description": "استعرض مسارات البنية التحتية مع التوزيع الحي حسب مستوى الدعم.",
+      "searchPlaceholder": "البحث عن المسارات بالاسم أو الرمز...",
+      "showingCount": "عرض {{shown}} من {{total}}",
+      "emptyTitle": "لا توجد مسارات",
+      "emptyDescription": "أنشئ تصنيفات وتعيينات لعرض المسارات هنا.",
+      "viewDetails": "عرض التفاصيل",
+      "exportExcel": "تصدير Excel",
+      "exportCategory": "تصدير Excel",
+      "metrics": {
+        "members": "الأعضاء",
+        "levels": "المستويات"
+      }
+    },
+    "detail": {
+      "backToList": "العودة إلى تفاصيل فرق البنية التشغيلية",
+      "invalidId": "مسار غير صالح",
+      "invalidIdDescription": "معرّف المسار في الرابط غير صالح.",
+      "notFoundTitle": "المسار غير موجود",
+      "notFoundDescription": "ربما تمت إزالة هذا المسار أو لا تملك صلاحية الوصول إليه.",
+      "noMembersTitle": "لا يوجد أعضاء معيّنون",
+      "noMembersDescription": "قم بتعيين مستخدمين لهذا المسار من صفحة تعيينات الفريق.",
+      "escalationMatrix": "مصفوفة التصعيد",
+      "escalationPath": "مسار التصعيد",
+      "memberCount": "{{count}} عضو",
+      "memberCount_other": "{{count}} أعضاء"
     }
   }
 }

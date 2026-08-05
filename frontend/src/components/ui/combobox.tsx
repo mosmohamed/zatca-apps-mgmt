@@ -22,6 +22,8 @@ import {
 export type ComboboxOption = {
   value: string
   label: string
+  disabled?: boolean
+  indent?: boolean
 }
 
 type ComboboxProps = {
@@ -75,18 +77,33 @@ function Combobox({
                 <CommandItem
                   key={option.value}
                   value={option.label}
+                  disabled={option.disabled}
                   onSelect={() => {
+                    if (option.disabled) {
+                      return
+                    }
                     onValueChange?.(option.value === value ? "" : option.value)
                     setOpen(false)
                   }}
+                  className={cn(option.indent && "ps-6")}
                 >
                   <CheckIcon
                     className={cn(
                       "size-4",
-                      value === option.value ? "opacity-100" : "opacity-0"
+                      option.disabled
+                        ? "opacity-0"
+                        : value === option.value
+                          ? "opacity-100"
+                          : "opacity-0"
                     )}
                   />
-                  {option.label}
+                  <span
+                    className={cn(
+                      option.disabled && "font-semibold text-muted-foreground"
+                    )}
+                  >
+                    {option.label}
+                  </span>
                 </CommandItem>
               ))}
             </CommandGroup>

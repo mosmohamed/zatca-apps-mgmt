@@ -11,12 +11,16 @@ import {
   History,
   KeyRound,
   LayoutDashboard,
+  LayoutGrid,
   Link2,
+  Layers,
   MonitorSmartphone,
+  ServerCog,
   Settings,
   Shield,
   ShieldCheck,
   Truck,
+  UsersRound,
   Users,
 } from "lucide-react"
 
@@ -116,6 +120,27 @@ const masterDataNavItems: NavItem[] = [
   },
 ]
 
+const operationInfraNavItems: NavItem[] = [
+  {
+    to: "/infra-categories",
+    key: "infraCategories",
+    icon: Layers,
+    permission: "infra-categories.view",
+  },
+  {
+    to: "/infra-team-assignments",
+    key: "infraTeamAssignments",
+    icon: UsersRound,
+    permission: "infra-team-assignments.view",
+  },
+  {
+    to: "/infra-teams-details",
+    key: "infraTeamsDetails",
+    icon: LayoutGrid,
+    permission: "infra-team-assignments.view",
+  },
+]
+
 const secondaryNavItems: NavItem[] = [
   {
     to: "/licenses",
@@ -142,8 +167,12 @@ export function AppSidebar() {
   const { can } = useAuth()
   const { isExpanded, isMobileOpen, closeMobile } = useSidebar()
   const [masterDataOpen, setMasterDataOpen] = useState(true)
+  const [operationInfraOpen, setOperationInfraOpen] = useState(true)
 
   const visibleMasterDataNavItems = masterDataNavItems.filter(
+    (item) => !item.permission || can(item.permission)
+  )
+  const visibleOperationInfraNavItems = operationInfraNavItems.filter(
     (item) => !item.permission || can(item.permission)
   )
   const visibleSecondaryNavItems = secondaryNavItems.filter(
@@ -247,6 +276,51 @@ export function AppSidebar() {
           {visibleMasterDataNavItems.length > 0 &&
           (isExpanded ? masterDataOpen : true)
             ? visibleMasterDataNavItems.map((item) => {
+                const Icon = item.icon
+                return (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    onClick={closeMobile}
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                        isExpanded ? "ms-2" : "",
+                        isActive
+                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                          : "text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
+                      )
+                    }
+                  >
+                    <Icon className="size-4 shrink-0" />
+                    {isExpanded ? <span>{t(`nav.${item.key}`)}</span> : null}
+                  </NavLink>
+                )
+              })
+            : null}
+
+          {visibleOperationInfraNavItems.length > 0 && isExpanded ? (
+            <button
+              type="button"
+              onClick={() => setOperationInfraOpen((current) => !current)}
+              className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
+            >
+              <span className="flex items-center gap-3">
+                <ServerCog className="size-4 shrink-0" />
+                {t("nav.operationInfra")}
+              </span>
+              <ChevronDown
+                className={cn(
+                  "size-4 transition-transform",
+                  operationInfraOpen ? "rotate-180" : ""
+                )}
+              />
+            </button>
+          ) : null}
+
+          {visibleOperationInfraNavItems.length > 0 &&
+          (isExpanded ? operationInfraOpen : true)
+            ? visibleOperationInfraNavItems.map((item) => {
                 const Icon = item.icon
                 return (
                   <NavLink

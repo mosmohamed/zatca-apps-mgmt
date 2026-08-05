@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             SuperAdminSeeder::class,
             LegacyApplicationImportSeeder::class,
             LicenseSeeder::class,
+            OperationInfraSeeder::class,
         ]);
     }
 }

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import type { LucideIcon } from "lucide-react"
 
 import { LoadingSkeleton } from "@/components/LoadingSkeleton"
@@ -13,7 +14,7 @@ export type EntityStatAccent = {
 
 export type EntityStatCardDefinition = {
   key: string
-  label: string
+  label: ReactNode
   value: number
   icon: LucideIcon
   accent: EntityStatAccent
@@ -60,7 +61,7 @@ function EntityStatCard({
   accent,
   index,
 }: {
-  label: string
+  label: ReactNode
   value: number
   icon: LucideIcon
   accent: EntityStatAccent

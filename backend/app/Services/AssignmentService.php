@@ -102,7 +102,7 @@ class AssignmentService
             $query,
             $filters['sort'] ?? null,
             ['name_en', 'name_ar', 'code', 'active_users_count', 'created_at', 'updated_at'],
-            'name_en',
+            '-active_users_count',
         );
 
         return $query->paginate(perPage: $perPage, page: $page);

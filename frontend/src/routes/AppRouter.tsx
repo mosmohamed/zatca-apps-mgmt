@@ -122,6 +122,34 @@ const RolesPage = lazy(() =>
     default: module.RolesPage,
   }))
 )
+const InfraCategoriesPage = lazy(() =>
+  import("@/features/operation-infra/pages/InfraCategoriesPage").then(
+    (module) => ({
+      default: module.InfraCategoriesPage,
+    })
+  )
+)
+const TeamAssignmentsPage = lazy(() =>
+  import("@/features/operation-infra/pages/TeamAssignmentsPage").then(
+    (module) => ({
+      default: module.TeamAssignmentsPage,
+    })
+  )
+)
+const InfraTeamsDetailsPage = lazy(() =>
+  import("@/features/operation-infra/pages/InfraTeamsDetailsPage").then(
+    (module) => ({
+      default: module.InfraTeamsDetailsPage,
+    })
+  )
+)
+const InfraTeamDetailPage = lazy(() =>
+  import("@/features/operation-infra/pages/InfraTeamDetailPage").then(
+    (module) => ({
+      default: module.InfraTeamDetailPage,
+    })
+  )
+)
 const ActivityLogPage = lazy(() =>
   import("@/features/activity-log/pages/ActivityLogPage").then((module) => ({
     default: module.ActivityLogPage,
@@ -278,6 +306,36 @@ function AppRoutes() {
                     <Route
                       path="technologies"
                       element={<TechnologiesPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="infra-categories.view" />
+                    }
+                  >
+                    <Route
+                      path="infra-categories"
+                      element={<InfraCategoriesPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="infra-team-assignments.view" />
+                    }
+                  >
+                    <Route
+                      path="infra-team-assignments"
+                      element={<TeamAssignmentsPage />}
+                    />
+                    <Route
+                      path="infra-teams-details"
+                      element={<InfraTeamsDetailsPage />}
+                    />
+                    <Route
+                      path="infra-teams-details/:id"
+                      element={<InfraTeamDetailPage />}
                     />
                   </Route>
 

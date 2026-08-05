@@ -39,6 +39,14 @@ class SuperAdminSeeder extends Seeder
             $admin->update(['job_title_id' => $jobTitleId]);
         }
 
+        // Ensure login works after incomplete seeds or password drift.
+        if (! $admin->wasRecentlyCreated) {
+            $admin->forceFill([
+                'password' => $password,
+                'is_active' => true,
+            ])->save();
+        }
+
         if (! $admin->hasRole('super_admin')) {
             $admin->assignRole('super_admin');
         }

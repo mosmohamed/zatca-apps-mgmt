@@ -48,7 +48,7 @@ class AssignmentController extends BaseApiController
         $this->authorize('viewAny', ApplicationAssignment::class);
 
         $paginator = $this->assignmentService->applicationsSummary(
-            $this->listFilters($request, 'name_en')
+            $this->listFilters($request, '-active_users_count')
         );
 
         return $this->paginatedResponse(

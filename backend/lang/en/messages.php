@@ -32,6 +32,7 @@ return [
         'hostname' => 'The :attribute must be a valid host name.',
         'different' => 'The :attribute and :other must be different.',
         'required_if' => 'The :attribute field is required when :other is :value.',
+        'infra_category_must_be_leaf' => 'Assignments can only be created for categories without subcategories, or for a subcategory itself.',
     ],
 
     'attributes' => [
@@ -57,6 +58,11 @@ return [
         'ha_model' => 'High Availability (HA) Model',
         'description' => 'description',
         'sort_order' => 'sort order',
+        'parent_id' => 'parent category',
+        'infra_category_id' => 'infrastructure category',
+        'infra_level_id' => 'infrastructure level',
+        'note_en' => 'English note',
+        'note_ar' => 'Arabic note',
         'teams' => 'Teams',
         'whatsapp' => 'WhatsApp',
         'extension' => 'extension',
@@ -357,6 +363,40 @@ return [
         'deleted' => 'Criticality deleted successfully.',
     ],
 
+    'infra_levels' => [
+        'listed' => 'Infrastructure levels retrieved successfully.',
+        'created' => 'Infrastructure level created successfully.',
+        'retrieved' => 'Infrastructure level retrieved successfully.',
+        'updated' => 'Infrastructure level updated successfully.',
+        'deleted' => 'Infrastructure level deleted successfully.',
+    ],
+
+    'infra_categories' => [
+        'listed' => 'Infrastructure categories retrieved successfully.',
+        'tree_retrieved' => 'Infrastructure category tree retrieved successfully.',
+        'statistics_retrieved' => 'Infrastructure category statistics retrieved successfully.',
+        'created' => 'Infrastructure category created successfully.',
+        'retrieved' => 'Infrastructure category retrieved successfully.',
+        'updated' => 'Infrastructure category updated successfully.',
+        'deleted' => 'Infrastructure category deleted successfully.',
+        'parent_must_be_root' => 'Subcategories can only be nested under a root category.',
+    ],
+
+    'infra_team_assignments' => [
+        'listed' => 'Team assignments retrieved successfully.',
+        'statistics_retrieved' => 'Team assignment statistics retrieved successfully.',
+        'categories_listed' => 'Infrastructure assignment streams retrieved successfully.',
+        'category_retrieved' => 'Infrastructure stream assignments retrieved successfully.',
+        'created' => 'Team assignment created successfully.',
+        'retrieved' => 'Team assignment retrieved successfully.',
+        'updated' => 'Team assignment updated successfully.',
+        'deleted' => 'Team assignment deleted successfully.',
+    ],
+
+    'infra_teams_details' => [
+        'retrieved' => 'Infrastructure teams details retrieved successfully.',
+    ],
+
     'application_statuses' => [
         'listed' => 'Application statuses retrieved successfully.',
         'created' => 'Application status created successfully.',
@@ -419,6 +459,8 @@ return [
         'criticalities' => 'Criticalities retrieved successfully.',
         'application_statuses' => 'Application statuses retrieved successfully.',
         'technologies' => 'Technologies retrieved successfully.',
+        'infra_levels' => 'Infrastructure levels retrieved successfully.',
+        'infra_categories' => 'Infrastructure categories retrieved successfully.',
     ],
 
     'exports' => [

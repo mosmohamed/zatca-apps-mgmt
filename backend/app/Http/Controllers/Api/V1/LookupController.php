@@ -4,19 +4,23 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Resources\AppRoleResource;
 use App\Http\Resources\ApplicationStatusResource;
 use App\Http\Resources\ApplicationTypeResource;
+use App\Http\Resources\AppRoleResource;
 use App\Http\Resources\CriticalityResource;
 use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\InfraCategoryResource;
+use App\Http\Resources\InfraLevelResource;
 use App\Http\Resources\JobTitleResource;
 use App\Http\Resources\SupportTypeResource;
 use App\Http\Resources\TechnologyResource;
-use App\Models\AppRole;
 use App\Models\ApplicationStatus;
 use App\Models\ApplicationType;
+use App\Models\AppRole;
 use App\Models\Criticality;
 use App\Models\Department;
+use App\Models\InfraCategory;
+use App\Models\InfraLevel;
 use App\Models\JobTitle;
 use App\Models\SupportType;
 use App\Models\Technology;
@@ -165,6 +169,54 @@ class LookupController extends BaseApiController
         return $this->successResponse(
             TechnologyResource::collection($items)->resolve(),
             __('messages.lookups.technologies'),
+        );
+    }
+
+    public function infraLevels(Request $request): JsonResponse
+    {
+        $this->authorizeLookup($request, [
+            'infra-levels.view',
+            'infra-team-assignments.view',
+            'infra-team-assignments.create',
+            'infra-team-assignments.update',
+        ]);
+
+        $items = InfraLevel::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name_en')
+            ->get();
+
+        return $this->successResponse(
+            InfraLevelResource::collection($items)->resolve(),
+            __('messages.lookups.infra_levels'),
+        );
+    }
+
+    public function infraCategories(Request $request): JsonResponse
+    {
+        $this->authorizeLookup($request, [
+            'infra-categories.view',
+            'infra-team-assignments.view',
+            'infra-team-assignments.create',
+            'infra-team-assignments.update',
+        ]);
+
+        $items = InfraCategory::query()
+            ->with(['parent'])
+            ->withCount([
+                'children as children_count' => static function ($query): void {
+                    $query->where('is_active', true);
+                },
+            ])
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name_en')
+            ->get();
+
+        return $this->successResponse(
+            InfraCategoryResource::collection($items)->resolve(),
+            __('messages.lookups.infra_categories'),
         );
     }
 

@@ -117,6 +117,23 @@ export function ApplicationsDetailsPage() {
 
         return haystack.includes(query)
       })
+      .sort((a, b) => {
+        const usersA = userCountByAppId.get(a.id) ?? 0
+        const usersB = userCountByAppId.get(b.id) ?? 0
+        if (usersB !== usersA) {
+          return usersB - usersA
+        }
+
+        const techA = a.technologies?.length ?? 0
+        const techB = b.technologies?.length ?? 0
+        if (techB !== techA) {
+          return techB - techA
+        }
+
+        const nameA = isArabic ? a.name_ar : a.name_en
+        const nameB = isArabic ? b.name_ar : b.name_en
+        return nameA.localeCompare(nameB)
+      })
       .map((app, index) => {
         const displayName = isArabic ? app.name_ar : app.name_en
         return {

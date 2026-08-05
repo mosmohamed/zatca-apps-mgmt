@@ -16,6 +16,9 @@ use App\Http\Controllers\Api\V1\DepartmentController;
 use App\Http\Controllers\Api\V1\EntityPreviewController;
 use App\Http\Controllers\Api\V1\ExportController;
 use App\Http\Controllers\Api\V1\GlobalSearchController;
+use App\Http\Controllers\Api\V1\InfraCategoryController;
+use App\Http\Controllers\Api\V1\InfraLevelController;
+use App\Http\Controllers\Api\V1\InfraTeamAssignmentController;
 use App\Http\Controllers\Api\V1\JobTitleController;
 use App\Http\Controllers\Api\V1\LicenseController;
 use App\Http\Controllers\Api\V1\LookupController;
@@ -53,6 +56,8 @@ Route::prefix('v1')->group(function (): void {
         Route::get('lookups/criticalities', [LookupController::class, 'criticalities']);
         Route::get('lookups/application-statuses', [LookupController::class, 'applicationStatuses']);
         Route::get('lookups/technologies', [LookupController::class, 'technologies']);
+        Route::get('lookups/infra-levels', [LookupController::class, 'infraLevels']);
+        Route::get('lookups/infra-categories', [LookupController::class, 'infraCategories']);
 
         Route::post('exports/{entity}', [ExportController::class, 'store']);
 
@@ -120,5 +125,17 @@ Route::prefix('v1')->group(function (): void {
         Route::get('licenses/statistics', [LicenseController::class, 'statistics']);
         Route::apiResource('licenses', LicenseController::class);
         Route::apiResource('app-roles', AppRoleController::class);
+
+        Route::get('infra-categories/statistics', [InfraCategoryController::class, 'statistics']);
+        Route::get('infra-categories/tree', [InfraCategoryController::class, 'tree']);
+        Route::apiResource('infra-levels', InfraLevelController::class);
+        Route::apiResource('infra-categories', InfraCategoryController::class);
+        Route::get('infra-team-assignments/statistics', [InfraTeamAssignmentController::class, 'statistics']);
+        Route::get('infra-team-assignments/categories-summary', [InfraTeamAssignmentController::class, 'categoriesSummary']);
+        Route::get('infra-team-assignments/category/{infraCategory}', [InfraTeamAssignmentController::class, 'categoryMatrix']);
+        Route::get('infra-team-assignments/details', [InfraTeamAssignmentController::class, 'details']);
+        Route::get('infra-team-assignments/export', [InfraTeamAssignmentController::class, 'export']);
+        Route::get('infra-team-assignments/export/{infraCategory}', [InfraTeamAssignmentController::class, 'exportCategory']);
+        Route::apiResource('infra-team-assignments', InfraTeamAssignmentController::class);
     });
 });

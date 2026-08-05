@@ -11,6 +11,9 @@ use App\Models\ApplicationStatus;
 use App\Models\AppRole;
 use App\Models\Criticality;
 use App\Models\Department;
+use App\Models\InfraCategory;
+use App\Models\InfraLevel;
+use App\Models\InfraTeamAssignment;
 use App\Models\JobTitle;
 use App\Models\License;
 use App\Models\Setting;
@@ -26,6 +29,9 @@ use App\Policies\ApplicationStatusPolicy;
 use App\Policies\AppRolePolicy;
 use App\Policies\CriticalityPolicy;
 use App\Policies\DepartmentPolicy;
+use App\Policies\InfraCategoryPolicy;
+use App\Policies\InfraLevelPolicy;
+use App\Policies\InfraTeamAssignmentPolicy;
 use App\Policies\JobTitlePolicy;
 use App\Policies\LicensePolicy;
 use App\Policies\SettingPolicy;
@@ -71,5 +77,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Setting::class, SettingPolicy::class);
         Gate::policy(UserDashboardLayout::class, UserDashboardLayoutPolicy::class);
         Gate::policy(ApplicationEnvironment::class, ApplicationInfrastructurePolicy::class);
+        Gate::policy(InfraLevel::class, InfraLevelPolicy::class);
+        Gate::policy(InfraCategory::class, InfraCategoryPolicy::class);
+        Gate::policy(InfraTeamAssignment::class, InfraTeamAssignmentPolicy::class);
     }
 }

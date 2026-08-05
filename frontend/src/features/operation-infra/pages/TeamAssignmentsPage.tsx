@@ -2,28 +2,27 @@ import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Eye, Pencil } from "lucide-react"
 
-import { ApplicationPreviewLink } from "@/components/entity-preview/ApplicationPreviewLink"
 import { EnterpriseDataTable } from "@/components/EnterpriseDataTable"
 import { Button } from "@/components/ui/button"
-import { ApplicationAssignmentEditDialog } from "@/features/assignments/components/ApplicationAssignmentEditDialog"
-import { ApplicationAssignmentViewDialog } from "@/features/assignments/components/ApplicationAssignmentViewDialog"
-import { AssignmentStatsCards } from "@/features/assignments/components/AssignmentStatsCards"
-import { useApplicationAssignmentsSummary } from "@/features/assignments/hooks/use-assignments"
-import type { AssignmentSummary } from "@/features/assignments/types/assignment"
 import { useAuth } from "@/features/auth/hooks/use-auth"
+import { InfraCategoryAssignmentEditDialog } from "@/features/operation-infra/components/InfraCategoryAssignmentEditDialog"
+import { InfraCategoryAssignmentViewDialog } from "@/features/operation-infra/components/InfraCategoryAssignmentViewDialog"
+import { InfraTeamAssignmentStatsCards } from "@/features/operation-infra/components/InfraTeamAssignmentStatsCards"
+import { useInfraCategoryAssignmentsSummary } from "@/features/operation-infra/hooks/use-operation-infra"
+import type { InfraCategoryAssignmentSummary } from "@/features/operation-infra/types/operation-infra"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 
-export function AssignmentsPage() {
+export function TeamAssignmentsPage() {
   const { t, i18n } = useTranslation()
+  const isArabic = i18n.language.startsWith("ar")
   const { can } = useAuth()
-  const canUpdate = can("assignments.update")
-  const canCreate = can("assignments.create")
+  const canUpdate = can("infra-team-assignments.update")
+  const canCreate = can("infra-team-assignments.create")
   const canEditAssignments = canUpdate || canCreate
-  const isArabic = i18n.language === "ar"
 
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
-  const [sort, setSort] = useState("-active_users_count")
+  const [sort, setSort] = useState("-assignments_count")
   const [viewId, setViewId] = useState<number | null>(null)
   const [editId, setEditId] = useState<number | null>(null)
 
@@ -38,56 +37,49 @@ export function AssignmentsPage() {
     [page, debouncedSearch, sort]
   )
 
-  const summaryQuery = useApplicationAssignmentsSummary(listParams)
+  const summaryQuery = useInfraCategoryAssignmentsSummary(listParams)
   const items = summaryQuery.data?.items ?? []
   const pagination = summaryQuery.data?.pagination
 
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold">{t("assignments.title")}</h2>
+        <h2 className="text-lg font-semibold">
+          {t("operationInfra.assignments.title")}
+        </h2>
         <p className="text-sm text-muted-foreground">
-          {t("assignments.description")}
+          {t("operationInfra.assignments.description")}
         </p>
       </div>
 
-      <AssignmentStatsCards />
+      <InfraTeamAssignmentStatsCards />
 
-      <EnterpriseDataTable<AssignmentSummary>
+      <EnterpriseDataTable<InfraCategoryAssignmentSummary>
         columns={[
           {
             id: "name",
-            header: t("assignments.columns.application"),
+            header: t("operationInfra.assignments.columns.stream"),
             sortable: true,
             sortKey: "name_en",
             cell: (row) => (
               <div className="min-w-0">
                 <div className="truncate font-medium">
-                  <ApplicationPreviewLink
-                    applicationId={row.id}
-                    name={isArabic ? row.name_ar : row.name_en}
-                  />
+                  {isArabic
+                    ? (row.title_ar ?? row.name_ar)
+                    : (row.title_en ?? row.name_en)}
                 </div>
-                {/* <div className="font-mono text-xs text-muted-foreground">
+                <div className="font-mono text-xs text-muted-foreground">
                   {row.code}
-                </div> */}
+                </div>
               </div>
             ),
           },
           {
-            id: "department",
-            header: t("assignments.columns.department"),
-            cell: (row) =>
-              isArabic
-                ? (row.department?.name_ar ?? "—")
-                : (row.department?.name_en ?? "—"),
-          },
-          {
-            id: "active_users_count",
-            header: t("assignments.columns.activeEmployees"),
+            id: "assignments_count",
+            header: t("operationInfra.assignments.columns.assignedUsers"),
             sortable: true,
-            sortKey: "active_users_count",
-            cell: (row) => row.active_users_count,
+            sortKey: "assignments_count",
+            cell: (row) => row.assignments_count,
           },
           {
             id: "actions",
@@ -100,7 +92,7 @@ export function AssignmentsPage() {
                   type="button"
                   variant="ghost"
                   size="icon"
-                  aria-label={t("assignments.actions.view")}
+                  aria-label={t("operationInfra.assignments.actions.view")}
                   onClick={() => setViewId(row.id)}
                 >
                   <Eye />
@@ -110,7 +102,7 @@ export function AssignmentsPage() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    aria-label={t("assignments.actions.edit")}
+                    aria-label={t("operationInfra.assignments.actions.edit")}
                     onClick={() => setEditId(row.id)}
                   >
                     <Pencil />
@@ -128,7 +120,7 @@ export function AssignmentsPage() {
           setSearch(value)
           setPage(1)
         }}
-        searchPlaceholder={t("assignments.searchPlaceholder")}
+        searchPlaceholder={t("operationInfra.assignments.searchPlaceholder")}
         sort={sort}
         onSortChange={(value) => {
           setSort(value)
@@ -136,16 +128,16 @@ export function AssignmentsPage() {
         }}
         pagination={pagination}
         onPageChange={setPage}
-        emptyTitle={t("assignments.emptyTitle")}
+        emptyTitle={t("operationInfra.assignments.emptyTitle")}
         emptyDescription={
           debouncedSearch
-            ? t("assignments.emptyFiltered")
-            : t("assignments.emptyCreate")
+            ? t("common.tryDifferentSearch")
+            : t("operationInfra.assignments.emptyCreate")
         }
       />
 
-      <ApplicationAssignmentViewDialog
-        applicationId={viewId}
+      <InfraCategoryAssignmentViewDialog
+        categoryId={viewId}
         open={viewId !== null}
         onOpenChange={(next) => {
           if (!next) setViewId(null)
@@ -153,8 +145,8 @@ export function AssignmentsPage() {
       />
 
       {canEditAssignments ? (
-        <ApplicationAssignmentEditDialog
-          applicationId={editId}
+        <InfraCategoryAssignmentEditDialog
+          categoryId={editId}
           open={editId !== null}
           onOpenChange={(next) => {
             if (!next) setEditId(null)
