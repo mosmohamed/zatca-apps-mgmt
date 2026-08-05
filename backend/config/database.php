@@ -103,6 +103,8 @@ return [
             'database' => env('DB_DATABASE', 'laravel'),
             'username' => env('DB_USERNAME', 'sa'),
             'password' => env('DB_PASSWORD', ''),
+            // Unicode strings use nvarchar. Database collation (e.g. Arabic_100_CI_AS_WS_SC)
+            // must be set when CREATE DATABASE runs — Laravel cannot set it per connection.
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,

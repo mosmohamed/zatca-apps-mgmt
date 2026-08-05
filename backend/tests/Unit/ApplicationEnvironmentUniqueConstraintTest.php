@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Database\Support\ApplicationEnvironmentUniqueConstraint;
-use Database\Support\OpenAssignmentConstraint;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +13,7 @@ use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class OpenAssignmentConstraintTest extends TestCase
+class ApplicationEnvironmentUniqueConstraintTest extends TestCase
 {
     protected function tearDown(): void
     {
@@ -35,16 +34,16 @@ class OpenAssignmentConstraintTest extends TestCase
 
         Schema::swap($builder);
 
-        $expectedSql = 'CREATE UNIQUE INDEX '.OpenAssignmentConstraint::INDEX_NAME
-            .' ON application_assignments (application_id, user_id)'
-            .' WHERE ended_at IS NULL';
+        $expectedSql = 'CREATE UNIQUE INDEX '.ApplicationEnvironmentUniqueConstraint::INDEX_NAME
+            .' ON application_environments (application_id, environment_id)'
+            .' WHERE deleted_at IS NULL';
 
         DB::shouldReceive('statement')
             ->once()
             ->with($expectedSql)
             ->andReturn(true);
 
-        OpenAssignmentConstraint::create();
+        ApplicationEnvironmentUniqueConstraint::create();
 
         $this->addToAssertionCount(1);
     }
@@ -60,15 +59,15 @@ class OpenAssignmentConstraintTest extends TestCase
 
         Schema::swap($builder);
 
-        $expectedSql = 'DROP INDEX IF EXISTS '.OpenAssignmentConstraint::INDEX_NAME
-            .' ON application_assignments';
+        $expectedSql = 'DROP INDEX IF EXISTS '.ApplicationEnvironmentUniqueConstraint::INDEX_NAME
+            .' ON application_environments';
 
         DB::shouldReceive('statement')
             ->once()
             ->with($expectedSql)
             ->andReturn(true);
 
-        OpenAssignmentConstraint::drop();
+        ApplicationEnvironmentUniqueConstraint::drop();
 
         $this->addToAssertionCount(1);
     }

@@ -91,6 +91,7 @@ class ApplicationEnvironment extends Model
         'id',
         'application_id',
         'environment_id',
+        'open_environment_key',
         'created_by',
         'updated_by',
         'created_at',

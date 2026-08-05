@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Database\Support\ApplicationEnvironmentUniqueConstraint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +14,7 @@ return new class extends Migration
         Schema::create('application_environments', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('application_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('environment_id')->constrained()->restrictOnDelete();
+            $table->foreignId('environment_id')->constrained()->noActionOnDelete();
 
             // Hosting profile
             $table->string('hosting_model')->nullable();
@@ -73,13 +74,14 @@ return new class extends Migration
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
             $table->softDeletes();
-
-            $table->unique(['application_id', 'environment_id']);
         });
+
+        ApplicationEnvironmentUniqueConstraint::create();
     }
 
     public function down(): void
     {
+        ApplicationEnvironmentUniqueConstraint::drop();
         Schema::dropIfExists('application_environments');
     }
 };

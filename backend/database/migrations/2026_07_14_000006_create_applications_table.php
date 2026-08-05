@@ -12,8 +12,8 @@ return new class extends Migration
     {
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('department_id')->constrained()->restrictOnDelete();
-            $table->foreignId('application_type_id')->constrained()->restrictOnDelete();
+            $table->foreignId('department_id')->constrained()->noActionOnDelete();
+            $table->foreignId('application_type_id')->constrained()->noActionOnDelete();
             $table->string('name_ar');
             $table->string('name_en');
             $table->string('code')->unique();

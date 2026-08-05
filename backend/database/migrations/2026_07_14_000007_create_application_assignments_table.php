@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('application_assignments', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('application_id')->constrained()->cascadeOnDelete();
-            // RESTRICT keeps behaviour consistent across engines. On MySQL/MariaDB this is
-            // also required because user_id backs the generated open_key column.
-            $table->foreignId('user_id')->constrained()->restrictOnDelete();
-            $table->foreignId('app_role_id')->constrained()->restrictOnDelete();
-            $table->foreignId('assigned_by')->constrained('users')->restrictOnDelete();
+            // NO ACTION (not RESTRICT): SQL Server rejects ON DELETE RESTRICT.
+            // Also required on MySQL/MariaDB because user_id backs the generated open_key column.
+            $table->foreignId('user_id')->constrained()->noActionOnDelete();
+            $table->foreignId('app_role_id')->constrained()->noActionOnDelete();
+            $table->foreignId('assigned_by')->constrained('users')->noActionOnDelete();
             $table->timestamp('assigned_at');
             $table->timestamp('ended_at')->nullable();
             $table->boolean('is_primary')->default(false)->index();

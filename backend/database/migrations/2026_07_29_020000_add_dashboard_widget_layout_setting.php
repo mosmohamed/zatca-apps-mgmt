@@ -2,15 +2,17 @@
 
 declare(strict_types=1);
 
-use App\Models\Setting;
 use App\Support\DashboardWidgetLayout;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
     public function up(): void
     {
-        Setting::query()->firstOrCreate(
+        $now = now();
+
+        DB::table('settings')->updateOrInsert(
             ['key' => DashboardWidgetLayout::SETTING_KEY],
             [
                 'value' => json_encode(
@@ -21,12 +23,16 @@ return new class extends Migration
                 'group' => 'dashboard',
                 'label' => 'Dashboard Widget Layout',
                 'is_public' => true,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
         );
     }
 
     public function down(): void
     {
-        Setting::query()->where('key', DashboardWidgetLayout::SETTING_KEY)->delete();
+        DB::table('settings')
+            ->where('key', DashboardWidgetLayout::SETTING_KEY)
+            ->delete();
     }
 };

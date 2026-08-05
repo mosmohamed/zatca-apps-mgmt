@@ -22,7 +22,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('activity_log', function (Blueprint $table): void {
-            $table->index('created_at');
+            $table->index('created_at', 'activity_log_created_at_index');
             $table->index(['subject_type', 'subject_id', 'created_at'], 'activity_log_subject_created_index');
             $table->index(['causer_type', 'causer_id', 'created_at'], 'activity_log_causer_created_index');
         });
@@ -49,7 +49,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('activity_log', function (Blueprint $table): void {
-            $table->dropIndex(['created_at']);
+            $table->dropIndex('activity_log_created_at_index');
             $table->dropIndex('activity_log_subject_created_index');
             $table->dropIndex('activity_log_causer_created_index');
         });

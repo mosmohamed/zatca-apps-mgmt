@@ -36,6 +36,12 @@ php artisan migrate:fresh --seed --force
 
 ## Microsoft SQL Server environment
 
+Create the database with the Arabic collation **before** migrating (collation is database-level on SQL Server; Laravel does not set it per connection):
+
+```sql
+CREATE DATABASE it_portfolio_system COLLATE Arabic_100_CI_AS_WS_SC;
+```
+
 ```env
 DB_CONNECTION=sqlsrv
 DB_HOST=127.0.0.1
@@ -50,13 +56,14 @@ DB_TRUST_SERVER_CERTIFICATE=true
 
 Notes:
 
-- Create an empty database first (`CREATE DATABASE it_portfolio_system;`).
+- Create an empty database first with `COLLATE Arabic_100_CI_AS_WS_SC` (see above).
 - For local/dev TLS with self-signed certs, set `DB_TRUST_SERVER_CERTIFICATE=true`.
 - Production should use a trusted certificate and prefer `DB_TRUST_SERVER_CERTIFICATE=false`.
 - PHP requires the **Microsoft ODBC Driver 18 for SQL Server**.
 - Laravel’s `sqlsrv` connection uses PDO only, so **`pdo_sqlsrv` is required**. The procedural **`sqlsrv`** extension is also installed in Docker (Microsoft’s recommended pair / project compatibility) but is not used by Eloquent.
 - Both PECL packages are pinned to **5.13.1** (PHP 8.4+) in the production Dockerfile.
 - The production Docker image installs these extensions so the same container can target MySQL or MSSQL.
+- Arabic `name_ar` / branding fields are stored as Unicode (`nvarchar`); the database collation controls comparison and sorting.
 
 Fresh install:
 
@@ -74,6 +81,23 @@ Business rule: **one open assignment per (application, user)**.
 | SQL Server | Filtered unique index on `(application_id, user_id) WHERE ended_at IS NULL` |
 
 Implemented in `database/support/OpenAssignmentConstraint.php`.
+
+## How uniqueness of environment profiles is enforced
+
+Business rule: **one active (non-deleted) profile per (application, environment)**.
+
+| Engine | Implementation |
+|--------|----------------|
+| MySQL / MariaDB / SQLite | Generated column `open_environment_key` + unique `(application_id, open_environment_key)` |
+| SQL Server | Filtered unique index on `(application_id, environment_id) WHERE deleted_at IS NULL` |
+
+Implemented in `database/support/ApplicationEnvironmentUniqueConstraint.php`. Soft-deleted profiles do not block recreating the same pair.
+
+## Foreign key delete actions
+
+SQL Server does **not** accept `ON DELETE RESTRICT`. Migrations use `noActionOnDelete()`
+instead of `restrictOnDelete()`. On MySQL / MariaDB / SQLite / SQL Server, `NO ACTION`
+still blocks deleting a parent row that is referenced by children.
 
 ## Unsigned integers
 
@@ -127,7 +151,7 @@ docker compose -f docker-compose.db-compat.yml --profile tools run --rm php-comp
       DB_DATABASE=master DB_USERNAME=sa DB_PASSWORD=Your_strong_Password123 \
       DB_ENCRYPT=yes DB_TRUST_SERVER_CERTIFICATE=true \
       CACHE_STORE=array SESSION_DRIVER=array QUEUE_CONNECTION=sync && \
-    php -r "new PDO(\"sqlsrv:Server=mssql-compat,1433;Database=master;TrustServerCertificate=1\", \"sa\", \"Your_strong_Password123\")->exec(\"IF DB_ID(\\\"it_portfolio_compat\\\") IS NULL CREATE DATABASE it_portfolio_compat\");" && \
+    php -r "new PDO(\"sqlsrv:Server=mssql-compat,1433;Database=master;TrustServerCertificate=1\", \"sa\", \"Your_strong_Password123\")->exec(\"IF DB_ID(\\\"it_portfolio_compat\\\") IS NULL CREATE DATABASE it_portfolio_compat COLLATE Arabic_100_CI_AS_WS_SC\");" && \
     export DB_DATABASE=it_portfolio_compat && \
     php artisan migrate:fresh --seed --force'
 ```

@@ -63,12 +63,16 @@ final class OpenAssignmentConstraint
             return;
         }
 
-        Schema::table('application_assignments', function (Blueprint $table): void {
-            $table->dropUnique(self::INDEX_NAME);
+        if (Schema::hasIndex('application_assignments', self::INDEX_NAME)) {
+            Schema::table('application_assignments', function (Blueprint $table): void {
+                $table->dropUnique(self::INDEX_NAME);
+            });
+        }
 
-            if (Schema::hasColumn('application_assignments', 'open_key')) {
+        if (Schema::hasColumn('application_assignments', 'open_key')) {
+            Schema::table('application_assignments', function (Blueprint $table): void {
                 $table->dropColumn('open_key');
-            }
-        });
+            });
+        }
     }
 }

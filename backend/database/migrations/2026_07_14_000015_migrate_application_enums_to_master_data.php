@@ -35,10 +35,10 @@ return new class extends Migration
 
         if (! Schema::hasColumn('applications', 'status_id')) {
             Schema::table('applications', function (Blueprint $table): void {
-                // Nullable + restrict: engines forbid SET NULL on columns that later become NOT NULL.
-                $table->foreignId('status_id')->nullable()->constrained('application_statuses')->restrictOnDelete();
-                $table->foreignId('criticality_id')->nullable()->constrained('criticalities')->restrictOnDelete();
-                $table->foreignId('support_type_id')->nullable()->constrained('support_types')->restrictOnDelete();
+                // Nullable + NO ACTION: engines forbid SET NULL on columns that later become NOT NULL.
+                $table->foreignId('status_id')->nullable()->constrained('application_statuses')->noActionOnDelete();
+                $table->foreignId('criticality_id')->nullable()->constrained('criticalities')->noActionOnDelete();
+                $table->foreignId('support_type_id')->nullable()->constrained('support_types')->noActionOnDelete();
             });
         }
 
@@ -78,23 +78,22 @@ return new class extends Migration
         DB::table('applications')->whereNull('criticality_id')->update(['criticality_id' => $defaultCriticalityId]);
         DB::table('applications')->whereNull('support_type_id')->update(['support_type_id' => $defaultSupportTypeId]);
 
-        if (Schema::getConnection()->getDriverName() !== 'sqlite') {
-            // Drop FKs first — MySQL error 1830 if SET NULL FKs remain while changing to NOT NULL.
-            $this->dropApplicationMasterForeignKeys();
+        // Drop FKs first — MySQL error 1830 if SET NULL FKs remain while changing to NOT NULL.
+        // Laravel recreates SQLite tables for change(), so keep the same path for all drivers.
+        $this->dropApplicationMasterForeignKeys();
 
-            Schema::table('applications', function (Blueprint $table): void {
-                // Keep unsignedBigInteger to match id() on MySQL. SQL Server maps UNSIGNED to signed bigint.
-                $table->unsignedBigInteger('status_id')->nullable(false)->change();
-                $table->unsignedBigInteger('criticality_id')->nullable(false)->change();
-                $table->unsignedBigInteger('support_type_id')->nullable(false)->change();
-            });
+        Schema::table('applications', function (Blueprint $table): void {
+            // Keep unsignedBigInteger to match id() on MySQL. SQL Server maps UNSIGNED to signed bigint.
+            $table->unsignedBigInteger('status_id')->nullable(false)->change();
+            $table->unsignedBigInteger('criticality_id')->nullable(false)->change();
+            $table->unsignedBigInteger('support_type_id')->nullable(false)->change();
+        });
 
-            Schema::table('applications', function (Blueprint $table) {
-                $table->foreign('status_id')->references('id')->on('application_statuses')->restrictOnDelete();
-                $table->foreign('criticality_id')->references('id')->on('criticalities')->restrictOnDelete();
-                $table->foreign('support_type_id')->references('id')->on('support_types')->restrictOnDelete();
-            });
-        }
+        Schema::table('applications', function (Blueprint $table): void {
+            $table->foreign('status_id')->references('id')->on('application_statuses')->noActionOnDelete();
+            $table->foreign('criticality_id')->references('id')->on('criticalities')->noActionOnDelete();
+            $table->foreign('support_type_id')->references('id')->on('support_types')->noActionOnDelete();
+        });
     }
 
     public function down(): void

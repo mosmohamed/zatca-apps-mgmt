@@ -42,8 +42,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('applications', function (Blueprint $table): void {
-            $table->string('business_owner')->nullable()->after('criticality_id');
-            $table->string('technical_owner')->nullable()->after('business_owner');
+            $table->string('business_owner')->nullable();
+            $table->string('technical_owner')->nullable();
         });
 
         $this->restoreLegacyOwnerStrings('business_owner', 'application_business_owners');
@@ -58,6 +58,8 @@ return new class extends Migration
         if (! Schema::hasColumn('applications', $column)) {
             return;
         }
+
+        $usersByName = $this->usersByNormalizedFullName();
 
         $rows = DB::table('applications')
             ->select(['id', $column])
@@ -77,21 +79,14 @@ return new class extends Migration
             $userIds = [];
 
             foreach ($names as $name) {
-                $normalized = trim((string) preg_replace('/\s+/u', ' ', $name));
+                $normalized = $this->normalizePersonName((string) $name);
                 if ($normalized === '') {
                     continue;
                 }
 
-                $needle = mb_strtolower($normalized, 'UTF-8');
-                $userId = DB::table('users')
-                    ->whereRaw(
-                        'LOWER(CONCAT(TRIM(first_name), \' \', TRIM(last_name))) = ?',
-                        [$needle]
-                    )
-                    ->value('id');
-
+                $userId = $usersByName[$normalized] ?? null;
                 if ($userId !== null) {
-                    $userIds[] = (int) $userId;
+                    $userIds[] = $userId;
                 }
             }
 
@@ -108,19 +103,66 @@ return new class extends Migration
 
     private function restoreLegacyOwnerStrings(string $column, string $pivotTable): void
     {
-        $grouped = DB::table($pivotTable)
+        $rows = DB::table($pivotTable)
             ->join('users', 'users.id', '=', $pivotTable.'.user_id')
             ->select([
                 $pivotTable.'.application_id',
-                DB::raw("GROUP_CONCAT(CONCAT(users.first_name, ' ', users.last_name) ORDER BY users.first_name SEPARATOR ', ') as names"),
+                'users.first_name',
+                'users.last_name',
             ])
-            ->groupBy($pivotTable.'.application_id')
+            ->orderBy('users.first_name')
+            ->orderBy('users.last_name')
             ->get();
 
-        foreach ($grouped as $row) {
-            DB::table('applications')
-                ->where('id', $row->application_id)
-                ->update([$column => $row->names]);
+        $namesByApplication = [];
+
+        foreach ($rows as $row) {
+            $applicationId = (int) $row->application_id;
+            $fullName = trim((string) $row->first_name.' '.(string) $row->last_name);
+            if ($fullName === '') {
+                continue;
+            }
+
+            $namesByApplication[$applicationId][] = $fullName;
         }
+
+        foreach ($namesByApplication as $applicationId => $names) {
+            DB::table('applications')
+                ->where('id', $applicationId)
+                ->update([$column => implode(', ', $names)]);
+        }
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    private function usersByNormalizedFullName(): array
+    {
+        $map = [];
+
+        foreach (DB::table('users')->select(['id', 'first_name', 'last_name'])->get() as $user) {
+            $normalized = $this->normalizePersonName(
+                trim((string) $user->first_name.' '.(string) $user->last_name)
+            );
+
+            if ($normalized === '' || isset($map[$normalized])) {
+                continue;
+            }
+
+            $map[$normalized] = (int) $user->id;
+        }
+
+        return $map;
+    }
+
+    private function normalizePersonName(string $name): string
+    {
+        $collapsed = trim((string) preg_replace('/\s+/u', ' ', $name));
+
+        if ($collapsed === '') {
+            return '';
+        }
+
+        return mb_strtolower($collapsed, 'UTF-8');
     }
 };
