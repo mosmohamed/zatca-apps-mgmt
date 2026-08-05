@@ -1677,6 +1677,7 @@
       "addSub": "Add subcategory",
       "expand": "Expand",
       "collapse": "Collapse",
+      "openTeamDetails": "Open team details for {{name}}",
       "emptyTitle": "No categories found",
       "emptyCreate": "Create the first infrastructure category.",
       "deleteConfirm": "Delete category \"{{name}}\"? Subcategories and assignments may be affected.",

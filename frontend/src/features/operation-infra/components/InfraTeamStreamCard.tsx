@@ -56,6 +56,7 @@ export function InfraTeamStreamCard({
   const exporting = isExportingCategory(card.id)
 
   const title = isArabic ? card.title_ar : card.title_en
+  const detailPath = `/infra-teams-details/${card.id}`
 
   const activeLevelsCount = card.levels.filter(
     (level) => level.members.length > 0
@@ -71,7 +72,7 @@ export function InfraTeamStreamCard({
     <div
       style={style}
       className={cn(
-        "group relative overflow-hidden rounded-2xl border border-stroke/90 bg-card",
+        "group relative cursor-pointer overflow-hidden rounded-2xl border border-stroke/90 bg-card",
         "shadow-[0_1px_2px_rgba(15,23,42,0.04)]",
         "transition-all duration-300 ease-out",
         "hover:-translate-y-1 hover:shadow-[0_12px_28px_-12px_rgba(15,23,42,0.18)]",
@@ -107,7 +108,7 @@ export function InfraTeamStreamCard({
               type="button"
               variant="outline"
               size="icon-sm"
-              className="shrink-0 bg-background/80"
+              className="relative z-20 shrink-0 bg-background/80"
               disabled={exporting}
               onClick={handleExport}
               aria-label={t("operationInfra.details.exportCategory")}
@@ -142,19 +143,23 @@ export function InfraTeamStreamCard({
           </div>
         </div>
 
-        <Link
-          to={`/infra-teams-details/${card.id}`}
+        <span
           className={cn(
-            "mt-4 inline-flex items-center gap-1 text-sm font-medium outline-none transition-transform duration-300",
-            "hover:translate-x-0.5 rtl:hover:-translate-x-0.5",
-            "focus-visible:ring-2 focus-visible:ring-ring",
+            "mt-4 inline-flex items-center gap-1 text-sm font-medium transition-transform duration-300",
+            "group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5",
             accent.text
           )}
         >
           {t("operationInfra.details.viewDetails")}
           <ArrowRight className="size-4 rtl:rotate-180" />
-        </Link>
+        </span>
       </div>
+
+      <Link
+        to={detailPath}
+        className="absolute inset-0 z-10 rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        aria-label={`${title} — ${t("operationInfra.details.viewDetails")}`}
+      />
     </div>
   )
 }

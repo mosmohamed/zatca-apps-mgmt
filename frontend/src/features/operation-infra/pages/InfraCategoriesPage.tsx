@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
+import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { ChevronDown, ChevronRight, Pencil, Plus, Trash2 } from "lucide-react"
 
@@ -83,6 +84,7 @@ function CategoriesTab() {
   const canCreate = can("infra-categories.create")
   const canUpdate = can("infra-categories.update")
   const canDelete = can("infra-categories.delete")
+  const canViewTeamDetails = can("infra-team-assignments.view")
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [sort, setSort] = useState("sort_order")
@@ -236,6 +238,14 @@ function CategoriesTab() {
         sortKey: isArabic ? "name_ar" : "name_en",
         cell: (row) => {
           const name = isArabic ? row.name_ar : row.name_en
+          const hasSubcategories =
+            row.has_children || (row.children_count ?? 0) > 0
+          const ownAssignmentsCount = hasSubcategories
+            ? 0
+            : (row.assignments_count ?? 0)
+          const canOpenTeamDetails =
+            canViewTeamDetails && !hasSubcategories && ownAssignmentsCount > 0
+
           return (
             <div
               className={cn(
@@ -273,14 +283,35 @@ function CategoriesTab() {
                   aria-hidden
                 />
               )}
-              <span
-                className={cn(
-                  "truncate",
-                  row.depth === 0 ? "font-semibold" : "font-medium text-muted-foreground"
-                )}
-              >
-                {name}
-              </span>
+              {canOpenTeamDetails ? (
+                <Link
+                  to={`/infra-teams-details/${row.id}`}
+                  className={cn(
+                    "cursor-pointer truncate underline-offset-2 outline-none transition-colors",
+                    "hover:underline focus-visible:underline",
+                    "focus-visible:ring-2 focus-visible:ring-ring",
+                    row.depth === 0
+                      ? "font-semibold text-foreground"
+                      : "font-medium text-muted-foreground"
+                  )}
+                  aria-label={t("operationInfra.categories.openTeamDetails", {
+                    name,
+                  })}
+                >
+                  {name}
+                </Link>
+              ) : (
+                <span
+                  className={cn(
+                    "truncate",
+                    row.depth === 0
+                      ? "font-semibold"
+                      : "font-medium text-muted-foreground"
+                  )}
+                >
+                  {name}
+                </span>
+              )}
             </div>
           )
         },
@@ -422,6 +453,7 @@ function CategoriesTab() {
     canCreate,
     canDelete,
     canUpdate,
+    canViewTeamDetails,
     deleteMutation.isPending,
     expandedIds,
     isArabic,
