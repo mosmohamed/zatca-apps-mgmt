@@ -260,7 +260,7 @@ who to contact is not sensitive.
 ## Audit logging
 
 `ApplicationEnvironment` and every component model use `spatie/laravel-activitylog` with
-`logFillable()`, `logOnlyDirty()` and `dontLogEmptyChanges()`, so creates, updates, soft deletes and
+`logFillable()`, `logOnlyDirty()` and `dontSubmitEmptyLogs()`, so creates, updates, soft deletes and
 restores of profiles and components are recorded automatically under the default log name.
 
 The copy operation additionally writes an explicit entry under the `application_infrastructure` log
