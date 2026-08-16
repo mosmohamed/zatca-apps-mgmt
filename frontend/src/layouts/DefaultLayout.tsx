@@ -26,6 +26,12 @@ const pageTitleKeys: Record<string, string> = {
   "/criticalities": "nav.criticalities",
   "/application-statuses": "nav.applicationStatuses",
   "/technologies": "nav.technologies",
+  "/infra-categories": "nav.infraCategories",
+  "/infra-team-assignments": "nav.infraTeamAssignments",
+  "/infra-teams-details": "nav.infraTeamsDetails",
+  "/service-desk-categories": "nav.serviceDeskCategories",
+  "/service-desk-team-assignments": "nav.serviceDeskTeamAssignments",
+  "/service-desk-escalation-matrix": "nav.serviceDeskEscalationMatrix",
   "/licenses": "nav.licenses",
   "/roles": "nav.roles",
   "/activity-log": "nav.activityLog",
@@ -49,6 +55,20 @@ function resolveTitleKey(pathname: string): string {
 
   if (pathname.startsWith("/licenses/") && pathname !== "/licenses") {
     return "nav.licenseDetail"
+  }
+
+  if (
+    pathname.startsWith("/infra-teams-details/") &&
+    pathname !== "/infra-teams-details"
+  ) {
+    return "nav.infraTeamsDetails"
+  }
+
+  if (
+    pathname.startsWith("/service-desk-escalation-matrix/") &&
+    pathname !== "/service-desk-escalation-matrix"
+  ) {
+    return "nav.serviceDeskEscalationMatrix"
   }
 
   return pageTitleKeys[pathname] ?? "app.fallbackTitle"

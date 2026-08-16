@@ -156,5 +156,6 @@ docker compose -f docker-compose.db-compat.yml --profile tools run --rm php-comp
     php artisan migrate:fresh --seed --force'
 ```
 
-Automated unit coverage for the MSSQL filtered-index SQL is in
-`tests/Unit/OpenAssignmentConstraintTest.php`.
+Automated unit coverage for the MSSQL filtered-index SQL (and non-sqlsrv Schema Builder paths) is in
+`tests/Unit/OpenAssignmentConstraintTest.php` and
+`tests/Unit/ApplicationEnvironmentUniqueConstraintTest.php`.

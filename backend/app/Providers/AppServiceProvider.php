@@ -14,6 +14,9 @@ use App\Models\Department;
 use App\Models\InfraCategory;
 use App\Models\InfraLevel;
 use App\Models\InfraTeamAssignment;
+use App\Models\ServiceDeskCategory;
+use App\Models\ServiceDeskLevel;
+use App\Models\ServiceDeskTeamAssignment;
 use App\Models\JobTitle;
 use App\Models\License;
 use App\Models\Setting;
@@ -32,6 +35,9 @@ use App\Policies\DepartmentPolicy;
 use App\Policies\InfraCategoryPolicy;
 use App\Policies\InfraLevelPolicy;
 use App\Policies\InfraTeamAssignmentPolicy;
+use App\Policies\ServiceDeskCategoryPolicy;
+use App\Policies\ServiceDeskLevelPolicy;
+use App\Policies\ServiceDeskTeamAssignmentPolicy;
 use App\Policies\JobTitlePolicy;
 use App\Policies\LicensePolicy;
 use App\Policies\SettingPolicy;
@@ -80,5 +86,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(InfraLevel::class, InfraLevelPolicy::class);
         Gate::policy(InfraCategory::class, InfraCategoryPolicy::class);
         Gate::policy(InfraTeamAssignment::class, InfraTeamAssignmentPolicy::class);
+        Gate::policy(ServiceDeskLevel::class, ServiceDeskLevelPolicy::class);
+        Gate::policy(ServiceDeskCategory::class, ServiceDeskCategoryPolicy::class);
+        Gate::policy(ServiceDeskTeamAssignment::class, ServiceDeskTeamAssignmentPolicy::class);
     }
 }

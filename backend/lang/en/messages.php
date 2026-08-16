@@ -397,6 +397,40 @@ return [
         'retrieved' => 'Infrastructure teams details retrieved successfully.',
     ],
 
+    'service_desk_levels' => [
+        'listed' => 'Service desk levels retrieved successfully.',
+        'created' => 'Service desk level created successfully.',
+        'retrieved' => 'Service desk level retrieved successfully.',
+        'updated' => 'Service desk level updated successfully.',
+        'deleted' => 'Service desk level deleted successfully.',
+    ],
+
+    'service_desk_categories' => [
+        'listed' => 'Service desk categories retrieved successfully.',
+        'tree_retrieved' => 'Service desk category tree retrieved successfully.',
+        'statistics_retrieved' => 'Service desk category statistics retrieved successfully.',
+        'created' => 'Service desk category created successfully.',
+        'retrieved' => 'Service desk category retrieved successfully.',
+        'updated' => 'Service desk category updated successfully.',
+        'deleted' => 'Service desk category deleted successfully.',
+        'parent_must_be_root' => 'Subcategories can only be nested under a root category.',
+    ],
+
+    'service_desk_team_assignments' => [
+        'listed' => 'Service desk team assignments retrieved successfully.',
+        'statistics_retrieved' => 'Service desk team assignment statistics retrieved successfully.',
+        'categories_listed' => 'Service desk assignment streams retrieved successfully.',
+        'category_retrieved' => 'Service desk stream assignments retrieved successfully.',
+        'created' => 'Service desk team assignment created successfully.',
+        'retrieved' => 'Service desk team assignment retrieved successfully.',
+        'updated' => 'Service desk team assignment updated successfully.',
+        'deleted' => 'Service desk team assignment deleted successfully.',
+    ],
+
+    'service_desk_teams_details' => [
+        'retrieved' => 'Service desk escalation matrix retrieved successfully.',
+    ],
+
     'application_statuses' => [
         'listed' => 'Application statuses retrieved successfully.',
         'created' => 'Application status created successfully.',
@@ -461,6 +495,8 @@ return [
         'technologies' => 'Technologies retrieved successfully.',
         'infra_levels' => 'Infrastructure levels retrieved successfully.',
         'infra_categories' => 'Infrastructure categories retrieved successfully.',
+        'service_desk_levels' => 'Service desk levels retrieved successfully.',
+        'service_desk_categories' => 'Service desk categories retrieved successfully.',
     ],
 
     'exports' => [

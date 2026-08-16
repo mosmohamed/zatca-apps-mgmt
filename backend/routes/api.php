@@ -24,6 +24,9 @@ use App\Http\Controllers\Api\V1\LicenseController;
 use App\Http\Controllers\Api\V1\LookupController;
 use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\RoleController;
+use App\Http\Controllers\Api\V1\ServiceDeskCategoryController;
+use App\Http\Controllers\Api\V1\ServiceDeskLevelController;
+use App\Http\Controllers\Api\V1\ServiceDeskTeamAssignmentController;
 use App\Http\Controllers\Api\V1\SettingsController;
 use App\Http\Controllers\Api\V1\SupportTypeController;
 use App\Http\Controllers\Api\V1\TechnologyController;
@@ -58,6 +61,8 @@ Route::prefix('v1')->group(function (): void {
         Route::get('lookups/technologies', [LookupController::class, 'technologies']);
         Route::get('lookups/infra-levels', [LookupController::class, 'infraLevels']);
         Route::get('lookups/infra-categories', [LookupController::class, 'infraCategories']);
+        Route::get('lookups/service-desk-levels', [LookupController::class, 'serviceDeskLevels']);
+        Route::get('lookups/service-desk-categories', [LookupController::class, 'serviceDeskCategories']);
 
         Route::post('exports/{entity}', [ExportController::class, 'store']);
 
@@ -137,5 +142,20 @@ Route::prefix('v1')->group(function (): void {
         Route::get('infra-team-assignments/export', [InfraTeamAssignmentController::class, 'export']);
         Route::get('infra-team-assignments/export/{infraCategory}', [InfraTeamAssignmentController::class, 'exportCategory']);
         Route::apiResource('infra-team-assignments', InfraTeamAssignmentController::class);
+
+        Route::get('service-desk-categories/statistics', [ServiceDeskCategoryController::class, 'statistics']);
+        Route::get('service-desk-categories/tree', [ServiceDeskCategoryController::class, 'tree']);
+        Route::apiResource('service-desk-levels', ServiceDeskLevelController::class)
+            ->parameters(['service-desk-levels' => 'infraLevel']);
+        Route::apiResource('service-desk-categories', ServiceDeskCategoryController::class)
+            ->parameters(['service-desk-categories' => 'infraCategory']);
+        Route::get('service-desk-team-assignments/statistics', [ServiceDeskTeamAssignmentController::class, 'statistics']);
+        Route::get('service-desk-team-assignments/categories-summary', [ServiceDeskTeamAssignmentController::class, 'categoriesSummary']);
+        Route::get('service-desk-team-assignments/category/{infraCategory}', [ServiceDeskTeamAssignmentController::class, 'categoryMatrix']);
+        Route::get('service-desk-team-assignments/details', [ServiceDeskTeamAssignmentController::class, 'details']);
+        Route::get('service-desk-team-assignments/export', [ServiceDeskTeamAssignmentController::class, 'export']);
+        Route::get('service-desk-team-assignments/export/{infraCategory}', [ServiceDeskTeamAssignmentController::class, 'exportCategory']);
+        Route::apiResource('service-desk-team-assignments', ServiceDeskTeamAssignmentController::class)
+            ->parameters(['service-desk-team-assignments' => 'infraTeamAssignment']);
     });
 });

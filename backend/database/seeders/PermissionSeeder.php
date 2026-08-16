@@ -104,6 +104,18 @@ class PermissionSeeder extends Seeder
             'infra-team-assignments.create',
             'infra-team-assignments.update',
             'infra-team-assignments.delete',
+            'service-desk-levels.view',
+            'service-desk-levels.create',
+            'service-desk-levels.update',
+            'service-desk-levels.delete',
+            'service-desk-categories.view',
+            'service-desk-categories.create',
+            'service-desk-categories.update',
+            'service-desk-categories.delete',
+            'service-desk-team-assignments.view',
+            'service-desk-team-assignments.create',
+            'service-desk-team-assignments.update',
+            'service-desk-team-assignments.delete',
         ];
 
         foreach ($permissions as $permission) {
@@ -137,6 +149,9 @@ class PermissionSeeder extends Seeder
             'infra-levels.view',
             'infra-categories.view',
             'infra-team-assignments.view',
+            'service-desk-levels.view',
+            'service-desk-categories.view',
+            'service-desk-team-assignments.view',
         ]);
     }
 }

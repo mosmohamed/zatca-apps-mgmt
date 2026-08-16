@@ -12,6 +12,8 @@ use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\InfraCategoryResource;
 use App\Http\Resources\InfraLevelResource;
 use App\Http\Resources\JobTitleResource;
+use App\Http\Resources\ServiceDeskCategoryResource;
+use App\Http\Resources\ServiceDeskLevelResource;
 use App\Http\Resources\SupportTypeResource;
 use App\Http\Resources\TechnologyResource;
 use App\Models\ApplicationStatus;
@@ -22,6 +24,8 @@ use App\Models\Department;
 use App\Models\InfraCategory;
 use App\Models\InfraLevel;
 use App\Models\JobTitle;
+use App\Models\ServiceDeskCategory;
+use App\Models\ServiceDeskLevel;
 use App\Models\SupportType;
 use App\Models\Technology;
 use App\Models\User;
@@ -217,6 +221,54 @@ class LookupController extends BaseApiController
         return $this->successResponse(
             InfraCategoryResource::collection($items)->resolve(),
             __('messages.lookups.infra_categories'),
+        );
+    }
+
+    public function serviceDeskLevels(Request $request): JsonResponse
+    {
+        $this->authorizeLookup($request, [
+            'service-desk-levels.view',
+            'service-desk-team-assignments.view',
+            'service-desk-team-assignments.create',
+            'service-desk-team-assignments.update',
+        ]);
+
+        $items = ServiceDeskLevel::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name_en')
+            ->get();
+
+        return $this->successResponse(
+            ServiceDeskLevelResource::collection($items)->resolve(),
+            __('messages.lookups.service_desk_levels'),
+        );
+    }
+
+    public function serviceDeskCategories(Request $request): JsonResponse
+    {
+        $this->authorizeLookup($request, [
+            'service-desk-categories.view',
+            'service-desk-team-assignments.view',
+            'service-desk-team-assignments.create',
+            'service-desk-team-assignments.update',
+        ]);
+
+        $items = ServiceDeskCategory::query()
+            ->with(['parent'])
+            ->withCount([
+                'children as children_count' => static function ($query): void {
+                    $query->where('is_active', true);
+                },
+            ])
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name_en')
+            ->get();
+
+        return $this->successResponse(
+            ServiceDeskCategoryResource::collection($items)->resolve(),
+            __('messages.lookups.service_desk_categories'),
         );
     }
 

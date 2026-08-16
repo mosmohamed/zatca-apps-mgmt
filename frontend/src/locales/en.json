@@ -25,15 +25,19 @@
     "operationInfra": "Infra Operations",
     "infraCategories": "Infra Categories",
     "infraTeamAssignments": "Team Assignments",
-    "infraTeamsDetails": "Infra Teams Details",
-    "licenses": "Licenses",
-    "licenseDetail": "License Detail",
+    "infraTeamsDetails": "Escalation Matrix",
+    "licenses": "Infra Licenses",
+    "licenseDetail": "Infra License Detail",
     "roles": "Roles & Permissions",
     "activityLog": "Activity Log",
     "settings": "Settings",
     "forbidden": "Forbidden",
     "notFound": "Not Found",
-    "serverError": "Server Error"
+    "serverError": "Server Error",
+    "serviceDesk": "Service Desk",
+    "serviceDeskCategories": "Categories",
+    "serviceDeskTeamAssignments": "Team Assignments",
+    "serviceDeskEscalationMatrix": "Escalation Matrix"
   },
   "common": {
     "cancel": "Cancel",
@@ -1142,7 +1146,7 @@
     }
   },
   "licenses": {
-    "title": "Licenses",
+    "title": "Infra Licenses",
     "description": "Track software entitlements, usage, and renewals across environments.",
     "new": "New license",
     "view": "View",
@@ -1855,7 +1859,7 @@
       }
     },
     "details": {
-      "title": "Infra Teams Details",
+      "title": "Escalation Matrix",
       "description": "Browse infrastructure streams with live staffing by support level.",
       "searchPlaceholder": "Search streams by name or code...",
       "showingCount": "Showing {{shown}} of {{total}}",
@@ -1870,7 +1874,222 @@
       }
     },
     "detail": {
-      "backToList": "Back to infra teams details",
+      "backToList": "Back to escalation matrix",
+      "invalidId": "Invalid stream",
+      "invalidIdDescription": "The stream id in the URL is not valid.",
+      "notFoundTitle": "Stream not found",
+      "notFoundDescription": "This stream may have been removed or you do not have access.",
+      "noMembersTitle": "No members assigned",
+      "noMembersDescription": "Assign users to this stream from the Team Assignments page.",
+      "escalationMatrix": "Escalation matrix",
+      "escalationPath": "Escalation path",
+      "memberCount": "{{count}} member",
+      "memberCount_other": "{{count}} members"
+    }
+  },
+  "serviceDesk": {
+    "categories": {
+      "title": "Service Desk Categories",
+      "description": "Manage Service Desk streams (categories) and their subcategories, plus support levels.",
+      "searchPlaceholder": "Search categories by name or code...",
+      "newRoot": "New category",
+      "addSub": "Add subcategory",
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "openTeamDetails": "Open team details for {{name}}",
+      "emptyTitle": "No categories found",
+      "emptyCreate": "Create the first Service Desk category.",
+      "deleteConfirm": "Delete category \"{{name}}\"? Subcategories and assignments may be affected.",
+      "stats": {
+        "total": "Total categories",
+        "parents": "Parent categories",
+        "subcategories": "Subcategories",
+        "withoutAssignments": "Without assignments"
+      },
+      "filters": {
+        "allTypes": "All category types",
+        "allStatuses": "All statuses"
+      },
+      "types": {
+        "parent": "Parent category",
+        "subcategory": "Subcategory"
+      },
+      "tabs": {
+        "categories": "Categories",
+        "levels": "Levels"
+      },
+      "columns": {
+        "name": "Name",
+        "type": "Type",
+        "parent": "Parent",
+        "code": "Code",
+        "assignments": "Assignments",
+        "sortOrder": "Sort order",
+        "isActive": "Active",
+        "created": "Created"
+      },
+      "form": {
+        "createTitle": "New category",
+        "editTitle": "Edit category",
+        "createSubTitle": "New subcategory",
+        "editSubTitle": "Edit subcategory",
+        "rootDescription": "Root categories represent top-level infrastructure streams.",
+        "subDescription": "Subcategories belong to a root category and represent a specific stream.",
+        "parentLabel": "Parent category",
+        "nameEn": "English name",
+        "nameAr": "Arabic name",
+        "code": "Code",
+        "description": "Description",
+        "descriptionPlaceholder": "Optional description",
+        "sortOrder": "Sort order",
+        "isActive": "Active",
+        "saving": "Saving...",
+        "createSubmit": "Create category",
+        "updateSubmit": "Save changes"
+      },
+      "toast": {
+        "created": "Category created successfully.",
+        "updated": "Category updated successfully.",
+        "deleted": "Category deleted successfully.",
+        "createFailed": "Failed to create category.",
+        "updateFailed": "Failed to update category.",
+        "deleteFailed": "Failed to delete category."
+      }
+    },
+    "levels": {
+      "new": "New level",
+      "searchPlaceholder": "Search levels by name, code, or note...",
+      "emptyTitle": "No levels found",
+      "emptyCreate": "Create the first support level.",
+      "deleteConfirm": "Delete level \"{{name}}\"?",
+      "columns": {
+        "nameEn": "English name",
+        "nameAr": "Arabic name",
+        "code": "Code",
+        "note": "Note",
+        "sortOrder": "Sort order",
+        "isActive": "Active"
+      },
+      "form": {
+        "createTitle": "New level",
+        "editTitle": "Edit level",
+        "createDescription": "Add a support level used across infrastructure team assignments.",
+        "editDescription": "Update level details.",
+        "nameEn": "English name",
+        "nameAr": "Arabic name",
+        "code": "Code",
+        "noteEn": "English note",
+        "noteAr": "Arabic note",
+        "notePlaceholder": "Optional note shown on hover",
+        "sortOrder": "Sort order",
+        "isActive": "Active",
+        "saving": "Saving...",
+        "createSubmit": "Create level",
+        "updateSubmit": "Save changes"
+      },
+      "toast": {
+        "created": "Level created successfully.",
+        "updated": "Level updated successfully.",
+        "deleted": "Level deleted successfully.",
+        "createFailed": "Failed to create level.",
+        "updateFailed": "Failed to update level.",
+        "deleteFailed": "Failed to delete level."
+      }
+    },
+    "assignments": {
+      "title": "Infra Team Assignments",
+      "description": "View and manage users assigned to each infrastructure stream and support level.",
+      "new": "New assignment",
+      "searchPlaceholder": "Search streams by name or code...",
+      "emptyTitle": "No streams found",
+      "emptyCreate": "Create infrastructure categories first to manage team assignments.",
+      "emptyFiltered": "Try a different search term.",
+      "deleteConfirm": "Remove assignment for {{name}}?",
+      "stats": {
+        "total": "Total assignments",
+        "uniqueUsers": "Unique assigned users",
+        "assignedCategories": "Assigned categories",
+        "unassignedCategories": "Unassigned categories"
+      },
+      "actions": {
+        "view": "View assignments",
+        "edit": "Edit assignments"
+      },
+      "filters": {
+        "allCategories": "All categories",
+        "allLevels": "All levels"
+      },
+      "columns": {
+        "stream": "Stream",
+        "user": "User",
+        "level": "Level",
+        "assignedUsers": "Assigned users"
+      },
+      "view": {
+        "title": "Stream assignments",
+        "description": "Users currently assigned to this infrastructure stream.",
+        "empty": "No users are assigned to this stream yet."
+      },
+      "edit": {
+        "title": "Edit assignments — {{name}}",
+        "titleFallback": "Edit assignments",
+        "description": "Add or remove users and set their support level for this stream.",
+        "deleteConfirm": "Remove {{user}} from this stream?",
+        "save": "Save changes",
+        "saving": "Saving..."
+      },
+      "form": {
+        "createTitle": "New assignment",
+        "editTitle": "Edit assignment",
+        "createDescription": "Assign one or more users to a category and support level.",
+        "editDescription": "Update this assignment's category, user, or level.",
+        "category": "Category",
+        "user": "User",
+        "users": "Users",
+        "level": "Level",
+        "selectLevel": "Select a level",
+        "selectUsers": "Select one or more users",
+        "searchCategories": "Search categories...",
+        "searchUsers": "Search users...",
+        "noCategories": "No categories found.",
+        "noUsers": "No users found.",
+        "addUser": "Add user",
+        "saving": "Saving...",
+        "createSubmit": "Create assignments",
+        "updateSubmit": "Save changes"
+      },
+      "validation": {
+        "categoryRequired": "Category is required.",
+        "levelRequired": "Level is required.",
+        "duplicateUserLevel": "This user is already assigned at this level."
+      },
+      "toast": {
+        "created": "Assignments created successfully.",
+        "updated": "Assignment updated successfully.",
+        "deleted": "Assignment removed successfully.",
+        "matrixSaved": "Stream assignments saved successfully.",
+        "createFailed": "Failed to create assignment.",
+        "updateFailed": "Failed to update assignment.",
+        "deleteFailed": "Failed to remove assignment."
+      }
+    },
+    "details": {
+      "title": "Escalation Matrix",
+      "description": "Browse Service Desk streams with live staffing by support level.",
+      "searchPlaceholder": "Search streams by name or code...",
+      "showingCount": "Showing {{shown}} of {{total}}",
+      "emptyTitle": "No streams found",
+      "emptyDescription": "Create categories and assignments to see streams here.",
+      "viewDetails": "View details",
+      "exportExcel": "Export Excel",
+      "exportCategory": "Export Excel",
+      "metrics": {
+        "members": "Members",
+        "levels": "Levels"
+      }
+    },
+    "detail": {
+      "backToList": "Back to escalation matrix",
       "invalidId": "Invalid stream",
       "invalidIdDescription": "The stream id in the URL is not valid.",
       "notFoundTitle": "Stream not found",

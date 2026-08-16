@@ -150,6 +150,34 @@ const InfraTeamDetailPage = lazy(() =>
     })
   )
 )
+const ServiceDeskCategoriesPage = lazy(() =>
+  import("@/features/service-desk/pages/ServiceDeskCategoriesPage").then(
+    (module) => ({
+      default: module.ServiceDeskCategoriesPage,
+    })
+  )
+)
+const ServiceDeskTeamAssignmentsPage = lazy(() =>
+  import("@/features/service-desk/pages/ServiceDeskTeamAssignmentsPage").then(
+    (module) => ({
+      default: module.ServiceDeskTeamAssignmentsPage,
+    })
+  )
+)
+const ServiceDeskEscalationMatrixPage = lazy(() =>
+  import("@/features/service-desk/pages/ServiceDeskEscalationMatrixPage").then(
+    (module) => ({
+      default: module.ServiceDeskEscalationMatrixPage,
+    })
+  )
+)
+const ServiceDeskEscalationMatrixDetailPage = lazy(() =>
+  import(
+    "@/features/service-desk/pages/ServiceDeskEscalationMatrixDetailPage"
+  ).then((module) => ({
+    default: module.ServiceDeskEscalationMatrixDetailPage,
+  }))
+)
 const ActivityLogPage = lazy(() =>
   import("@/features/activity-log/pages/ActivityLogPage").then((module) => ({
     default: module.ActivityLogPage,
@@ -336,6 +364,36 @@ function AppRoutes() {
                     <Route
                       path="infra-teams-details/:id"
                       element={<InfraTeamDetailPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="service-desk-categories.view" />
+                    }
+                  >
+                    <Route
+                      path="service-desk-categories"
+                      element={<ServiceDeskCategoriesPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="service-desk-team-assignments.view" />
+                    }
+                  >
+                    <Route
+                      path="service-desk-team-assignments"
+                      element={<ServiceDeskTeamAssignmentsPage />}
+                    />
+                    <Route
+                      path="service-desk-escalation-matrix"
+                      element={<ServiceDeskEscalationMatrixPage />}
+                    />
+                    <Route
+                      path="service-desk-escalation-matrix/:id"
+                      element={<ServiceDeskEscalationMatrixDetailPage />}
                     />
                   </Route>
 

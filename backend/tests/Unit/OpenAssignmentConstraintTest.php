@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use Database\Support\ApplicationEnvironmentUniqueConstraint;
 use Database\Support\OpenAssignmentConstraint;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Schema\Builder;
@@ -69,6 +68,56 @@ class OpenAssignmentConstraintTest extends TestCase
             ->andReturn(true);
 
         OpenAssignmentConstraint::drop();
+
+        $this->addToAssertionCount(1);
+    }
+
+    #[Test]
+    public function mysql_path_uses_schema_builder_not_raw_sql(): void
+    {
+        $connection = Mockery::mock(ConnectionInterface::class);
+        $builder = Mockery::mock(Builder::class);
+
+        $builder->shouldReceive('getConnection')->andReturn($connection);
+        $connection->shouldReceive('getDriverName')->andReturn('mysql');
+
+        Schema::swap($builder);
+
+        $builder->shouldReceive('table')
+            ->once()
+            ->withArgs(function (string $table, mixed $callback): bool {
+                return $table === 'application_assignments'
+                    && $callback instanceof \Closure;
+            });
+
+        DB::shouldReceive('statement')->never();
+
+        OpenAssignmentConstraint::create();
+
+        $this->addToAssertionCount(1);
+    }
+
+    #[Test]
+    public function sqlite_path_uses_schema_builder_not_raw_sql(): void
+    {
+        $connection = Mockery::mock(ConnectionInterface::class);
+        $builder = Mockery::mock(Builder::class);
+
+        $builder->shouldReceive('getConnection')->andReturn($connection);
+        $connection->shouldReceive('getDriverName')->andReturn('sqlite');
+
+        Schema::swap($builder);
+
+        $builder->shouldReceive('table')
+            ->once()
+            ->withArgs(function (string $table, mixed $callback): bool {
+                return $table === 'application_assignments'
+                    && $callback instanceof \Closure;
+            });
+
+        DB::shouldReceive('statement')->never();
+
+        OpenAssignmentConstraint::create();
 
         $this->addToAssertionCount(1);
     }
