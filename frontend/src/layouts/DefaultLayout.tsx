@@ -32,7 +32,9 @@ const pageTitleKeys: Record<string, string> = {
   "/service-desk-categories": "nav.serviceDeskCategories",
   "/service-desk-team-assignments": "nav.serviceDeskTeamAssignments",
   "/service-desk-escalation-matrix": "nav.serviceDeskEscalationMatrix",
-  "/licenses": "nav.licenses",
+  "/licenses": "nav.appsLicenses",
+  "/infra-licenses": "nav.infraLicenses",
+  "/service-desk-licenses": "nav.sdLicenses",
   "/roles": "nav.roles",
   "/activity-log": "nav.activityLog",
   "/settings": "nav.settings",
@@ -54,7 +56,21 @@ function resolveTitleKey(pathname: string): string {
   }
 
   if (pathname.startsWith("/licenses/") && pathname !== "/licenses") {
-    return "nav.licenseDetail"
+    return "nav.appsLicenseDetail"
+  }
+
+  if (
+    pathname.startsWith("/infra-licenses/") &&
+    pathname !== "/infra-licenses"
+  ) {
+    return "nav.infraLicenseDetail"
+  }
+
+  if (
+    pathname.startsWith("/service-desk-licenses/") &&
+    pathname !== "/service-desk-licenses"
+  ) {
+    return "nav.sdLicenseDetail"
   }
 
   if (

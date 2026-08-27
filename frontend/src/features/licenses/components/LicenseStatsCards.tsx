@@ -10,6 +10,7 @@ import {
 import type { LucideIcon } from "lucide-react"
 
 import { LoadingSkeleton } from "@/components/LoadingSkeleton"
+import type { LicenseModuleId } from "@/features/licenses/config/license-modules"
 import { useLicenseStatistics } from "@/features/licenses/hooks/use-licenses"
 import type { LicenseStatistics } from "@/features/licenses/types/license"
 import { useCountUp } from "@/hooks/use-count-up"
@@ -140,9 +141,13 @@ function LicenseStatCard({
   )
 }
 
-export function LicenseStatsCards() {
+export function LicenseStatsCards({
+  moduleId = "apps",
+}: {
+  moduleId?: LicenseModuleId
+}) {
   const { t } = useTranslation()
-  const statsQuery = useLicenseStatistics()
+  const statsQuery = useLicenseStatistics(moduleId)
 
   if (statsQuery.isLoading) {
     return <LoadingSkeleton variant="cards" />

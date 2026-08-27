@@ -54,4 +54,12 @@ class Vendor extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    /**
+     * @return HasMany<Application, $this>
+     */
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class);
+    }
 }

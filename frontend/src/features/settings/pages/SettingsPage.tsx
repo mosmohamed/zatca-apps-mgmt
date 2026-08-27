@@ -66,7 +66,7 @@ const TIMEZONE_OPTIONS = [
 
 export function SettingsPage() {
   const { t } = useTranslation()
-  const { can } = useAuth()
+  const { can, isSuperAdmin } = useAuth()
   const canUpdateSettings = can("settings.update")
   const { settings, isLoading, isSaving, updateSettings } = useSettings()
   const [selectedRoleId, setSelectedRoleId] = useState<string>("")
@@ -101,6 +101,10 @@ export function SettingsPage() {
       header_subtitle_ar: settings.header_subtitle_ar,
       default_timezone: settings.default_timezone,
       default_pagination_size: settings.default_pagination_size,
+      login_default_credentials_enabled:
+        settings.login_default_credentials_enabled,
+      login_default_email: settings.login_default_email,
+      login_default_password: settings.login_default_password,
       dashboard_widgets_by_role: byRoleDefaults,
       dashboard_widget_layout: layoutDefaults,
     },
@@ -116,6 +120,10 @@ export function SettingsPage() {
         header_subtitle_ar: settings.header_subtitle_ar,
         default_timezone: settings.default_timezone,
         default_pagination_size: settings.default_pagination_size,
+        login_default_credentials_enabled:
+          settings.login_default_credentials_enabled,
+        login_default_email: settings.login_default_email,
+        login_default_password: settings.login_default_password,
         dashboard_widgets_by_role: byRoleDefaults,
         dashboard_widget_layout: layoutDefaults,
       })
@@ -150,6 +158,14 @@ export function SettingsPage() {
         header_subtitle_ar: values.header_subtitle_ar,
         default_timezone: values.default_timezone,
         default_pagination_size: values.default_pagination_size,
+        ...(isSuperAdmin
+          ? {
+              login_default_credentials_enabled:
+                values.login_default_credentials_enabled,
+              login_default_email: values.login_default_email,
+              login_default_password: values.login_default_password,
+            }
+          : {}),
         dashboard_widgets: {
           roles: values.dashboard_widgets_by_role,
         },
@@ -519,7 +535,7 @@ export function SettingsPage() {
                     {t("settings.security.description")}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-6">
                   <div className="flex items-start gap-3 rounded-lg border border-dashed border-stroke p-4">
                     <ShieldAlert className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
                     <div>
@@ -533,6 +549,87 @@ export function SettingsPage() {
                       </p>
                     </div>
                   </div>
+
+                  {isSuperAdmin ? (
+                    <div className="space-y-4 rounded-lg border border-stroke p-4">
+                      <div>
+                        <p className="text-sm font-medium">
+                          {t("settings.security.loginCredentialsTitle")}
+                        </p>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {t("settings.security.loginCredentialsDescription")}
+                        </p>
+                      </div>
+
+                      <FormField
+                        control={form.control}
+                        name="login_default_credentials_enabled"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-start gap-3 space-y-0">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={(checked) =>
+                                  field.onChange(checked === true)
+                                }
+                                disabled={!canUpdateSettings}
+                              />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                              <FormLabel>
+                                {t("settings.security.loginCredentialsEnabled")}
+                              </FormLabel>
+                            </div>
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="login_default_email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {t("settings.security.loginDefaultEmail")}
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="email"
+                                disabled={!canUpdateSettings}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="login_default_password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {t("settings.security.loginDefaultPassword")}
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="text"
+                                disabled={!canUpdateSettings}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              {t(
+                                "settings.security.loginCredentialsSuperAdminOnly"
+                              )}
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  ) : null}
                 </CardContent>
               </Card>
             </TabsContent>

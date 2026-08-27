@@ -15,6 +15,11 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { LicenseFormDialog } from "@/features/licenses/components/LicenseFormDialog"
+import {
+  LICENSE_MODULES,
+  licensePermission,
+  type LicenseModuleId,
+} from "@/features/licenses/config/license-modules"
 import { useLicense } from "@/features/licenses/hooks/use-licenses"
 import type { LicenseStatus } from "@/features/licenses/types/license"
 import { useAuth } from "@/features/auth/hooks/use-auth"
@@ -69,15 +74,22 @@ function DetailItem({
   )
 }
 
-export function LicenseDetailPage() {
+type LicenseDetailPageProps = {
+  moduleId?: LicenseModuleId
+}
+
+export function LicenseDetailPage({
+  moduleId = "apps",
+}: LicenseDetailPageProps) {
   const { t } = useTranslation()
   const { can } = useAuth()
   const params = useParams()
   const licenseId = Number(params.id)
-  const canUpdate = can("licenses.update")
+  const module = LICENSE_MODULES[moduleId]
+  const canUpdate = can(licensePermission(module, "update"))
   const [editOpen, setEditOpen] = useState(false)
 
-  const licenseQuery = useLicense(licenseId)
+  const licenseQuery = useLicense(licenseId, moduleId)
 
   if (!Number.isFinite(licenseId) || licenseId <= 0) {
     return (
@@ -115,7 +127,7 @@ export function LicenseDetailPage() {
         <div className="pointer-events-none absolute inset-y-0 start-0 w-1 bg-gradient-to-b from-sky-500 via-teal-500 to-emerald-500" />
 
         <Button asChild variant="ghost" size="sm" className="-ms-2 mb-3 w-fit">
-          <Link to="/licenses">
+          <Link to={module.listPath}>
             <ArrowLeft className="rtl:rotate-180" />
             {t("licenses.detail.backToList")}
           </Link>
@@ -303,6 +315,7 @@ export function LicenseDetailPage() {
           open={editOpen}
           onOpenChange={setEditOpen}
           license={license}
+          moduleId={moduleId}
         />
       ) : null}
     </section>

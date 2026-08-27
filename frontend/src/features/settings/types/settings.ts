@@ -7,6 +7,9 @@ export type PublicSettings = {
   default_timezone: string
   default_pagination_size: number
   session_timeout_minutes: number
+  login_default_credentials_enabled: boolean
+  login_default_email: string
+  login_default_password: string
   /** Effective widgets for the current authenticated user (or defaults when guest). */
   dashboard_widgets: import("@/features/dashboard/types/dashboard-widgets").DashboardWidgetsConfig
   /** Org-wide widget presentation (spans, chrome, chart heights). Separate from user order. */

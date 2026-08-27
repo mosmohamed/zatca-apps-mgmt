@@ -8,7 +8,9 @@ use App\Enums\HaModel;
 use App\Models\Application;
 use App\Models\ApplicationAssignment;
 use App\Models\Department;
+use App\Models\InfraLicense;
 use App\Models\License;
+use App\Models\ServiceDeskLicense;
 use App\Models\Technology;
 use App\Models\User;
 use App\Models\Vendor;
@@ -39,6 +41,8 @@ class DashboardService
      *         applications_by_department: list<array{name_en: string, name_ar: string, count: int}>,
      *         applications_by_ha_model: list<array{key: string, name_en: string, name_ar: string, count: int}>,
      *         license_usage: list<array{key: string, name_en: string, name_ar: string, count: int}>,
+     *         infra_license_usage: list<array{key: string, name_en: string, name_ar: string, count: int}>,
+     *         service_desk_license_usage: list<array{key: string, name_en: string, name_ar: string, count: int}>,
      *         license_status_distribution: list<array{key: string, name_en: string, name_ar: string, count: int}>,
      *         licenses_by_environment: list<array{key: string, name_en: string, name_ar: string, count: int}>
      *     },
@@ -60,11 +64,13 @@ class DashboardService
      */
     private function filterForActor(array $summary, ?User $actor): array
     {
-        $canApplications = $actor instanceof User;
+        $canApplications = $actor instanceof User && $actor->can('applications.view');
         $canUsers = $actor instanceof User && $actor->can('users.view');
         $canVendors = $actor instanceof User && $actor->can('vendors.view');
         $canTechnologies = $actor instanceof User && $actor->can('technologies.view');
         $canLicenses = $actor instanceof User && $actor->can('licenses.view');
+        $canInfraLicenses = $actor instanceof User && $actor->can('infra-licenses.view');
+        $canServiceDeskLicenses = $actor instanceof User && $actor->can('service-desk-licenses.view');
         $canAssignments = $actor instanceof User && $actor->can('assignments.view');
         $canActivity = $actor instanceof User && $actor->can('activity-log.view');
 
@@ -91,6 +97,8 @@ class DashboardService
                 'applications_by_department' => $canApplications ? $charts['applications_by_department'] : [],
                 'applications_by_ha_model' => $canApplications ? $charts['applications_by_ha_model'] : [],
                 'license_usage' => $canLicenses ? $charts['license_usage'] : [],
+                'infra_license_usage' => $canInfraLicenses ? $charts['infra_license_usage'] : [],
+                'service_desk_license_usage' => $canServiceDeskLicenses ? $charts['service_desk_license_usage'] : [],
                 'license_status_distribution' => $canLicenses ? $charts['license_status_distribution'] : [],
                 'licenses_by_environment' => $canLicenses ? $charts['licenses_by_environment'] : [],
             ],
@@ -238,32 +246,9 @@ class DashboardService
             ];
         }
 
-        $licenseTotals = License::query()
-            ->selectRaw('COALESCE(SUM(licensed), 0) as total_licensed')
-            ->selectRaw('COALESCE(SUM(used), 0) as total_used')
-            ->selectRaw('COALESCE(SUM(available), 0) as total_available')
-            ->first();
-
-        $licenseUsage = [
-            [
-                'key' => 'licensed',
-                'name_en' => 'Licensed',
-                'name_ar' => 'مرخص',
-                'count' => (int) ($licenseTotals?->total_licensed ?? 0),
-            ],
-            [
-                'key' => 'used',
-                'name_en' => 'Used',
-                'name_ar' => 'مستخدم',
-                'count' => (int) ($licenseTotals?->total_used ?? 0),
-            ],
-            [
-                'key' => 'available',
-                'name_en' => 'Available',
-                'name_ar' => 'متاح',
-                'count' => (int) ($licenseTotals?->total_available ?? 0),
-            ],
-        ];
+        $licenseUsage = $this->licenseUsageChart(License::class);
+        $infraLicenseUsage = $this->licenseUsageChart(InfraLicense::class);
+        $serviceDeskLicenseUsage = $this->licenseUsageChart(ServiceDeskLicense::class);
 
         $today = now()->toDateString();
         $within30 = now()->addDays(30)->toDateString();
@@ -370,10 +355,49 @@ class DashboardService
                 'applications_by_department' => $applicationsByDepartment,
                 'applications_by_ha_model' => $applicationsByHaModel,
                 'license_usage' => $licenseUsage,
+                'infra_license_usage' => $infraLicenseUsage,
+                'service_desk_license_usage' => $serviceDeskLicenseUsage,
                 'license_status_distribution' => $licenseStatusDistribution,
                 'licenses_by_environment' => $licensesByEnvironment,
             ],
             'recent_activity' => $recentActivity,
+        ];
+    }
+
+    /**
+     * Licensed / used / available totals for one of the independent license
+     * catalogues (Apps, Infrastructure or Service Desk).
+     *
+     * @param  class-string<License|InfraLicense|ServiceDeskLicense>  $modelClass
+     * @return list<array{key: string, name_en: string, name_ar: string, count: int}>
+     */
+    private function licenseUsageChart(string $modelClass): array
+    {
+        $totals = $modelClass::query()
+            ->selectRaw('COALESCE(SUM(licensed), 0) as total_licensed')
+            ->selectRaw('COALESCE(SUM(used), 0) as total_used')
+            ->selectRaw('COALESCE(SUM(available), 0) as total_available')
+            ->first();
+
+        return [
+            [
+                'key' => 'licensed',
+                'name_en' => 'Licensed',
+                'name_ar' => 'مرخص',
+                'count' => (int) ($totals?->total_licensed ?? 0),
+            ],
+            [
+                'key' => 'used',
+                'name_en' => 'Used',
+                'name_ar' => 'مستخدم',
+                'count' => (int) ($totals?->total_used ?? 0),
+            ],
+            [
+                'key' => 'available',
+                'name_en' => 'Available',
+                'name_ar' => 'متاح',
+                'count' => (int) ($totals?->total_available ?? 0),
+            ],
         ];
     }
 }

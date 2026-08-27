@@ -23,6 +23,11 @@ import {
 import { LicenseFormDialog } from "@/features/licenses/components/LicenseFormDialog"
 import { LicenseStatsCards } from "@/features/licenses/components/LicenseStatsCards"
 import {
+  LICENSE_MODULES,
+  licensePermission,
+  type LicenseModuleId,
+} from "@/features/licenses/config/license-modules"
+import {
   useDeleteLicense,
   useLicenses,
 } from "@/features/licenses/hooks/use-licenses"
@@ -59,13 +64,18 @@ function statusBadgeClass(status: string): string {
   }
 }
 
-export function LicensesPage() {
+type LicensesPageProps = {
+  moduleId?: LicenseModuleId
+}
+
+export function LicensesPage({ moduleId = "apps" }: LicensesPageProps) {
   const { t } = useTranslation()
   const { can } = useAuth()
-  const canCreate = can("licenses.create")
-  const canUpdate = can("licenses.update")
-  const canDelete = can("licenses.delete")
-  const canView = can("licenses.view")
+  const module = LICENSE_MODULES[moduleId]
+  const canCreate = can(licensePermission(module, "create"))
+  const canUpdate = can(licensePermission(module, "update"))
+  const canDelete = can(licensePermission(module, "delete"))
+  const canView = can(licensePermission(module, "view"))
 
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
@@ -93,8 +103,8 @@ export function LicensesPage() {
     [page, debouncedSearch, sort, environment, status]
   )
 
-  const licensesQuery = useLicenses(listParams)
-  const deleteMutation = useDeleteLicense()
+  const licensesQuery = useLicenses(listParams, moduleId)
+  const deleteMutation = useDeleteLicense(moduleId)
   const items = licensesQuery.data?.items ?? []
   const pagination = licensesQuery.data?.pagination
 
@@ -230,7 +240,7 @@ export function LicensesPage() {
                 asChild
                 aria-label={`${t("licenses.view")} ${row.name}`}
               >
-                <Link to={`/licenses/${row.id}`}>
+                <Link to={module.detailPath(row.id)}>
                   <Eye />
                 </Link>
               </Button>
@@ -267,12 +277,12 @@ export function LicensesPage() {
     }
 
     return base
-  }, [canDelete, canUpdate, canView, deleteMutation.isPending, t])
+  }, [canDelete, canUpdate, canView, deleteMutation.isPending, module, t])
 
   const exportConfig: EnterpriseExportConfig = {
-    entity: "licenses",
-    filenamePrefix: "licenses",
-    reportTitle: t("licenses.title"),
+    entity: module.exportEntity,
+    filenamePrefix: module.exportEntity,
+    reportTitle: t(module.titleKey),
     columns: [
       { key: "publisher", label: t("licenses.columns.publisher") },
       { key: "name", label: t("licenses.columns.name") },
@@ -309,16 +319,16 @@ export function LicensesPage() {
       }
     },
     selectedIds: selectedKeys,
-    permission: "licenses.export",
+    permission: licensePermission(module, "export"),
   }
 
   return (
     <section className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold">{t("licenses.title")}</h2>
+          <h2 className="text-lg font-semibold">{t(module.titleKey)}</h2>
           <p className="text-sm text-muted-foreground">
-            {t("licenses.description")}
+            {t(module.descriptionKey)}
           </p>
         </div>
         {canCreate ? (
@@ -329,7 +339,7 @@ export function LicensesPage() {
         ) : null}
       </div>
 
-      <LicenseStatsCards />
+      <LicenseStatsCards moduleId={moduleId} />
 
       <div className="rounded-xl border border-stroke bg-card p-4 shadow-sm">
         <div className="grid gap-3 sm:grid-cols-2">
@@ -427,6 +437,7 @@ export function LicensesPage() {
           open={dialogOpen}
           onOpenChange={setDialogOpen}
           license={editing}
+          moduleId={moduleId}
         />
       ) : null}
 

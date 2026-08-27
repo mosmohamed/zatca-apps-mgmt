@@ -28,6 +28,7 @@ class ApplicationService
             'status',
             'criticality',
             'supportType',
+            'vendor',
             'technologies',
             'businessOwners.jobTitle',
             'businessOwners.vendor',

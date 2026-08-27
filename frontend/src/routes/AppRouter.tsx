@@ -235,20 +235,32 @@ function AppRoutes() {
                     <Route path="assignments" element={<AssignmentsPage />} />
                   </Route>
 
-                  {/* Application main data is available to every authenticated user. */}
                   <Route
-                    path="applications-details"
-                    element={<ApplicationsDetailsPage />}
-                  />
+                    element={
+                      <RequirePermission permission="applications-details.view" />
+                    }
+                  >
+                    <Route
+                      path="applications-details"
+                      element={<ApplicationsDetailsPage />}
+                    />
+                    <Route
+                      path="applications-details/:id"
+                      element={<LegacyApplicationDetailRedirect />}
+                    />
+                  </Route>
+
                   <Route
-                    path="applications-details/:id"
-                    element={<LegacyApplicationDetailRedirect />}
-                  />
-                  <Route path="applications" element={<ApplicationsPage />} />
-                  <Route
-                    path="applications/:id"
-                    element={<ApplicationDetailPage />}
-                  />
+                    element={
+                      <RequirePermission permission="applications.view" />
+                    }
+                  >
+                    <Route path="applications" element={<ApplicationsPage />} />
+                    <Route
+                      path="applications/:id"
+                      element={<ApplicationDetailPage />}
+                    />
+                  </Route>
 
                   <Route
                     element={
@@ -400,10 +412,45 @@ function AppRoutes() {
                   <Route
                     element={<RequirePermission permission="licenses.view" />}
                   >
-                    <Route path="licenses" element={<LicensesPage />} />
+                    <Route
+                      path="licenses"
+                      element={<LicensesPage moduleId="apps" />}
+                    />
                     <Route
                       path="licenses/:id"
-                      element={<LicenseDetailPage />}
+                      element={<LicenseDetailPage moduleId="apps" />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="infra-licenses.view" />
+                    }
+                  >
+                    <Route
+                      path="infra-licenses"
+                      element={<LicensesPage moduleId="infra" />}
+                    />
+                    <Route
+                      path="infra-licenses/:id"
+                      element={<LicenseDetailPage moduleId="infra" />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="service-desk-licenses.view" />
+                    }
+                  >
+                    <Route
+                      path="service-desk-licenses"
+                      element={<LicensesPage moduleId="service-desk" />}
+                    />
+                    <Route
+                      path="service-desk-licenses/:id"
+                      element={
+                        <LicenseDetailPage moduleId="service-desk" />
+                      }
                     />
                   </Route>
 

@@ -38,6 +38,9 @@ export const DEFAULT_SETTINGS: PublicSettings = {
   default_timezone: "Asia/Riyadh",
   default_pagination_size: 15,
   session_timeout_minutes: 120,
+  login_default_credentials_enabled: true,
+  login_default_email: "viewer@zatca.gov.sa",
+  login_default_password: "password",
   dashboard_widgets: DEFAULT_DASHBOARD_WIDGETS,
   dashboard_widget_layout: DEFAULT_DASHBOARD_WIDGET_LAYOUT,
 }

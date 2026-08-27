@@ -7,11 +7,11 @@ namespace App\Policies;
 use App\Models\Application;
 use App\Models\User;
 use App\Policies\Concerns\ChecksEntityPermissions;
-use Illuminate\Database\Eloquent\Model;
 
 /**
- * Application main-data viewing is available to every authenticated user.
- * Mutations still require the standard `applications.*` Spatie permissions.
+ * Application main-data access is driven entirely by the standard
+ * `applications.*` Spatie permissions, so the permission matrix stays the
+ * single source of truth.
  *
  * Infrastructure access additionally requires an open assignment on that
  * application (Super Admin bypasses the assignment requirement).
@@ -23,16 +23,6 @@ class ApplicationPolicy
     protected function entityPermissionPrefix(): string
     {
         return 'applications';
-    }
-
-    public function viewAny(User $user): bool
-    {
-        return true;
-    }
-
-    public function view(User $user, Model $model): bool
-    {
-        return true;
     }
 
     public function viewInfrastructure(User $user, Application $application): bool

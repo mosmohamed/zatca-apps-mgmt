@@ -27,6 +27,7 @@ import {
   useCreateLicense,
   useUpdateLicense,
 } from "@/features/licenses/hooks/use-licenses"
+import type { LicenseModuleId } from "@/features/licenses/config/license-modules"
 import type { License } from "@/features/licenses/types/license"
 import {
   createLicenseFormSchema,
@@ -38,6 +39,7 @@ type LicenseFormDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   license?: License | null
+  moduleId?: LicenseModuleId
 }
 
 const emptyValues: LicenseFormValues = {
@@ -96,11 +98,12 @@ export function LicenseFormDialog({
   open,
   onOpenChange,
   license = null,
+  moduleId = "apps",
 }: LicenseFormDialogProps) {
   const { t } = useTranslation()
   const isEdit = Boolean(license)
-  const createMutation = useCreateLicense()
-  const updateMutation = useUpdateLicense()
+  const createMutation = useCreateLicense(moduleId)
+  const updateMutation = useUpdateLicense(moduleId)
 
   const licenseFormSchema = useMemo(() => createLicenseFormSchema(t), [t])
 

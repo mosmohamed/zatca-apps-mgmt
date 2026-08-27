@@ -13,23 +13,36 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
+        // Lookup / platform masters that ImportedPortfolioSeeder reads but does not own.
         $this->call([
             PermissionSeeder::class,
             EnvironmentSeeder::class,
             SettingsSeeder::class,
-            DepartmentSeeder::class,
             ApplicationTypeSeeder::class,
             SupportTypeSeeder::class,
             CriticalitySeeder::class,
             ApplicationStatusSeeder::class,
-            TechnologySeeder::class,
-            AppRoleSeeder::class,
             JobTitleSeeder::class,
-            VendorSeeder::class,
-            SuperAdminSeeder::class,
-            LegacyApplicationImportSeeder::class,
+        ]);
+
+        // Portfolio data source of truth for:
+        // users, app_roles, departments, vendors, technologies,
+        // applications, application_assignments (+ pivots).
+        //
+        // Disabled overlapping seeders (do not re-enable alongside this one):
+        // - AppRoleSeeder
+        // - DepartmentSeeder
+        // - TechnologySeeder
+        // - VendorSeeder
+        // - SuperAdminSeeder
+        // - ViewerSeeder
+        // - LegacyApplicationImportSeeder
+        $this->call(ImportedPortfolioSeeder::class);
+
+        $this->call([
             LicenseSeeder::class,
             OperationInfraSeeder::class,
+            ServiceDeskSeeder::class,
         ]);
     }
 }

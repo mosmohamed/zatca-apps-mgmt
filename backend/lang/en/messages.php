@@ -457,6 +457,42 @@ return [
         'stats' => 'License statistics retrieved successfully.',
     ],
 
+    'infra_licenses' => [
+        'listed' => 'Infrastructure licenses retrieved successfully.',
+        'created' => 'Infrastructure license created successfully.',
+        'retrieved' => 'Infrastructure license retrieved successfully.',
+        'updated' => 'Infrastructure license updated successfully.',
+        'deleted' => 'Infrastructure license deleted successfully.',
+        'stats' => 'Infrastructure license statistics retrieved successfully.',
+    ],
+
+    'service_desk_licenses' => [
+        'listed' => 'Service desk licenses retrieved successfully.',
+        'created' => 'Service desk license created successfully.',
+        'retrieved' => 'Service desk license retrieved successfully.',
+        'updated' => 'Service desk license updated successfully.',
+        'deleted' => 'Service desk license deleted successfully.',
+        'stats' => 'Service desk license statistics retrieved successfully.',
+    ],
+
+    'infra_licenses' => [
+        'listed' => 'Infra licenses retrieved successfully.',
+        'created' => 'Infra license created successfully.',
+        'retrieved' => 'Infra license retrieved successfully.',
+        'updated' => 'Infra license updated successfully.',
+        'deleted' => 'Infra license deleted successfully.',
+        'stats' => 'Infra license statistics retrieved successfully.',
+    ],
+
+    'service_desk_licenses' => [
+        'listed' => 'Service Desk licenses retrieved successfully.',
+        'created' => 'Service Desk license created successfully.',
+        'retrieved' => 'Service Desk license retrieved successfully.',
+        'updated' => 'Service Desk license updated successfully.',
+        'deleted' => 'Service Desk license deleted successfully.',
+        'stats' => 'Service Desk license statistics retrieved successfully.',
+    ],
+
     'app_roles' => [
         'listed' => 'Application roles retrieved successfully.',
         'created' => 'Application role created successfully.',

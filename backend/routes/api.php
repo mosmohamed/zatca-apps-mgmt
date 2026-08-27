@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\V1\ExportController;
 use App\Http\Controllers\Api\V1\GlobalSearchController;
 use App\Http\Controllers\Api\V1\InfraCategoryController;
 use App\Http\Controllers\Api\V1\InfraLevelController;
+use App\Http\Controllers\Api\V1\InfraLicenseController;
 use App\Http\Controllers\Api\V1\InfraTeamAssignmentController;
 use App\Http\Controllers\Api\V1\JobTitleController;
 use App\Http\Controllers\Api\V1\LicenseController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\ServiceDeskCategoryController;
 use App\Http\Controllers\Api\V1\ServiceDeskLevelController;
+use App\Http\Controllers\Api\V1\ServiceDeskLicenseController;
 use App\Http\Controllers\Api\V1\ServiceDeskTeamAssignmentController;
 use App\Http\Controllers\Api\V1\SettingsController;
 use App\Http\Controllers\Api\V1\SupportTypeController;
@@ -129,6 +131,10 @@ Route::prefix('v1')->group(function (): void {
         Route::apiResource('technologies', TechnologyController::class);
         Route::get('licenses/statistics', [LicenseController::class, 'statistics']);
         Route::apiResource('licenses', LicenseController::class);
+        Route::get('infra-licenses/statistics', [InfraLicenseController::class, 'statistics']);
+        Route::apiResource('infra-licenses', InfraLicenseController::class);
+        Route::get('service-desk-licenses/statistics', [ServiceDeskLicenseController::class, 'statistics']);
+        Route::apiResource('service-desk-licenses', ServiceDeskLicenseController::class);
         Route::apiResource('app-roles', AppRoleController::class);
 
         Route::get('infra-categories/statistics', [InfraCategoryController::class, 'statistics']);

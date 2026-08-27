@@ -34,46 +34,63 @@ function toQuery(
   return query
 }
 
-export const licensesService = {
-  async list(
-    params: LicenseListQueryParams = {}
-  ): Promise<PaginatedData<License>> {
-    const { data } = await api.get<ApiEnvelope<PaginatedData<License>>>(
-      "/licenses",
-      { params: toQuery(params) }
-    )
-    return data.data
-  },
+export function createLicensesService(apiBase: string) {
+  const base = `/${apiBase.replace(/^\/+/, "")}`
 
-  async get(id: number): Promise<License> {
-    const { data } = await api.get<ApiEnvelope<License>>(`/licenses/${id}`)
-    return data.data
-  },
+  return {
+    async list(
+      params: LicenseListQueryParams = {}
+    ): Promise<PaginatedData<License>> {
+      const { data } = await api.get<ApiEnvelope<PaginatedData<License>>>(
+        base,
+        { params: toQuery(params) }
+      )
+      return data.data
+    },
 
-  async create(payload: LicensePayload): Promise<License> {
-    const { data } = await api.post<ApiEnvelope<License>>(
-      "/licenses",
-      payload
-    )
-    return data.data
-  },
+    async get(id: number): Promise<License> {
+      const { data } = await api.get<ApiEnvelope<License>>(`${base}/${id}`)
+      return data.data
+    },
 
-  async update(id: number, payload: LicensePayload): Promise<License> {
-    const { data } = await api.put<ApiEnvelope<License>>(
-      `/licenses/${id}`,
-      payload
-    )
-    return data.data
-  },
+    async create(payload: LicensePayload): Promise<License> {
+      const { data } = await api.post<ApiEnvelope<License>>(base, payload)
+      return data.data
+    },
 
-  async remove(id: number): Promise<void> {
-    await api.delete<ApiEnvelope<null>>(`/licenses/${id}`)
-  },
+    async update(id: number, payload: LicensePayload): Promise<License> {
+      const { data } = await api.put<ApiEnvelope<License>>(
+        `${base}/${id}`,
+        payload
+      )
+      return data.data
+    },
 
-  async statistics(): Promise<LicenseStatistics> {
-    const { data } = await api.get<ApiEnvelope<LicenseStatistics>>(
-      "/licenses/statistics"
-    )
-    return data.data
-  },
+    async remove(id: number): Promise<void> {
+      await api.delete<ApiEnvelope<null>>(`${base}/${id}`)
+    },
+
+    async statistics(): Promise<LicenseStatistics> {
+      const { data } = await api.get<ApiEnvelope<LicenseStatistics>>(
+        `${base}/statistics`
+      )
+      return data.data
+    },
+  }
 }
+
+const serviceCache = new Map<string, ReturnType<typeof createLicensesService>>()
+
+export function getLicensesService(apiBase: string) {
+  const key = apiBase.replace(/^\/+/, "")
+  const cached = serviceCache.get(key)
+  if (cached) {
+    return cached
+  }
+  const created = createLicensesService(key)
+  serviceCache.set(key, created)
+  return created
+}
+
+/** @deprecated Prefer getLicensesService — kept for apps module default. */
+export const licensesService = getLicensesService("licenses")

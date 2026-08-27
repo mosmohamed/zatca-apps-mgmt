@@ -32,10 +32,24 @@ type LoginFormValues = {
 export function LoginPage() {
   const { t } = useTranslation()
   const { login } = useAuth()
-  const { settings } = useSettings()
+  const { settings, isLoading: settingsLoading } = useSettings()
   const navigate = useNavigate()
   const location = useLocation()
   const [formError, setFormError] = useState<string | null>(null)
+
+  const credentialsEnabled = settings.login_default_credentials_enabled
+  const defaultEmail = credentialsEnabled
+    ? settings.login_default_email.trim()
+    : ""
+  const defaultPassword = credentialsEnabled
+    ? settings.login_default_password
+    : ""
+  const emailPlaceholder = credentialsEnabled
+    ? defaultEmail || t("auth.emailPlaceholder")
+    : t("auth.emailPlaceholder")
+  const passwordPlaceholder = credentialsEnabled
+    ? defaultPassword || t("auth.passwordPlaceholder")
+    : t("auth.passwordPlaceholder")
 
   useEffect(() => {
     document.title = settings.company_name
@@ -56,10 +70,21 @@ export function LoginPage() {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "admin@zatca.sa",
-      password: "password",
+      email: "",
+      password: "",
     },
   })
+
+  useEffect(() => {
+    if (settingsLoading) {
+      return
+    }
+
+    form.reset({
+      email: defaultEmail,
+      password: defaultPassword,
+    })
+  }, [settingsLoading, defaultEmail, defaultPassword, form])
 
   async function onSubmit(values: LoginFormValues) {
     setFormError(null)
@@ -123,7 +148,7 @@ export function LoginPage() {
                     <Input
                       type="email"
                       autoComplete="username"
-                      placeholder="admin@zatca.sa"
+                      placeholder={emailPlaceholder}
                       {...field}
                     />
                   </FormControl>
@@ -142,7 +167,7 @@ export function LoginPage() {
                     <Input
                       type="password"
                       autoComplete="current-password"
-                      placeholder="••••••••"
+                      placeholder={passwordPlaceholder}
                       {...field}
                     />
                   </FormControl>

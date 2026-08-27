@@ -5,6 +5,8 @@ export const DASHBOARD_WIDGET_KEYS = [
   "applications_by_department",
   "applications_by_ha_model",
   "license_usage",
+  "infra_license_usage",
+  "service_desk_license_usage",
   "license_status_distribution",
   "licenses_by_environment",
   "recent_activity",

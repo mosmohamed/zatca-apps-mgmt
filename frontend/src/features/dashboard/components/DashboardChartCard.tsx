@@ -54,7 +54,7 @@ export function DashboardChartCard({
     <Card
       className={cn(
         "relative h-full overflow-hidden border-stroke/80 py-0 shadow-sm",
-        "transition-shadow duration-300 hover:shadow-md",
+        "transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-md",
         className
       )}
     >

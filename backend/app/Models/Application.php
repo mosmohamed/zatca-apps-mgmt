@@ -28,12 +28,16 @@ class Application extends Model
         'name_ar',
         'name_en',
         'code',
+        'description',
+        'technical_category',
         'status_id',
         'criticality_id',
         'support_type_id',
+        'vendor_id',
         'ha_model',
         'documentation_url',
         'repository_url',
+        'remarks',
         'created_by',
         'updated_by',
     ];
@@ -49,6 +53,7 @@ class Application extends Model
             'status_id' => 'integer',
             'criticality_id' => 'integer',
             'support_type_id' => 'integer',
+            'vendor_id' => 'integer',
             'ha_model' => HaModel::class,
             'created_by' => 'integer',
             'updated_by' => 'integer',
@@ -101,6 +106,14 @@ class Application extends Model
     public function supportType(): BelongsTo
     {
         return $this->belongsTo(SupportType::class);
+    }
+
+    /**
+     * @return BelongsTo<Vendor, $this>
+     */
+    public function vendor(): BelongsTo
+    {
+        return $this->belongsTo(Vendor::class);
     }
 
     /**

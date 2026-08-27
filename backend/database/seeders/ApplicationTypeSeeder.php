@@ -18,6 +18,8 @@ class ApplicationTypeSeeder extends Seeder
             ['name_en' => 'Microservice', 'name_ar' => 'خدمة مصغرة', 'code' => 'MICROSERVICE'],
             ['name_en' => 'Desktop Application', 'name_ar' => 'تطبيق سطح المكتب', 'code' => 'DESKTOP_APP'],
             ['name_en' => 'SaaS Platform', 'name_ar' => 'منصة سحابية', 'code' => 'SAAS'],
+            ['name_en' => 'Customs', 'name_ar' => 'جمارك', 'code' => 'CUSTOMS'],
+            ['name_en' => 'Internal App', 'name_ar' => 'تطبيق داخلي', 'code' => 'INTERNAL_APP'],
         ];
 
         foreach ($types as $type) {

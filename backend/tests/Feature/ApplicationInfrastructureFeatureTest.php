@@ -12,6 +12,7 @@ use Database\Seeders\EnvironmentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\Concerns\SeedsRolesAndPermissions;
 use Tests\TestCase;
 
@@ -611,11 +612,17 @@ class ApplicationInfrastructureFeatureTest extends TestCase
     }
 
     #[Test]
-    public function authenticated_users_can_view_application_main_data_without_applications_view(): void
+    public function application_main_data_requires_the_applications_view_permission(): void
     {
         $user = User::factory()->create(['email' => 'app-main-data@zatca.sa']);
 
         Sanctum::actingAs($user);
+
+        $this->getJson('/api/v1/applications')->assertForbidden();
+        $this->getJson("/api/v1/applications/{$this->application->id}")->assertForbidden();
+
+        $user->givePermissionTo('applications.view');
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $this->getJson('/api/v1/applications')->assertOk();
         $this->getJson("/api/v1/applications/{$this->application->id}")

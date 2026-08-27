@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Settings;
 
 use App\Http\Requests\Concerns\HasLocalizedValidationMessages;
+use App\Models\User;
 use App\Support\DashboardWidgetLayout;
 use App\Support\DashboardWidgets;
 use Illuminate\Foundation\Http\FormRequest;
@@ -14,9 +15,31 @@ class UpdateSettingsRequest extends FormRequest
 {
     use HasLocalizedValidationMessages;
 
+    /**
+     * Credentials advertised on the login screen. They are readable by anyone
+     * (the keys are public), but only a Super Admin may change them.
+     *
+     * @var list<string>
+     */
+    public const array SUPER_ADMIN_ONLY_KEYS = [
+        'login_default_credentials_enabled',
+        'login_default_email',
+        'login_default_password',
+    ];
+
     public function authorize(): bool
     {
-        return $this->user()?->can('settings.update') ?? false;
+        $user = $this->user();
+
+        if (! $user instanceof User || ! $user->can('settings.update')) {
+            return false;
+        }
+
+        if (! $this->touchesSuperAdminOnlyKeys()) {
+            return true;
+        }
+
+        return $user->isSuperAdmin();
     }
 
     /**
@@ -34,6 +57,9 @@ class UpdateSettingsRequest extends FormRequest
             'settings.header_subtitle_ar' => ['sometimes', 'required', 'string', 'max:500'],
             'settings.default_timezone' => ['sometimes', 'required', 'string', 'max:100'],
             'settings.default_pagination_size' => ['sometimes', 'required', 'integer', 'min:5', 'max:100'],
+            'settings.login_default_credentials_enabled' => ['sometimes', 'required', 'boolean'],
+            'settings.login_default_email' => ['sometimes', 'required', 'email', 'max:255'],
+            'settings.login_default_password' => ['sometimes', 'required', 'string', 'max:255'],
             'settings.dashboard_widgets' => [
                 'sometimes',
                 'required',
@@ -202,5 +228,22 @@ class UpdateSettingsRequest extends FormRequest
         }
 
         return $payload;
+    }
+
+    private function touchesSuperAdminOnlyKeys(): bool
+    {
+        $settings = $this->input('settings');
+
+        if (! is_array($settings)) {
+            return false;
+        }
+
+        foreach (array_keys($settings) as $key) {
+            if (in_array($key, self::SUPER_ADMIN_ONLY_KEYS, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

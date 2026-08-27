@@ -44,17 +44,6 @@ type NavItem = {
 
 const masterDataNavItems: NavItem[] = [
   {
-    to: "/applications-details",
-    key: "applicationsDetails",
-    icon: AppWindow,
-  },
-  {
-    to: "/assignments",
-    key: "assignments",
-    icon: Link2,
-    permission: "assignments.view",
-  },
-  {
     to: "/departments",
     key: "departments",
     icon: Building2,
@@ -65,11 +54,6 @@ const masterDataNavItems: NavItem[] = [
     key: "vendors",
     icon: Truck,
     permission: "vendors.view",
-  },
-  {
-    to: "/applications",
-    key: "applications",
-    icon: MonitorSmartphone,
   },
   {
     to: "/users",
@@ -121,6 +105,33 @@ const masterDataNavItems: NavItem[] = [
   },
 ]
 
+const applicationsOpsNavItems: NavItem[] = [
+  {
+    to: "/applications",
+    key: "applications",
+    icon: MonitorSmartphone,
+    permission: "applications.view",
+  },
+  {
+    to: "/applications-details",
+    key: "applicationsDetails",
+    icon: AppWindow,
+    permission: "applications-details.view",
+  },
+  {
+    to: "/assignments",
+    key: "assignments",
+    icon: Link2,
+    permission: "assignments.view",
+  },
+  {
+    to: "/licenses",
+    key: "appsLicenses",
+    icon: KeyRound,
+    permission: "licenses.view",
+  },
+]
+
 const operationInfraNavItems: NavItem[] = [
   {
     to: "/infra-categories",
@@ -139,6 +150,12 @@ const operationInfraNavItems: NavItem[] = [
     key: "infraTeamsDetails",
     icon: LayoutGrid,
     permission: "infra-team-assignments.view",
+  },
+  {
+    to: "/infra-licenses",
+    key: "infraLicenses",
+    icon: KeyRound,
+    permission: "infra-licenses.view",
   },
 ]
 
@@ -161,15 +178,15 @@ const serviceDeskNavItems: NavItem[] = [
     icon: LayoutGrid,
     permission: "service-desk-team-assignments.view",
   },
+  {
+    to: "/service-desk-licenses",
+    key: "sdLicenses",
+    icon: KeyRound,
+    permission: "service-desk-licenses.view",
+  },
 ]
 
 const secondaryNavItems: NavItem[] = [
-  {
-    to: "/licenses",
-    key: "licenses",
-    icon: KeyRound,
-    permission: "licenses.view",
-  },
   {
     to: "/activity-log",
     key: "activityLog",
@@ -184,15 +201,81 @@ const secondaryNavItems: NavItem[] = [
   },
 ]
 
+function SectionHeader({
+  label,
+  icon: Icon,
+  open,
+  onToggle,
+}: {
+  label: string
+  icon: typeof LayoutDashboard
+  open: boolean
+  onToggle: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
+    >
+      <span className="flex items-center gap-3">
+        <Icon className="size-4 shrink-0" />
+        {label}
+      </span>
+      <ChevronDown
+        className={cn("size-4 transition-transform", open ? "rotate-180" : "")}
+      />
+    </button>
+  )
+}
+
+function SidebarNavItem({
+  item,
+  isExpanded,
+  indent,
+  onNavigate,
+}: {
+  item: NavItem
+  isExpanded: boolean
+  indent: boolean
+  onNavigate: () => void
+}) {
+  const { t } = useTranslation()
+  const Icon = item.icon
+  return (
+    <NavLink
+      to={item.to}
+      end={item.end}
+      onClick={onNavigate}
+      className={({ isActive }) =>
+        cn(
+          "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+          indent && isExpanded ? "ms-2" : "",
+          isActive
+            ? "bg-sidebar-accent text-sidebar-accent-foreground"
+            : "text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
+        )
+      }
+    >
+      <Icon className="size-4 shrink-0" />
+      {isExpanded ? <span>{t(`nav.${item.key}`)}</span> : null}
+    </NavLink>
+  )
+}
+
 export function AppSidebar() {
   const { t } = useTranslation()
   const { can } = useAuth()
   const { isExpanded, isMobileOpen, closeMobile } = useSidebar()
   const [masterDataOpen, setMasterDataOpen] = useState(true)
+  const [applicationsOpsOpen, setApplicationsOpsOpen] = useState(true)
   const [operationInfraOpen, setOperationInfraOpen] = useState(true)
   const [serviceDeskOpen, setServiceDeskOpen] = useState(true)
 
   const visibleMasterDataNavItems = masterDataNavItems.filter(
+    (item) => !item.permission || can(item.permission)
+  )
+  const visibleApplicationsOpsNavItems = applicationsOpsNavItems.filter(
     (item) => !item.permission || can(item.permission)
   )
   const visibleOperationInfraNavItems = operationInfraNavItems.filter(
@@ -203,14 +286,6 @@ export function AppSidebar() {
   )
   const visibleSecondaryNavItems = secondaryNavItems.filter(
     (item) => !item.permission || can(item.permission)
-  )
-
-  // Licenses should sit below Master Data and above activity-log/settings.
-  const licensesItem = visibleSecondaryNavItems.find(
-    (item) => item.key === "licenses"
-  )
-  const trailingSecondaryNavItems = visibleSecondaryNavItems.filter(
-    (item) => item.key !== "licenses"
   )
 
   return (
@@ -257,212 +332,115 @@ export function AppSidebar() {
         </div>
 
         <nav className="sidebar-nav-scroll min-h-0 flex-1 space-y-1 overflow-x-hidden overflow-y-auto px-3 py-4">
-          {primaryNavItems.map((item) => {
-            const Icon = item.icon
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.end}
-                onClick={closeMobile}
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                    isActive
-                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                      : "text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
-                  )
-                }
-              >
-                <Icon className="size-4 shrink-0" />
-                {isExpanded ? <span>{t(`nav.${item.key}`)}</span> : null}
-              </NavLink>
-            )
-          })}
+          {primaryNavItems.map((item) => (
+            <SidebarNavItem
+              key={item.to}
+              item={item}
+              isExpanded={isExpanded}
+              indent={false}
+              onNavigate={closeMobile}
+            />
+          ))}
 
           {visibleMasterDataNavItems.length > 0 && isExpanded ? (
-            <button
-              type="button"
-              onClick={() => setMasterDataOpen((current) => !current)}
-              className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
-            >
-              <span className="flex items-center gap-3">
-                <Database className="size-4 shrink-0" />
-                {t("nav.masterData")}
-              </span>
-              <ChevronDown
-                className={cn(
-                  "size-4 transition-transform",
-                  masterDataOpen ? "rotate-180" : ""
-                )}
-              />
-            </button>
+            <SectionHeader
+              label={t("nav.masterData")}
+              icon={Database}
+              open={masterDataOpen}
+              onToggle={() => setMasterDataOpen((current) => !current)}
+            />
           ) : null}
 
           {visibleMasterDataNavItems.length > 0 &&
           (isExpanded ? masterDataOpen : true)
-            ? visibleMasterDataNavItems.map((item) => {
-                const Icon = item.icon
-                return (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    onClick={closeMobile}
-                    className={({ isActive }) =>
-                      cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                        isExpanded ? "ms-2" : "",
-                        isActive
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                          : "text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
-                      )
-                    }
-                  >
-                    <Icon className="size-4 shrink-0" />
-                    {isExpanded ? <span>{t(`nav.${item.key}`)}</span> : null}
-                  </NavLink>
-                )
-              })
+            ? visibleMasterDataNavItems.map((item) => (
+                <SidebarNavItem
+                  key={item.to}
+                  item={item}
+                  isExpanded={isExpanded}
+                  indent
+                  onNavigate={closeMobile}
+                />
+              ))
+            : null}
+
+          {visibleApplicationsOpsNavItems.length > 0 && isExpanded ? (
+            <SectionHeader
+              label={t("nav.applicationsOps")}
+              icon={AppWindow}
+              open={applicationsOpsOpen}
+              onToggle={() => setApplicationsOpsOpen((current) => !current)}
+            />
+          ) : null}
+
+          {visibleApplicationsOpsNavItems.length > 0 &&
+          (isExpanded ? applicationsOpsOpen : true)
+            ? visibleApplicationsOpsNavItems.map((item) => (
+                <SidebarNavItem
+                  key={item.to}
+                  item={item}
+                  isExpanded={isExpanded}
+                  indent
+                  onNavigate={closeMobile}
+                />
+              ))
             : null}
 
           {visibleOperationInfraNavItems.length > 0 && isExpanded ? (
-            <button
-              type="button"
-              onClick={() => setOperationInfraOpen((current) => !current)}
-              className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
-            >
-              <span className="flex items-center gap-3">
-                <ServerCog className="size-4 shrink-0" />
-                {t("nav.operationInfra")}
-              </span>
-              <ChevronDown
-                className={cn(
-                  "size-4 transition-transform",
-                  operationInfraOpen ? "rotate-180" : ""
-                )}
-              />
-            </button>
+            <SectionHeader
+              label={t("nav.operationInfra")}
+              icon={ServerCog}
+              open={operationInfraOpen}
+              onToggle={() => setOperationInfraOpen((current) => !current)}
+            />
           ) : null}
 
           {visibleOperationInfraNavItems.length > 0 &&
           (isExpanded ? operationInfraOpen : true)
-            ? visibleOperationInfraNavItems.map((item) => {
-                const Icon = item.icon
-                return (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    onClick={closeMobile}
-                    className={({ isActive }) =>
-                      cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                        isExpanded ? "ms-2" : "",
-                        isActive
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                          : "text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
-                      )
-                    }
-                  >
-                    <Icon className="size-4 shrink-0" />
-                    {isExpanded ? <span>{t(`nav.${item.key}`)}</span> : null}
-                  </NavLink>
-                )
-              })
+            ? visibleOperationInfraNavItems.map((item) => (
+                <SidebarNavItem
+                  key={item.to}
+                  item={item}
+                  isExpanded={isExpanded}
+                  indent
+                  onNavigate={closeMobile}
+                />
+              ))
             : null}
 
           {visibleServiceDeskNavItems.length > 0 && isExpanded ? (
-            <button
-              type="button"
-              onClick={() => setServiceDeskOpen((current) => !current)}
-              className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
-            >
-              <span className="flex items-center gap-3">
-                <LifeBuoy className="size-4 shrink-0" />
-                {t("nav.serviceDesk")}
-              </span>
-              <ChevronDown
-                className={cn(
-                  "size-4 transition-transform",
-                  serviceDeskOpen ? "rotate-180" : ""
-                )}
-              />
-            </button>
+            <SectionHeader
+              label={t("nav.serviceDesk")}
+              icon={LifeBuoy}
+              open={serviceDeskOpen}
+              onToggle={() => setServiceDeskOpen((current) => !current)}
+            />
           ) : null}
 
           {visibleServiceDeskNavItems.length > 0 &&
           (isExpanded ? serviceDeskOpen : true)
-            ? visibleServiceDeskNavItems.map((item) => {
-                const Icon = item.icon
-                return (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    onClick={closeMobile}
-                    className={({ isActive }) =>
-                      cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                        isExpanded ? "ms-2" : "",
-                        isActive
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                          : "text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
-                      )
-                    }
-                  >
-                    <Icon className="size-4 shrink-0" />
-                    {isExpanded ? <span>{t(`nav.${item.key}`)}</span> : null}
-                  </NavLink>
-                )
-              })
+            ? visibleServiceDeskNavItems.map((item) => (
+                <SidebarNavItem
+                  key={item.to}
+                  item={item}
+                  isExpanded={isExpanded}
+                  indent
+                  onNavigate={closeMobile}
+                />
+              ))
             : null}
 
-          {licensesItem ? (
-            (() => {
-              const Icon = licensesItem.icon
-              return (
-                <NavLink
-                  to={licensesItem.to}
-                  onClick={closeMobile}
-                  className={({ isActive }) =>
-                    cn(
-                      "mt-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
-                    )
-                  }
-                >
-                  <Icon className="size-4 shrink-0" />
-                  {isExpanded ? (
-                    <span>{t(`nav.${licensesItem.key}`)}</span>
-                  ) : null}
-                </NavLink>
-              )
-            })()
-          ) : null}
-
-          {trailingSecondaryNavItems.length > 0 ? (
+          {visibleSecondaryNavItems.length > 0 ? (
             <div className="mt-2 space-y-1 border-t border-sidebar-border pt-2">
-              {trailingSecondaryNavItems.map((item) => {
-                const Icon = item.icon
-                return (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    onClick={closeMobile}
-                    className={({ isActive }) =>
-                      cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                        isActive
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                          : "text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
-                      )
-                    }
-                  >
-                    <Icon className="size-4 shrink-0" />
-                    {isExpanded ? <span>{t(`nav.${item.key}`)}</span> : null}
-                  </NavLink>
-                )
-              })}
+              {visibleSecondaryNavItems.map((item) => (
+                <SidebarNavItem
+                  key={item.to}
+                  item={item}
+                  isExpanded={isExpanded}
+                  indent={false}
+                  onNavigate={closeMobile}
+                />
+              ))}
             </div>
           ) : null}
         </nav>

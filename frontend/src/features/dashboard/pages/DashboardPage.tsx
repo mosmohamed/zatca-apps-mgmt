@@ -135,10 +135,12 @@ const DASHBOARD_WIDGET_PERMISSIONS: Record<
 > = {
   top_technologies: "technologies.view",
   employees_per_application: "assignments.view",
-  applications_by_status: null,
-  applications_by_department: null,
-  applications_by_ha_model: null,
+  applications_by_status: "applications.view",
+  applications_by_department: "applications.view",
+  applications_by_ha_model: "applications.view",
   license_usage: "licenses.view",
+  infra_license_usage: "infra-licenses.view",
+  service_desk_license_usage: "service-desk-licenses.view",
   license_status_distribution: "licenses.view",
   licenses_by_environment: "licenses.view",
   recent_activity: "activity-log.view",
@@ -181,6 +183,9 @@ export function DashboardPage() {
     data?.charts.applications_by_department ?? []
   const applicationsByHaModel = data?.charts.applications_by_ha_model ?? []
   const licenseUsage = data?.charts.license_usage ?? []
+  const infraLicenseUsage = data?.charts.infra_license_usage ?? []
+  const serviceDeskLicenseUsage =
+    data?.charts.service_desk_license_usage ?? []
   const licenseStatusDistribution =
     data?.charts.license_status_distribution ?? []
   const licensesByEnvironment = data?.charts.licenses_by_environment ?? []
@@ -399,7 +404,35 @@ export function DashboardPage() {
       case "applications_by_ha_model":
         return <ApplicationsHaModelChart items={applicationsByHaModel} />
       case "license_usage":
-        return <LicenseUsageRadialChart items={licenseUsage} />
+        return (
+          <LicenseUsageRadialChart
+            items={licenseUsage}
+            widgetKey="license_usage"
+            titleKey="dashboard.charts.appsLicenseUsage"
+            descriptionKey="dashboard.charts.appsLicenseUsageDesc"
+            accentClassName="from-cyan-500/12 via-transparent to-transparent"
+          />
+        )
+      case "infra_license_usage":
+        return (
+          <LicenseUsageRadialChart
+            items={infraLicenseUsage}
+            widgetKey="infra_license_usage"
+            titleKey="dashboard.charts.infraLicenseUsage"
+            descriptionKey="dashboard.charts.infraLicenseUsageDesc"
+            accentClassName="from-violet-500/12 via-transparent to-transparent"
+          />
+        )
+      case "service_desk_license_usage":
+        return (
+          <LicenseUsageRadialChart
+            items={serviceDeskLicenseUsage}
+            widgetKey="service_desk_license_usage"
+            titleKey="dashboard.charts.sdLicenseUsage"
+            descriptionKey="dashboard.charts.sdLicenseUsageDesc"
+            accentClassName="from-emerald-500/12 via-transparent to-transparent"
+          />
+        )
       case "license_status_distribution":
         return <LicenseStatusDonutChart items={licenseStatusDistribution} />
       case "licenses_by_environment":

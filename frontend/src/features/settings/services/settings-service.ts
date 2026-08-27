@@ -30,6 +30,9 @@ const DEFAULTS: PublicSettings = {
   default_timezone: "Asia/Riyadh",
   default_pagination_size: 15,
   session_timeout_minutes: 120,
+  login_default_credentials_enabled: true,
+  login_default_email: "viewer@zatca.gov.sa",
+  login_default_password: "password",
   dashboard_widgets: DEFAULT_DASHBOARD_WIDGETS,
   dashboard_widget_layout: DEFAULT_DASHBOARD_WIDGET_LAYOUT,
 }
@@ -106,6 +109,27 @@ function asPublicSettings(
         ? source.session_timeout_minutes
         : Number(source.session_timeout_minutes) ||
           DEFAULTS.session_timeout_minutes,
+    login_default_credentials_enabled: (() => {
+      const value = source.login_default_credentials_enabled
+      if (typeof value === "boolean") {
+        return value
+      }
+      if (value === 0 || value === "0" || value === "false") {
+        return false
+      }
+      if (value === 1 || value === "1" || value === "true") {
+        return true
+      }
+      return DEFAULTS.login_default_credentials_enabled
+    })(),
+    login_default_email:
+      typeof source.login_default_email === "string"
+        ? source.login_default_email
+        : DEFAULTS.login_default_email,
+    login_default_password:
+      typeof source.login_default_password === "string"
+        ? source.login_default_password
+        : DEFAULTS.login_default_password,
     dashboard_widgets: normalizeDashboardWidgets(source.dashboard_widgets),
     dashboard_widget_layout: normalizeDashboardWidgetLayout(
       source.dashboard_widget_layout

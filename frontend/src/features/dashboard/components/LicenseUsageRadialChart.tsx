@@ -1,12 +1,7 @@
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { KeyRound } from "lucide-react"
-import {
-  PolarAngleAxis,
-  PolarGrid,
-  RadialBar,
-  RadialBarChart,
-} from "recharts"
+import { Label, Pie, PieChart, Sector } from "recharts"
 
 import { EmptyState } from "@/components/EmptyState"
 import {
@@ -18,11 +13,12 @@ import {
 import { DashboardChartCard } from "@/features/dashboard/components/DashboardChartCard"
 import { useDashboardWidgetLayoutItem } from "@/features/dashboard/hooks/use-widget-layout"
 import type { DashboardChartItem } from "@/features/dashboard/services/dashboard-service"
+import type { DashboardWidgetKey } from "@/features/dashboard/types/dashboard-widgets"
 import {
   localizeChartName,
   toChartKey,
 } from "@/features/dashboard/utils/chart-labels"
-import { useCountUp } from "@/hooks/use-count-up"
+import { cn } from "@/lib/utils"
 
 const USAGE_COLORS: Record<string, string> = {
   licensed: "#0EA5E9",
@@ -31,66 +27,48 @@ const USAGE_COLORS: Record<string, string> = {
 }
 
 const ANIMATION = {
-  animationDuration: 1400,
-  animationBegin: 150,
+  animationDuration: 1200,
+  animationBegin: 100,
 }
+
+type LicenseUsageWidgetKey =
+  | "license_usage"
+  | "infra_license_usage"
+  | "service_desk_license_usage"
 
 type LicenseUsageRadialChartProps = {
   items: DashboardChartItem[]
-}
-
-function MetricChip({
-  label,
-  value,
-  color,
-  index,
-}: {
-  label: string
-  value: number
-  color: string
-  index: number
-}) {
-  const animated = useCountUp(value, { durationMs: 900 + index * 80 })
-
-  return (
-    <div className="rounded-xl border border-border/60 bg-background/70 px-3 py-2 shadow-sm backdrop-blur-sm">
-      <div className="flex items-center gap-2">
-        <span
-          className="size-2.5 rounded-full"
-          style={{ backgroundColor: color }}
-        />
-        <p className="text-[11px] font-medium text-muted-foreground">{label}</p>
-      </div>
-      <p className="mt-1 text-lg font-semibold tabular-nums tracking-tight">
-        {animated.toLocaleString()}
-      </p>
-    </div>
-  )
+  widgetKey?: LicenseUsageWidgetKey
+  titleKey?: string
+  descriptionKey?: string
+  accentClassName?: string
 }
 
 export function LicenseUsageRadialChart({
   items,
+  widgetKey = "license_usage",
+  titleKey = "dashboard.charts.appsLicenseUsage",
+  descriptionKey = "dashboard.charts.appsLicenseUsageDesc",
+  accentClassName = "from-cyan-500/12 via-transparent to-transparent",
 }: LicenseUsageRadialChartProps) {
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language.startsWith("ar")
-  const layout = useDashboardWidgetLayoutItem("license_usage")
+  const layout = useDashboardWidgetLayoutItem(widgetKey as DashboardWidgetKey)
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
-  const chartData = useMemo(() => {
-    const max = Math.max(...items.map((item) => item.count), 1)
-    return items.map((item, index) => {
-      const key = toChartKey(item, index)
-      const color = USAGE_COLORS[key] ?? USAGE_COLORS.licensed
-      return {
-        key,
-        name: localizeChartName(item, isArabic),
-        count: item.count,
-        fill: color,
-        // RadialBar visual scale relative to max for nicer arcs
-        value: item.count,
-        max,
-      }
-    })
-  }, [isArabic, items])
+  const chartData = useMemo(
+    () =>
+      items.map((item, index) => {
+        const key = toChartKey(item, index)
+        return {
+          key,
+          name: localizeChartName(item, isArabic),
+          count: item.count,
+          fill: USAGE_COLORS[key] ?? `var(--chart-${(index % 5) + 1})`,
+        }
+      }),
+    [isArabic, items]
+  )
 
   const config = useMemo(() => {
     const next: ChartConfig = {
@@ -102,15 +80,22 @@ export function LicenseUsageRadialChart({
     return next
   }, [chartData, t])
 
+  const total = useMemo(
+    () => chartData.reduce((sum, item) => sum + item.count, 0),
+    [chartData]
+  )
+
+  const active = activeIndex === null ? null : (chartData[activeIndex] ?? null)
+
   return (
     <DashboardChartCard
-      widgetKey="license_usage"
-      title={t("dashboard.charts.licenseUsage")}
-      description={t("dashboard.charts.licenseUsageDesc")}
+      widgetKey={widgetKey as DashboardWidgetKey}
+      title={t(titleKey)}
+      description={t(descriptionKey)}
       icon={KeyRound}
-      accentClassName="from-cyan-500/12 via-transparent to-transparent"
+      accentClassName={accentClassName}
     >
-      {chartData.length === 0 ? (
+      {chartData.length === 0 || total === 0 ? (
         <EmptyState
           title={t("dashboard.charts.emptyTitle")}
           description={t("dashboard.charts.emptyLicenses")}
@@ -119,46 +104,131 @@ export function LicenseUsageRadialChart({
         <div className="space-y-4">
           <ChartContainer
             config={config}
-            className="mx-auto aspect-square max-h-[var(--dashboard-chart-height,240px)] w-full"
+            className="mx-auto aspect-square max-h-[var(--dashboard-chart-height,220px)] w-full"
           >
-            <RadialBarChart
-              data={chartData}
-              startAngle={90}
-              endAngle={-270}
-              innerRadius="28%"
-              outerRadius="100%"
-            >
-              <PolarGrid
-                gridType="circle"
-                radialLines={false}
-                stroke="var(--border)"
-                strokeOpacity={0.55}
-              />
-              <PolarAngleAxis type="number" domain={[0, "dataMax"]} tick={false} />
+            <PieChart>
               <ChartTooltip
                 cursor={false}
-                content={<ChartTooltipContent nameKey="name" hideLabel />}
+                content={<ChartTooltipContent hideLabel nameKey="name" />}
               />
-              <RadialBar
+              <Pie
+                data={chartData}
                 dataKey="count"
-                background={{ fill: "var(--muted)" }}
-                cornerRadius={10}
+                nameKey="name"
+                startAngle={90}
+                endAngle={-270}
+                innerRadius={62}
+                outerRadius={88}
+                paddingAngle={3}
+                strokeWidth={2}
+                stroke="hsl(var(--card))"
+                onMouseEnter={(_, index) => setActiveIndex(index)}
+                onMouseLeave={() => setActiveIndex(null)}
+                shape={(props) => {
+                  const {
+                    cx = 0,
+                    cy = 0,
+                    innerRadius = 0,
+                    outerRadius = 0,
+                    startAngle = 0,
+                    endAngle = 0,
+                    fill,
+                    index = 0,
+                  } = props as {
+                    cx?: number
+                    cy?: number
+                    innerRadius?: number
+                    outerRadius?: number
+                    startAngle?: number
+                    endAngle?: number
+                    fill?: string
+                    index?: number
+                  }
+                  const isActive = activeIndex === index
+                  return (
+                    <Sector
+                      cx={cx}
+                      cy={cy}
+                      innerRadius={innerRadius}
+                      outerRadius={isActive ? outerRadius + 6 : outerRadius}
+                      startAngle={startAngle}
+                      endAngle={endAngle}
+                      fill={fill}
+                      cornerRadius={6}
+                    />
+                  )
+                }}
                 {...ANIMATION}
-              />
-            </RadialBarChart>
+              >
+                <Label
+                  content={({ viewBox }) => {
+                    if (!viewBox || !("cx" in viewBox) || !("cy" in viewBox)) {
+                      return null
+                    }
+                    return (
+                      <text
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy ?? 0) - 6}
+                          className="fill-foreground text-2xl font-bold"
+                        >
+                          {(active?.count ?? total).toLocaleString()}
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy ?? 0) + 14}
+                          className="fill-muted-foreground text-[11px]"
+                        >
+                          {active?.name ?? t("dashboard.kpi.licenses")}
+                        </tspan>
+                      </text>
+                    )
+                  }}
+                />
+              </Pie>
+            </PieChart>
           </ChartContainer>
 
           {layout.show_statistics || layout.show_legend ? (
-            <div className="grid grid-cols-3 gap-2">
-              {chartData.map((item, index) => (
-                <MetricChip
-                  key={item.key}
-                  label={item.name}
-                  value={item.count}
-                  color={item.fill}
-                  index={index}
-                />
-              ))}
+            <div className="grid gap-2">
+              {chartData.map((item, index) => {
+                const share =
+                  total > 0 ? Math.round((item.count / total) * 100) : 0
+                const isActive = activeIndex === index
+                return (
+                  <button
+                    key={item.key}
+                    type="button"
+                    onMouseEnter={() => setActiveIndex(index)}
+                    onMouseLeave={() => setActiveIndex(null)}
+                    className={cn(
+                      "flex items-center gap-3 rounded-xl border px-3 py-2 text-start transition-all",
+                      isActive
+                        ? "border-border bg-muted/50 shadow-sm"
+                        : "border-transparent bg-muted/20 hover:bg-muted/35"
+                    )}
+                  >
+                    <span
+                      className="size-2.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: item.fill }}
+                    />
+                    <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                      {item.name}
+                    </span>
+                    <span className="text-sm font-semibold tabular-nums">
+                      {item.count.toLocaleString()}
+                    </span>
+                    <span className="w-10 text-end text-xs tabular-nums text-muted-foreground">
+                      {share}%
+                    </span>
+                  </button>
+                )
+              })}
             </div>
           ) : null}
         </div>

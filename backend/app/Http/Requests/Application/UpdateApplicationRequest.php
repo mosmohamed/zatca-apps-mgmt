@@ -36,6 +36,8 @@ class UpdateApplicationRequest extends FormRequest
             'application_type_id' => ['sometimes', 'required', 'integer', Rule::exists('application_types', 'id')],
             'name_ar' => ['sometimes', 'required', 'string', 'max:255'],
             'name_en' => ['sometimes', 'required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'technical_category' => ['nullable', 'string', 'max:255'],
             'code' => [
                 'sometimes',
                 'required',
@@ -58,9 +60,11 @@ class UpdateApplicationRequest extends FormRequest
                 Rule::exists('users', 'id')->whereNull('deleted_at'),
             ],
             'support_type_id' => ['sometimes', 'required', 'integer', Rule::exists('support_types', 'id')],
+            'vendor_id' => ['nullable', 'integer', Rule::exists('vendors', 'id')->whereNull('deleted_at')],
             'ha_model' => ['nullable', 'string', Rule::in(HaModel::values())],
             'documentation_url' => ['nullable', 'url', 'max:2048'],
             'repository_url' => ['nullable', 'url', 'max:2048'],
+            'remarks' => ['nullable', 'string'],
             'technologies' => ['sometimes', 'array'],
             'technologies.*' => ['integer', 'distinct', Rule::exists('technologies', 'id')->whereNull('deleted_at')],
         ];

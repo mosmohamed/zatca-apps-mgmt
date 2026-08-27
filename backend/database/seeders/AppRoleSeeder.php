@@ -18,6 +18,7 @@ class AppRoleSeeder extends Seeder
             ['name' => 'Support', 'description' => 'Operational support access', 'sort_order' => 4],
             ['name' => 'ZATCA Management', 'description' => 'ZATCA management ownership and oversight', 'sort_order' => 5],
             ['name' => 'Viewer', 'description' => 'Read-only application access', 'sort_order' => 6],
+            ['name' => 'Application Lead', 'description' => 'ZATCA application lead and technical ownership', 'sort_order' => 7],
         ];
 
         foreach ($roles as $role) {

@@ -67,6 +67,13 @@ export function createSettingsFormSchema(t: TFunction) {
       .trim()
       .min(1, t("validation.required", { field: t("settings.general.timezone") })),
     default_pagination_size: z.number().int().min(5).max(100),
+    login_default_credentials_enabled: z.boolean(),
+    login_default_email: z
+      .string()
+      .trim()
+      .email()
+      .max(255),
+    login_default_password: z.string().trim().min(1).max(255),
     dashboard_widgets_by_role: z.record(
       z.string(),
       z.object(dashboardWidgetsShape)

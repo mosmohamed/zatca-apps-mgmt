@@ -12,7 +12,7 @@ class SuperAdminSeeder extends Seeder
 {
     public function run(): void
     {
-        $email = (string) env('SUPER_ADMIN_EMAIL', 'admin@zatca.sa');
+        $email = (string) env('SUPER_ADMIN_EMAIL', 'admin@zatca.gov.sa');
         $password = (string) env('SUPER_ADMIN_PASSWORD', 'password');
 
         $jobTitleId = JobTitle::query()
