@@ -13,6 +13,8 @@ PERSON_SEPARATORS_RE = re.compile(r"\s*(?:[-–—]|[,;]|\r?\n)+\s*")
 # Do not split on "/": names like "CI/CD pipeline" must stay intact.
 TECH_SEPARATORS_RE = re.compile(r"\s*[,;|]+\s*|\r?\n+")
 APP_SEPARATORS_RE = re.compile(r"\s*[,;]+\s*|\r?\n+")
+CODE_SLUG_RE = re.compile(r"[^A-Za-z0-9]+")
+CUSTOMS_KEYS = {"customs", "customes", "custom"}
 
 TRUTHY_VALUES = {
     "yes",
@@ -172,6 +174,10 @@ def is_valid_email(value: str) -> bool:
     return bool(value) and EMAIL_RE.match(value) is not None
 
 
+ARABIC_INDIC_DIGITS = str.maketrans("٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹", "01234567890123456789")
+SAUDI_COUNTRY_CODE = "966"
+
+
 def parse_phone(value: Any) -> str | None:
     if is_blank(value):
         return None
@@ -188,6 +194,34 @@ def parse_phone(value: Any) -> str | None:
     if text.endswith(".0") and text.replace(".", "", 1).replace("-", "", 1).isdigit():
         text = text[:-2]
     return text or None
+
+
+def _phone_digits(value: Any) -> str:
+    raw = parse_phone(value)
+    if raw is None:
+        return ""
+    text = raw.translate(ARABIC_INDIC_DIGITS)
+    return re.sub(r"\D+", "", text)
+
+
+def normalize_saudi_phone(value: Any, country_code: str = SAUDI_COUNTRY_CODE) -> str | None:
+    """Normalize a local or international Saudi number to +966XXXXXXXXX."""
+    digits = _phone_digits(value)
+    if digits == "":
+        return None
+
+    if digits.startswith("00"):
+        digits = digits[2:]
+
+    if digits.startswith(country_code):
+        national = digits[len(country_code) :].lstrip("0")
+    else:
+        national = digits.lstrip("0")
+
+    if national == "":
+        return None
+
+    return f"+{country_code}{national}"
 
 
 def split_people(value: str) -> list[str]:
@@ -280,6 +314,31 @@ def map_application_type(value: str) -> str | None:
     if key in APPLICATION_TYPE_ALIASES:
         return APPLICATION_TYPE_ALIASES[key]
     return normalize_whitespace(value)
+
+
+def map_customs_or_internal_it(value: Any) -> str:
+    """Column H: keep Customs; anything else (including Other Apps) becomes Internal IT."""
+    key = normalize_whitespace(cell_text(value)).casefold()
+    if key in CUSTOMS_KEYS:
+        return "Customs"
+    return "Internal IT"
+
+
+def generate_application_code(name: str, taken: set[str] | None = None) -> str:
+    taken_keys = {item.casefold() for item in (taken or set())}
+    ascii_name = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode("ascii")
+    slug = CODE_SLUG_RE.sub("_", ascii_name).strip("_").upper()
+    slug = re.sub(r"_+", "_", slug)
+    if slug == "":
+        slug = "APP"
+    slug = slug[:100]
+    candidate = slug
+    suffix = 2
+    while candidate.casefold() in taken_keys:
+        extra = f"_{suffix}"
+        candidate = f"{slug[: max(1, 100 - len(extra))]}{extra}"
+        suffix += 1
+    return candidate
 
 
 def map_department(value: str) -> str | None:

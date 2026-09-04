@@ -78,6 +78,25 @@ class User extends Authenticatable
     }
 
     /**
+     * Microsoft Teams handle on `users.teams`.
+     *
+     * Spatie Permission 8.3 defines HasRoles::teams() as a dummy BelongsToMany
+     * even when `permission.teams` is false. That relation selects
+     * `model_has_roles.team_id`, which this schema does not have. Overriding it
+     * with an attribute keeps the column readable after create (when it is not
+     * yet present on the in-memory model) without querying Spatie's pivot.
+     *
+     * @return Attribute<string|null, string|null>
+     */
+    protected function teams(): Attribute
+    {
+        return Attribute::make(
+            get: static fn (mixed $value): ?string => $value === null ? null : (string) $value,
+            set: static fn (mixed $value): ?string => $value === null || $value === '' ? null : (string) $value,
+        );
+    }
+
+    /**
      * @return BelongsTo<Vendor, $this>
      */
     public function vendor(): BelongsTo

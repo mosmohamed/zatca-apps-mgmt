@@ -20,6 +20,7 @@ class ApplicationTypeSeeder extends Seeder
             ['name_en' => 'SaaS Platform', 'name_ar' => 'منصة سحابية', 'code' => 'SAAS'],
             ['name_en' => 'Customs', 'name_ar' => 'جمارك', 'code' => 'CUSTOMS'],
             ['name_en' => 'Internal App', 'name_ar' => 'تطبيق داخلي', 'code' => 'INTERNAL_APP'],
+            ['name_en' => 'Internal IT', 'name_ar' => 'تقنية المعلومات الداخلية', 'code' => 'INTERNAL_IT'],
         ];
 
         foreach ($types as $type) {
