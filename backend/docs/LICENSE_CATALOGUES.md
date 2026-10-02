@@ -67,13 +67,16 @@ only thing that decides who can read applications.
 - `charts.license_usage` (Apps)
 - `charts.infra_license_usage`
 - `charts.service_desk_license_usage`
+- `charts.network_ops_license_usage`
+- `charts.smart_facilities_license_usage`
 
 Each chart is gated independently by the matching `.view` permission in `filterForActor()`, so a
-user who can only see Apps licenses receives `[]` for the other two. The status-distribution and
+user who can only see Apps licenses receives `[]` for the other catalogues. The status-distribution and
 by-environment charts remain Apps-only.
 
-`DashboardWidgets::keys()` and `DashboardWidgetLayout` defaults were extended with
-`infra_license_usage` and `service_desk_license_usage` (desktop span 2 each), so the widgets are
+`DashboardWidgets::keys()` and `DashboardWidgetLayout` defaults include
+`infra_license_usage`, `service_desk_license_usage`, `network_ops_license_usage`, and
+`smart_facilities_license_usage` (desktop span 2 each), so the widgets are
 toggleable per role and configurable like the existing ones.
 
 ## Login screen default credentials

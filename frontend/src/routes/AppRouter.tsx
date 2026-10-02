@@ -178,6 +178,100 @@ const ServiceDeskEscalationMatrixDetailPage = lazy(() =>
     default: module.ServiceDeskEscalationMatrixDetailPage,
   }))
 )
+const AreaScopedUsersPage = lazy(() =>
+  import("@/features/users/pages/AreaScopedUsersPage").then((module) => ({
+    default: module.AreaScopedUsersPage,
+  }))
+)
+const AreaScopedVendorsPage = lazy(() =>
+  import("@/features/vendors/pages/AreaScopedVendorsPage").then((module) => ({
+    default: module.AreaScopedVendorsPage,
+  }))
+)
+const NetworkOpsCategoriesPage = lazy(() =>
+  import("@/features/network-ops/pages/NetworkOpsCategoriesPage").then(
+    (module) => ({
+      default: module.NetworkOpsCategoriesPage,
+    })
+  )
+)
+const NetworkOpsTeamAssignmentsPage = lazy(() =>
+  import("@/features/network-ops/pages/NetworkOpsTeamAssignmentsPage").then(
+    (module) => ({
+      default: module.NetworkOpsTeamAssignmentsPage,
+    })
+  )
+)
+const NetworkOpsEscalationMatrixPage = lazy(() =>
+  import("@/features/network-ops/pages/NetworkOpsEscalationMatrixPage").then(
+    (module) => ({
+      default: module.NetworkOpsEscalationMatrixPage,
+    })
+  )
+)
+const NetworkOpsEscalationMatrixDetailPage = lazy(() =>
+  import(
+    "@/features/network-ops/pages/NetworkOpsEscalationMatrixDetailPage"
+  ).then((module) => ({
+    default: module.NetworkOpsEscalationMatrixDetailPage,
+  }))
+)
+const SmartFacilitiesCategoriesPage = lazy(() =>
+  import(
+    "@/features/smart-facilities/pages/SmartFacilitiesCategoriesPage"
+  ).then((module) => ({
+    default: module.SmartFacilitiesCategoriesPage,
+  }))
+)
+const SmartFacilitiesTeamAssignmentsPage = lazy(() =>
+  import(
+    "@/features/smart-facilities/pages/SmartFacilitiesTeamAssignmentsPage"
+  ).then((module) => ({
+    default: module.SmartFacilitiesTeamAssignmentsPage,
+  }))
+)
+const SmartFacilitiesEscalationMatrixPage = lazy(() =>
+  import(
+    "@/features/smart-facilities/pages/SmartFacilitiesEscalationMatrixPage"
+  ).then((module) => ({
+    default: module.SmartFacilitiesEscalationMatrixPage,
+  }))
+)
+const SmartFacilitiesEscalationMatrixDetailPage = lazy(() =>
+  import(
+    "@/features/smart-facilities/pages/SmartFacilitiesEscalationMatrixDetailPage"
+  ).then((module) => ({
+    default: module.SmartFacilitiesEscalationMatrixDetailPage,
+  }))
+)
+const ReleaseManagementCategoriesPage = lazy(() =>
+  import(
+    "@/features/release-management/pages/ReleaseManagementCategoriesPage"
+  ).then((module) => ({
+    default: module.ReleaseManagementCategoriesPage,
+  }))
+)
+const ReleaseManagementTeamAssignmentsPage = lazy(() =>
+  import(
+    "@/features/release-management/pages/ReleaseManagementTeamAssignmentsPage"
+  ).then((module) => ({
+    default: module.ReleaseManagementTeamAssignmentsPage,
+  }))
+)
+const ReleaseManagementEscalationMatrixPage = lazy(() =>
+  import(
+    "@/features/release-management/pages/ReleaseManagementEscalationMatrixPage"
+  ).then((module) => ({
+    default: module.ReleaseManagementEscalationMatrixPage,
+  }))
+)
+const ReleaseManagementEscalationMatrixDetailPage = lazy(() =>
+  import(
+    "@/features/release-management/pages/ReleaseManagementEscalationMatrixDetailPage"
+  ).then((module) => ({
+    default: module.ReleaseManagementEscalationMatrixDetailPage,
+  }))
+)
 const ActivityLogPage = lazy(() =>
   import("@/features/activity-log/pages/ActivityLogPage").then((module) => ({
     default: module.ActivityLogPage,
@@ -369,6 +463,13 @@ function AppRoutes() {
                       path="infra-team-assignments"
                       element={<TeamAssignmentsPage />}
                     />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="infra-escalation-matrix.view" />
+                    }
+                  >
                     <Route
                       path="infra-teams-details"
                       element={<InfraTeamsDetailsPage />}
@@ -376,6 +477,40 @@ function AppRoutes() {
                     <Route
                       path="infra-teams-details/:id"
                       element={<InfraTeamDetailPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="infra-employees.view" />
+                    }
+                  >
+                    <Route
+                      path="infra-employees"
+                      element={
+                        <AreaScopedUsersPage
+                          area="infra"
+                          viewPermission="infra-employees.view"
+                          titleKey="nav.infraEmployees"
+                        />
+                      }
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="infra-vendors.view" />
+                    }
+                  >
+                    <Route
+                      path="infra-vendors"
+                      element={
+                        <AreaScopedVendorsPage
+                          area="infra"
+                          viewPermission="infra-vendors.view"
+                          titleKey="nav.infraVendors"
+                        />
+                      }
                     />
                   </Route>
 
@@ -399,6 +534,13 @@ function AppRoutes() {
                       path="service-desk-team-assignments"
                       element={<ServiceDeskTeamAssignmentsPage />}
                     />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="service-desk-escalation-matrix.view" />
+                    }
+                  >
                     <Route
                       path="service-desk-escalation-matrix"
                       element={<ServiceDeskEscalationMatrixPage />}
@@ -406,6 +548,257 @@ function AppRoutes() {
                     <Route
                       path="service-desk-escalation-matrix/:id"
                       element={<ServiceDeskEscalationMatrixDetailPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="service-desk-employees.view" />
+                    }
+                  >
+                    <Route
+                      path="service-desk-employees"
+                      element={
+                        <AreaScopedUsersPage
+                          area="service_desk"
+                          viewPermission="service-desk-employees.view"
+                          titleKey="nav.serviceDeskEmployees"
+                        />
+                      }
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="service-desk-vendors.view" />
+                    }
+                  >
+                    <Route
+                      path="service-desk-vendors"
+                      element={
+                        <AreaScopedVendorsPage
+                          area="service_desk"
+                          viewPermission="service-desk-vendors.view"
+                          titleKey="nav.serviceDeskVendors"
+                        />
+                      }
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="network-ops-categories.view" />
+                    }
+                  >
+                    <Route
+                      path="network-ops-categories"
+                      element={<NetworkOpsCategoriesPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="network-ops-team-assignments.view" />
+                    }
+                  >
+                    <Route
+                      path="network-ops-team-assignments"
+                      element={<NetworkOpsTeamAssignmentsPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="network-ops-escalation-matrix.view" />
+                    }
+                  >
+                    <Route
+                      path="network-ops-escalation-matrix"
+                      element={<NetworkOpsEscalationMatrixPage />}
+                    />
+                    <Route
+                      path="network-ops-escalation-matrix/:id"
+                      element={<NetworkOpsEscalationMatrixDetailPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="network-ops-employees.view" />
+                    }
+                  >
+                    <Route
+                      path="network-ops-employees"
+                      element={
+                        <AreaScopedUsersPage
+                          area="network_ops"
+                          viewPermission="network-ops-employees.view"
+                          titleKey="nav.networkOpsEmployees"
+                        />
+                      }
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="network-ops-vendors.view" />
+                    }
+                  >
+                    <Route
+                      path="network-ops-vendors"
+                      element={
+                        <AreaScopedVendorsPage
+                          area="network_ops"
+                          viewPermission="network-ops-vendors.view"
+                          titleKey="nav.networkOpsVendors"
+                        />
+                      }
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="smart-facilities-categories.view" />
+                    }
+                  >
+                    <Route
+                      path="smart-facilities-categories"
+                      element={<SmartFacilitiesCategoriesPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="smart-facilities-team-assignments.view" />
+                    }
+                  >
+                    <Route
+                      path="smart-facilities-team-assignments"
+                      element={<SmartFacilitiesTeamAssignmentsPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="smart-facilities-escalation-matrix.view" />
+                    }
+                  >
+                    <Route
+                      path="smart-facilities-escalation-matrix"
+                      element={<SmartFacilitiesEscalationMatrixPage />}
+                    />
+                    <Route
+                      path="smart-facilities-escalation-matrix/:id"
+                      element={
+                        <SmartFacilitiesEscalationMatrixDetailPage />
+                      }
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="smart-facilities-employees.view" />
+                    }
+                  >
+                    <Route
+                      path="smart-facilities-employees"
+                      element={
+                        <AreaScopedUsersPage
+                          area="smart_facilities"
+                          viewPermission="smart-facilities-employees.view"
+                          titleKey="nav.smartFacilitiesEmployees"
+                        />
+                      }
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="smart-facilities-vendors.view" />
+                    }
+                  >
+                    <Route
+                      path="smart-facilities-vendors"
+                      element={
+                        <AreaScopedVendorsPage
+                          area="smart_facilities"
+                          viewPermission="smart-facilities-vendors.view"
+                          titleKey="nav.smartFacilitiesVendors"
+                        />
+                      }
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="release-management-categories.view" />
+                    }
+                  >
+                    <Route
+                      path="release-management-categories"
+                      element={<ReleaseManagementCategoriesPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="release-management-team-assignments.view" />
+                    }
+                  >
+                    <Route
+                      path="release-management-team-assignments"
+                      element={<ReleaseManagementTeamAssignmentsPage />}
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="release-management-escalation-matrix.view" />
+                    }
+                  >
+                    <Route
+                      path="release-management-escalation-matrix"
+                      element={<ReleaseManagementEscalationMatrixPage />}
+                    />
+                    <Route
+                      path="release-management-escalation-matrix/:id"
+                      element={
+                        <ReleaseManagementEscalationMatrixDetailPage />
+                      }
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="release-management-employees.view" />
+                    }
+                  >
+                    <Route
+                      path="release-management-employees"
+                      element={
+                        <AreaScopedUsersPage
+                          area="release_management"
+                          viewPermission="release-management-employees.view"
+                          titleKey="nav.releaseManagementEmployees"
+                        />
+                      }
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="release-management-vendors.view" />
+                    }
+                  >
+                    <Route
+                      path="release-management-vendors"
+                      element={
+                        <AreaScopedVendorsPage
+                          area="release_management"
+                          viewPermission="release-management-vendors.view"
+                          titleKey="nav.releaseManagementVendors"
+                        />
+                      }
                     />
                   </Route>
 
@@ -450,6 +843,40 @@ function AppRoutes() {
                       path="service-desk-licenses/:id"
                       element={
                         <LicenseDetailPage moduleId="service-desk" />
+                      }
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="network-ops-licenses.view" />
+                    }
+                  >
+                    <Route
+                      path="network-ops-licenses"
+                      element={<LicensesPage moduleId="network-ops" />}
+                    />
+                    <Route
+                      path="network-ops-licenses/:id"
+                      element={
+                        <LicenseDetailPage moduleId="network-ops" />
+                      }
+                    />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermission permission="smart-facilities-licenses.view" />
+                    }
+                  >
+                    <Route
+                      path="smart-facilities-licenses"
+                      element={<LicensesPage moduleId="smart-facilities" />}
+                    />
+                    <Route
+                      path="smart-facilities-licenses/:id"
+                      element={
+                        <LicenseDetailPage moduleId="smart-facilities" />
                       }
                     />
                   </Route>

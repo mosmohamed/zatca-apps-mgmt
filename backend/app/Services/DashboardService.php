@@ -10,7 +10,9 @@ use App\Models\ApplicationAssignment;
 use App\Models\Department;
 use App\Models\InfraLicense;
 use App\Models\License;
+use App\Models\NetworkOpsLicense;
 use App\Models\ServiceDeskLicense;
+use App\Models\SmartFacilitiesLicense;
 use App\Models\Technology;
 use App\Models\User;
 use App\Models\Vendor;
@@ -43,6 +45,8 @@ class DashboardService
      *         license_usage: list<array{key: string, name_en: string, name_ar: string, count: int}>,
      *         infra_license_usage: list<array{key: string, name_en: string, name_ar: string, count: int}>,
      *         service_desk_license_usage: list<array{key: string, name_en: string, name_ar: string, count: int}>,
+     *         network_ops_license_usage: list<array{key: string, name_en: string, name_ar: string, count: int}>,
+     *         smart_facilities_license_usage: list<array{key: string, name_en: string, name_ar: string, count: int}>,
      *         license_status_distribution: list<array{key: string, name_en: string, name_ar: string, count: int}>,
      *         licenses_by_environment: list<array{key: string, name_en: string, name_ar: string, count: int}>
      *     },
@@ -71,6 +75,8 @@ class DashboardService
         $canLicenses = $actor instanceof User && $actor->can('licenses.view');
         $canInfraLicenses = $actor instanceof User && $actor->can('infra-licenses.view');
         $canServiceDeskLicenses = $actor instanceof User && $actor->can('service-desk-licenses.view');
+        $canNetworkOpsLicenses = $actor instanceof User && $actor->can('network-ops-licenses.view');
+        $canSmartFacilitiesLicenses = $actor instanceof User && $actor->can('smart-facilities-licenses.view');
         $canAssignments = $actor instanceof User && $actor->can('assignments.view');
         $canActivity = $actor instanceof User && $actor->can('activity-log.view');
 
@@ -99,6 +105,8 @@ class DashboardService
                 'license_usage' => $canLicenses ? $charts['license_usage'] : [],
                 'infra_license_usage' => $canInfraLicenses ? $charts['infra_license_usage'] : [],
                 'service_desk_license_usage' => $canServiceDeskLicenses ? $charts['service_desk_license_usage'] : [],
+                'network_ops_license_usage' => $canNetworkOpsLicenses ? $charts['network_ops_license_usage'] : [],
+                'smart_facilities_license_usage' => $canSmartFacilitiesLicenses ? $charts['smart_facilities_license_usage'] : [],
                 'license_status_distribution' => $canLicenses ? $charts['license_status_distribution'] : [],
                 'licenses_by_environment' => $canLicenses ? $charts['licenses_by_environment'] : [],
             ],
@@ -249,6 +257,8 @@ class DashboardService
         $licenseUsage = $this->licenseUsageChart(License::class);
         $infraLicenseUsage = $this->licenseUsageChart(InfraLicense::class);
         $serviceDeskLicenseUsage = $this->licenseUsageChart(ServiceDeskLicense::class);
+        $networkOpsLicenseUsage = $this->licenseUsageChart(NetworkOpsLicense::class);
+        $smartFacilitiesLicenseUsage = $this->licenseUsageChart(SmartFacilitiesLicense::class);
 
         $today = now()->toDateString();
         $within30 = now()->addDays(30)->toDateString();
@@ -357,6 +367,8 @@ class DashboardService
                 'license_usage' => $licenseUsage,
                 'infra_license_usage' => $infraLicenseUsage,
                 'service_desk_license_usage' => $serviceDeskLicenseUsage,
+                'network_ops_license_usage' => $networkOpsLicenseUsage,
+                'smart_facilities_license_usage' => $smartFacilitiesLicenseUsage,
                 'license_status_distribution' => $licenseStatusDistribution,
                 'licenses_by_environment' => $licensesByEnvironment,
             ],
@@ -368,7 +380,7 @@ class DashboardService
      * Licensed / used / available totals for one of the independent license
      * catalogues (Apps, Infrastructure or Service Desk).
      *
-     * @param  class-string<License|InfraLicense|ServiceDeskLicense>  $modelClass
+     * @param  class-string<License|InfraLicense|ServiceDeskLicense|NetworkOpsLicense|SmartFacilitiesLicense>  $modelClass
      * @return list<array{key: string, name_en: string, name_ar: string, count: int}>
      */
     private function licenseUsageChart(string $modelClass): array

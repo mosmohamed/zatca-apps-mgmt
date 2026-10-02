@@ -1,0 +1,90 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services;
+
+use App\Models\ReleaseManagementLevel;
+use App\Traits\SearchTrait;
+use App\Traits\SortTrait;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
+
+class ReleaseManagementLevelService
+{
+    use SearchTrait;
+    use SortTrait;
+
+    /**
+     * @param  array{search?: string|null, sort?: string|null, per_page?: int|null, page?: int|null, active_only?: bool|null}  $filters
+     * @return LengthAwarePaginator<int, ReleaseManagementLevel>
+     */
+    public function list(array $filters = []): LengthAwarePaginator
+    {
+        $perPage = max(1, min((int) ($filters['per_page'] ?? 50), 100));
+        $page = max(1, (int) ($filters['page'] ?? 1));
+
+        $query = ReleaseManagementLevel::query();
+
+        if (! empty($filters['active_only'])) {
+            $query->where('is_active', true);
+        }
+
+        $this->applyColumnSearch($query, $filters['search'] ?? null, ['name_en', 'name_ar', 'code', 'note_en', 'note_ar']);
+        $this->applyColumnSort(
+            $query,
+            $filters['sort'] ?? null,
+            ['name_en', 'name_ar', 'code', 'sort_order', 'is_active', 'created_at'],
+            'sort_order',
+        );
+
+        return $query->paginate(perPage: $perPage, page: $page);
+    }
+
+    /**
+     * @return Collection<int, ReleaseManagementLevel>
+     */
+    public function activeOrdered(): Collection
+    {
+        return ReleaseManagementLevel::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name_en')
+            ->get();
+    }
+
+    public function find(int $id): ReleaseManagementLevel
+    {
+        return ReleaseManagementLevel::query()->findOrFail($id);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function create(array $data): ReleaseManagementLevel
+    {
+        return DB::transaction(static function () use ($data): ReleaseManagementLevel {
+            return ReleaseManagementLevel::query()->create($data);
+        });
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function update(ReleaseManagementLevel $level, array $data): ReleaseManagementLevel
+    {
+        return DB::transaction(static function () use ($level, $data): ReleaseManagementLevel {
+            $level->update($data);
+
+            return $level->refresh();
+        });
+    }
+
+    public function delete(ReleaseManagementLevel $level): void
+    {
+        DB::transaction(static function () use ($level): void {
+            $level->delete();
+        });
+    }
+}

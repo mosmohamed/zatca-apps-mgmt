@@ -1,4 +1,12 @@
 {
+  "operationalAreas": {
+    "application": "Application",
+    "infra": "Infra",
+    "service_desk": "Service Desk",
+    "network_ops": "Network Ops",
+    "release_management": "Release Management",
+    "smart_facilities": "Smart Facilities"
+  },
   "app": {
     "name": "ZATCA OPS",
     "tagline": "",
@@ -27,11 +35,36 @@
     "infraCategories": "Infra Categories",
     "infraTeamAssignments": "Team Assignments",
     "infraTeamsDetails": "Escalation Matrix",
+    "infraEmployees": "Employees",
+    "infraVendors": "Vendors",
     "appsLicenses": "Apps Licenses",
-    "appsLicenseDetail": "Apps License Detail",
     "infraLicenses": "Infra Licenses",
-    "infraLicenseDetail": "Infra License Detail",
+    "serviceDesk": "Service Desk",
+    "serviceDeskCategories": "Categories",
+    "serviceDeskTeamAssignments": "Team Assignments",
+    "serviceDeskEscalationMatrix": "Escalation Matrix",
+    "serviceDeskEmployees": "Employees",
+    "serviceDeskVendors": "Vendors",
     "sdLicenses": "SD Licenses",
+    "networkOps": "Network Ops",
+    "networkOpsCategories": "Network Category",
+    "networkOpsEmployees": "Employees",
+    "networkOpsVendors": "Vendors",
+    "networkOpsEscalationMatrix": "Escalation Matrix",
+    "networkOpsLicenses": "Licenses",
+    "releaseManagement": "Release Management",
+    "releaseManagementCategories": "Categories",
+    "releaseManagementEmployees": "Employees",
+    "releaseManagementVendors": "Vendors",
+    "releaseManagementEscalationMatrix": "Escalation Matrix",
+    "smartFacilities": "Smart Facilities",
+    "smartFacilitiesCategories": "Categories",
+    "smartFacilitiesEmployees": "Employees",
+    "smartFacilitiesVendors": "Vendors",
+    "smartFacilitiesEscalationMatrix": "Escalation Matrix",
+    "smartFacilitiesLicenses": "Licenses",
+    "appsLicenseDetail": "Apps License Detail",
+    "infraLicenseDetail": "Infra License Detail",
     "sdLicenseDetail": "SD License Detail",
     "licenses": "Apps Licenses",
     "licenseDetail": "Apps License Detail",
@@ -40,11 +73,7 @@
     "settings": "Settings",
     "forbidden": "Forbidden",
     "notFound": "Not Found",
-    "serverError": "Server Error",
-    "serviceDesk": "Service Desk",
-    "serviceDeskCategories": "Categories",
-    "serviceDeskTeamAssignments": "Team Assignments",
-    "serviceDeskEscalationMatrix": "Escalation Matrix"
+    "serverError": "Server Error"
   },
   "common": {
     "cancel": "Cancel",
@@ -234,7 +263,11 @@
       "emptyStatus": "Add applications to visualize status mix.",
       "emptyDepartments": "Create departments and applications to populate this chart.",
       "emptyLicenses": "Add licenses to populate these charts.",
-      "emptyHaModel": "Assign High Availability models to applications to populate this chart."
+      "emptyHaModel": "Assign High Availability models to applications to populate this chart.",
+      "networkOpsLicenseUsage": "Network Ops Licenses Usage",
+      "networkOpsLicenseUsageDesc": "Seats used versus available capacity across Network Ops Licenses.",
+      "smartFacilitiesLicenseUsage": "Smart Facilities Licenses Usage",
+      "smartFacilitiesLicenseUsageDesc": "Seats used versus available capacity across Smart Facilities Licenses."
     },
     "layout": {
       "dragHandle": "Drag to reorder widget",
@@ -696,6 +729,7 @@
       "name": "Name",
       "email": "Email",
       "phone": "Phone",
+      "areas": "Areas",
       "status": "Status",
       "created": "Created"
     },
@@ -710,6 +744,10 @@
       "contactPersonEmail": "Contact person email",
       "contactPersonPhone": "Contact person phone",
       "remarks": "Remarks",
+      "areas": "Operational areas",
+      "areasPlaceholder": "Select areas",
+      "searchAreas": "Search areas...",
+      "areasEmpty": "No areas found",
       "status": "Active vendor",
       "saving": "Saving...",
       "createSubmit": "Create vendor",
@@ -786,6 +824,7 @@
       "name": "Name",
       "email": "Email",
       "roles": "Roles",
+      "areas": "Areas",
       "jobTitle": "Job title",
       "vendor": "Vendor",
       "active": "Active",
@@ -810,6 +849,10 @@
       "roles": "Roles",
       "rolesPlaceholder": "Select roles",
       "searchRoles": "Search roles...",
+      "areas": "Operational areas",
+      "areasPlaceholder": "Select areas",
+      "searchAreas": "Search areas...",
+      "areasEmpty": "No areas found",
       "passwordConfirmation": "Confirm password",
       "teams": "Teams",
       "whatsapp": "WhatsApp",
@@ -1220,7 +1263,9 @@
       "endDate": "End date",
       "daysRemaining": "Days remaining",
       "description": "Description",
-      "proofOfEntitlement": "Proof of entitlement"
+      "proofOfEntitlement": "Proof of entitlement",
+      "application": "Application",
+      "licensedNo": "Licensed No."
     },
     "form": {
       "createTitle": "New license",
@@ -1249,7 +1294,9 @@
       "endDateAfterStart": "End date must be on or after the start date.",
       "saving": "Saving...",
       "createSubmit": "Create license",
-      "updateSubmit": "Save changes"
+      "updateSubmit": "Save changes",
+      "application": "Application",
+      "licensedNo": "Licensed No."
     },
     "toast": {
       "created": "License created successfully.",
@@ -1278,7 +1325,11 @@
       "proofOfEntitlementDescription": "Purchase proof, agreement reference, or supporting URL.",
       "createdAt": "Created",
       "updatedAt": "Updated"
-    }
+    },
+    "titleNetworkOps": "Network Ops Licenses",
+    "descriptionNetworkOps": "Track Network Ops software entitlements, usage, and renewals.",
+    "titleSmartFacilities": "Smart Facilities Licenses",
+    "descriptionSmartFacilities": "Track Smart Facilities software entitlements, usage, and renewals."
   },
   "applicationsDetails": {
     "title": "Applications Details",
@@ -1628,7 +1679,9 @@
         "recent_activity": "Recent activity",
         "weather": "Weather",
         "local_time": "Current time and date",
-        "prayer_times": "Prayer times"
+        "prayer_times": "Prayer times",
+        "network_ops_license_usage": "Network Ops Licenses Usage",
+        "smart_facilities_license_usage": "Smart Facilities Licenses Usage"
       },
       "widgetHints": {
         "top_technologies": "Radar chart of the most used technologies.",
@@ -1644,7 +1697,9 @@
         "recent_activity": "Latest audited activity feed.",
         "weather": "Live weather conditions for the configured location. Hidden by default.",
         "local_time": "Live local clock and calendar date. Hidden by default.",
-        "prayer_times": "Prayer times and next-prayer countdown. Hidden by default."
+        "prayer_times": "Prayer times and next-prayer countdown. Hidden by default.",
+        "network_ops_license_usage": "Radial chart of Network Ops Licenses seats.",
+        "smart_facilities_license_usage": "Radial chart of Smart Facilities Licenses seats."
       }
     },
     "security": {
@@ -1921,7 +1976,8 @@
       "metrics": {
         "members": "Members",
         "levels": "Levels"
-      }
+      },
+      "manageStreams": "Manage streams"
     },
     "detail": {
       "backToList": "Back to escalation matrix",
@@ -2136,7 +2192,656 @@
       "metrics": {
         "members": "Members",
         "levels": "Levels"
+      },
+      "manageStreams": "Manage streams"
+    },
+    "detail": {
+      "backToList": "Back to escalation matrix",
+      "invalidId": "Invalid stream",
+      "invalidIdDescription": "The stream id in the URL is not valid.",
+      "notFoundTitle": "Stream not found",
+      "notFoundDescription": "This stream may have been removed or you do not have access.",
+      "noMembersTitle": "No members assigned",
+      "noMembersDescription": "Assign users to this stream from the Team Assignments page.",
+      "escalationMatrix": "Escalation matrix",
+      "escalationPath": "Escalation path",
+      "memberCount": "{{count}} member",
+      "memberCount_other": "{{count}} members"
+    }
+  },
+  "networkOps": {
+    "categories": {
+      "title": "Network Ops Categories",
+      "description": "Manage Network Ops streams (categories) and their subcategories, plus support levels.",
+      "searchPlaceholder": "Search categories by name or code...",
+      "newRoot": "New category",
+      "addSub": "Add subcategory",
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "openTeamDetails": "Open team details for {{name}}",
+      "emptyTitle": "No categories found",
+      "emptyCreate": "Create the first Network Ops category.",
+      "deleteConfirm": "Delete category \"{{name}}\"? Subcategories and assignments may be affected.",
+      "stats": {
+        "total": "Total categories",
+        "parents": "Parent categories",
+        "subcategories": "Subcategories",
+        "withoutAssignments": "Without assignments"
+      },
+      "filters": {
+        "allTypes": "All category types",
+        "allStatuses": "All statuses"
+      },
+      "types": {
+        "parent": "Parent category",
+        "subcategory": "Subcategory"
+      },
+      "tabs": {
+        "categories": "Categories",
+        "levels": "Levels"
+      },
+      "columns": {
+        "name": "Name",
+        "type": "Type",
+        "parent": "Parent",
+        "code": "Code",
+        "assignments": "Assignments",
+        "sortOrder": "Sort order",
+        "isActive": "Active",
+        "created": "Created"
+      },
+      "form": {
+        "createTitle": "New category",
+        "editTitle": "Edit category",
+        "createSubTitle": "New subcategory",
+        "editSubTitle": "Edit subcategory",
+        "rootDescription": "Root categories represent top-level network ops streams.",
+        "subDescription": "Subcategories belong to a root category and represent a specific stream.",
+        "parentLabel": "Parent category",
+        "nameEn": "English name",
+        "nameAr": "Arabic name",
+        "code": "Code",
+        "description": "Description",
+        "descriptionPlaceholder": "Optional description",
+        "sortOrder": "Sort order",
+        "isActive": "Active",
+        "saving": "Saving...",
+        "createSubmit": "Create category",
+        "updateSubmit": "Save changes"
+      },
+      "toast": {
+        "created": "Category created successfully.",
+        "updated": "Category updated successfully.",
+        "deleted": "Category deleted successfully.",
+        "createFailed": "Failed to create category.",
+        "updateFailed": "Failed to update category.",
+        "deleteFailed": "Failed to delete category."
       }
+    },
+    "levels": {
+      "new": "New level",
+      "searchPlaceholder": "Search levels by name, code, or note...",
+      "emptyTitle": "No levels found",
+      "emptyCreate": "Create the first support level.",
+      "deleteConfirm": "Delete level \"{{name}}\"?",
+      "columns": {
+        "nameEn": "English name",
+        "nameAr": "Arabic name",
+        "code": "Code",
+        "note": "Note",
+        "sortOrder": "Sort order",
+        "isActive": "Active"
+      },
+      "form": {
+        "createTitle": "New level",
+        "editTitle": "Edit level",
+        "createDescription": "Add a support level used across network ops team assignments.",
+        "editDescription": "Update level details.",
+        "nameEn": "English name",
+        "nameAr": "Arabic name",
+        "code": "Code",
+        "noteEn": "English note",
+        "noteAr": "Arabic note",
+        "notePlaceholder": "Optional note shown on hover",
+        "sortOrder": "Sort order",
+        "isActive": "Active",
+        "saving": "Saving...",
+        "createSubmit": "Create level",
+        "updateSubmit": "Save changes"
+      },
+      "toast": {
+        "created": "Level created successfully.",
+        "updated": "Level updated successfully.",
+        "deleted": "Level deleted successfully.",
+        "createFailed": "Failed to create level.",
+        "updateFailed": "Failed to update level.",
+        "deleteFailed": "Failed to delete level."
+      }
+    },
+    "assignments": {
+      "title": "Network Ops Team Assignments",
+      "description": "View and manage users assigned to each network ops stream and support level.",
+      "new": "New assignment",
+      "searchPlaceholder": "Search streams by name or code...",
+      "emptyTitle": "No streams found",
+      "emptyCreate": "Create network ops categories first to manage team assignments.",
+      "emptyFiltered": "Try a different search term.",
+      "deleteConfirm": "Remove assignment for {{name}}?",
+      "stats": {
+        "total": "Total assignments",
+        "uniqueUsers": "Unique assigned users",
+        "assignedCategories": "Assigned categories",
+        "unassignedCategories": "Unassigned categories"
+      },
+      "actions": {
+        "view": "View assignments",
+        "edit": "Edit assignments"
+      },
+      "filters": {
+        "allCategories": "All categories",
+        "allLevels": "All levels"
+      },
+      "columns": {
+        "stream": "Stream",
+        "user": "User",
+        "level": "Level",
+        "assignedUsers": "Assigned users"
+      },
+      "view": {
+        "title": "Stream assignments",
+        "description": "Users currently assigned to this network ops stream.",
+        "empty": "No users are assigned to this stream yet."
+      },
+      "edit": {
+        "title": "Edit assignments — {{name}}",
+        "titleFallback": "Edit assignments",
+        "description": "Add or remove users and set their support level for this stream.",
+        "deleteConfirm": "Remove {{user}} from this stream?",
+        "save": "Save changes",
+        "saving": "Saving..."
+      },
+      "form": {
+        "createTitle": "New assignment",
+        "editTitle": "Edit assignment",
+        "createDescription": "Assign one or more users to a category and support level.",
+        "editDescription": "Update this assignment's category, user, or level.",
+        "category": "Category",
+        "user": "User",
+        "users": "Users",
+        "level": "Level",
+        "selectLevel": "Select a level",
+        "selectUsers": "Select one or more users",
+        "searchCategories": "Search categories...",
+        "searchUsers": "Search users...",
+        "noCategories": "No categories found.",
+        "noUsers": "No users found.",
+        "addUser": "Add user",
+        "saving": "Saving...",
+        "createSubmit": "Create assignments",
+        "updateSubmit": "Save changes"
+      },
+      "validation": {
+        "categoryRequired": "Category is required.",
+        "levelRequired": "Level is required.",
+        "duplicateUserLevel": "This user is already assigned at this level."
+      },
+      "toast": {
+        "created": "Assignments created successfully.",
+        "updated": "Assignment updated successfully.",
+        "deleted": "Assignment removed successfully.",
+        "matrixSaved": "Stream assignments saved successfully.",
+        "createFailed": "Failed to create assignment.",
+        "updateFailed": "Failed to update assignment.",
+        "deleteFailed": "Failed to remove assignment."
+      }
+    },
+    "details": {
+      "title": "Escalation Matrix",
+      "description": "Browse Network Ops streams with live staffing by support level.",
+      "searchPlaceholder": "Search streams by name or code...",
+      "showingCount": "Showing {{shown}} of {{total}}",
+      "emptyTitle": "No streams found",
+      "emptyDescription": "Create categories and assignments to see streams here.",
+      "viewDetails": "View details",
+      "exportExcel": "Export Excel",
+      "exportCategory": "Export Excel",
+      "metrics": {
+        "members": "Members",
+        "levels": "Levels"
+      },
+      "manageStreams": "Manage streams"
+    },
+    "detail": {
+      "backToList": "Back to escalation matrix",
+      "invalidId": "Invalid stream",
+      "invalidIdDescription": "The stream id in the URL is not valid.",
+      "notFoundTitle": "Stream not found",
+      "notFoundDescription": "This stream may have been removed or you do not have access.",
+      "noMembersTitle": "No members assigned",
+      "noMembersDescription": "Assign users to this stream from the Team Assignments page.",
+      "escalationMatrix": "Escalation matrix",
+      "escalationPath": "Escalation path",
+      "memberCount": "{{count}} member",
+      "memberCount_other": "{{count}} members"
+    }
+  },
+  "smartFacilities": {
+    "categories": {
+      "title": "Smart Facilities Categories",
+      "description": "Manage Smart Facilities streams (categories) and their subcategories, plus support levels.",
+      "searchPlaceholder": "Search categories by name or code...",
+      "newRoot": "New category",
+      "addSub": "Add subcategory",
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "openTeamDetails": "Open team details for {{name}}",
+      "emptyTitle": "No categories found",
+      "emptyCreate": "Create the first Smart Facilities category.",
+      "deleteConfirm": "Delete category \"{{name}}\"? Subcategories and assignments may be affected.",
+      "stats": {
+        "total": "Total categories",
+        "parents": "Parent categories",
+        "subcategories": "Subcategories",
+        "withoutAssignments": "Without assignments"
+      },
+      "filters": {
+        "allTypes": "All category types",
+        "allStatuses": "All statuses"
+      },
+      "types": {
+        "parent": "Parent category",
+        "subcategory": "Subcategory"
+      },
+      "tabs": {
+        "categories": "Categories",
+        "levels": "Levels"
+      },
+      "columns": {
+        "name": "Name",
+        "type": "Type",
+        "parent": "Parent",
+        "code": "Code",
+        "assignments": "Assignments",
+        "sortOrder": "Sort order",
+        "isActive": "Active",
+        "created": "Created"
+      },
+      "form": {
+        "createTitle": "New category",
+        "editTitle": "Edit category",
+        "createSubTitle": "New subcategory",
+        "editSubTitle": "Edit subcategory",
+        "rootDescription": "Root categories represent top-level smart facilities streams.",
+        "subDescription": "Subcategories belong to a root category and represent a specific stream.",
+        "parentLabel": "Parent category",
+        "nameEn": "English name",
+        "nameAr": "Arabic name",
+        "code": "Code",
+        "description": "Description",
+        "descriptionPlaceholder": "Optional description",
+        "sortOrder": "Sort order",
+        "isActive": "Active",
+        "saving": "Saving...",
+        "createSubmit": "Create category",
+        "updateSubmit": "Save changes"
+      },
+      "toast": {
+        "created": "Category created successfully.",
+        "updated": "Category updated successfully.",
+        "deleted": "Category deleted successfully.",
+        "createFailed": "Failed to create category.",
+        "updateFailed": "Failed to update category.",
+        "deleteFailed": "Failed to delete category."
+      }
+    },
+    "levels": {
+      "new": "New level",
+      "searchPlaceholder": "Search levels by name, code, or note...",
+      "emptyTitle": "No levels found",
+      "emptyCreate": "Create the first support level.",
+      "deleteConfirm": "Delete level \"{{name}}\"?",
+      "columns": {
+        "nameEn": "English name",
+        "nameAr": "Arabic name",
+        "code": "Code",
+        "note": "Note",
+        "sortOrder": "Sort order",
+        "isActive": "Active"
+      },
+      "form": {
+        "createTitle": "New level",
+        "editTitle": "Edit level",
+        "createDescription": "Add a support level used across smart facilities team assignments.",
+        "editDescription": "Update level details.",
+        "nameEn": "English name",
+        "nameAr": "Arabic name",
+        "code": "Code",
+        "noteEn": "English note",
+        "noteAr": "Arabic note",
+        "notePlaceholder": "Optional note shown on hover",
+        "sortOrder": "Sort order",
+        "isActive": "Active",
+        "saving": "Saving...",
+        "createSubmit": "Create level",
+        "updateSubmit": "Save changes"
+      },
+      "toast": {
+        "created": "Level created successfully.",
+        "updated": "Level updated successfully.",
+        "deleted": "Level deleted successfully.",
+        "createFailed": "Failed to create level.",
+        "updateFailed": "Failed to update level.",
+        "deleteFailed": "Failed to delete level."
+      }
+    },
+    "assignments": {
+      "title": "Smart Facilities Team Assignments",
+      "description": "View and manage users assigned to each smart facilities stream and support level.",
+      "new": "New assignment",
+      "searchPlaceholder": "Search streams by name or code...",
+      "emptyTitle": "No streams found",
+      "emptyCreate": "Create smart facilities categories first to manage team assignments.",
+      "emptyFiltered": "Try a different search term.",
+      "deleteConfirm": "Remove assignment for {{name}}?",
+      "stats": {
+        "total": "Total assignments",
+        "uniqueUsers": "Unique assigned users",
+        "assignedCategories": "Assigned categories",
+        "unassignedCategories": "Unassigned categories"
+      },
+      "actions": {
+        "view": "View assignments",
+        "edit": "Edit assignments"
+      },
+      "filters": {
+        "allCategories": "All categories",
+        "allLevels": "All levels"
+      },
+      "columns": {
+        "stream": "Stream",
+        "user": "User",
+        "level": "Level",
+        "assignedUsers": "Assigned users"
+      },
+      "view": {
+        "title": "Stream assignments",
+        "description": "Users currently assigned to this smart facilities stream.",
+        "empty": "No users are assigned to this stream yet."
+      },
+      "edit": {
+        "title": "Edit assignments — {{name}}",
+        "titleFallback": "Edit assignments",
+        "description": "Add or remove users and set their support level for this stream.",
+        "deleteConfirm": "Remove {{user}} from this stream?",
+        "save": "Save changes",
+        "saving": "Saving..."
+      },
+      "form": {
+        "createTitle": "New assignment",
+        "editTitle": "Edit assignment",
+        "createDescription": "Assign one or more users to a category and support level.",
+        "editDescription": "Update this assignment's category, user, or level.",
+        "category": "Category",
+        "user": "User",
+        "users": "Users",
+        "level": "Level",
+        "selectLevel": "Select a level",
+        "selectUsers": "Select one or more users",
+        "searchCategories": "Search categories...",
+        "searchUsers": "Search users...",
+        "noCategories": "No categories found.",
+        "noUsers": "No users found.",
+        "addUser": "Add user",
+        "saving": "Saving...",
+        "createSubmit": "Create assignments",
+        "updateSubmit": "Save changes"
+      },
+      "validation": {
+        "categoryRequired": "Category is required.",
+        "levelRequired": "Level is required.",
+        "duplicateUserLevel": "This user is already assigned at this level."
+      },
+      "toast": {
+        "created": "Assignments created successfully.",
+        "updated": "Assignment updated successfully.",
+        "deleted": "Assignment removed successfully.",
+        "matrixSaved": "Stream assignments saved successfully.",
+        "createFailed": "Failed to create assignment.",
+        "updateFailed": "Failed to update assignment.",
+        "deleteFailed": "Failed to remove assignment."
+      }
+    },
+    "details": {
+      "title": "Escalation Matrix",
+      "description": "Browse Smart Facilities streams with live staffing by support level.",
+      "searchPlaceholder": "Search streams by name or code...",
+      "showingCount": "Showing {{shown}} of {{total}}",
+      "emptyTitle": "No streams found",
+      "emptyDescription": "Create categories and assignments to see streams here.",
+      "viewDetails": "View details",
+      "exportExcel": "Export Excel",
+      "exportCategory": "Export Excel",
+      "metrics": {
+        "members": "Members",
+        "levels": "Levels"
+      },
+      "manageStreams": "Manage streams"
+    },
+    "detail": {
+      "backToList": "Back to escalation matrix",
+      "invalidId": "Invalid stream",
+      "invalidIdDescription": "The stream id in the URL is not valid.",
+      "notFoundTitle": "Stream not found",
+      "notFoundDescription": "This stream may have been removed or you do not have access.",
+      "noMembersTitle": "No members assigned",
+      "noMembersDescription": "Assign users to this stream from the Team Assignments page.",
+      "escalationMatrix": "Escalation matrix",
+      "escalationPath": "Escalation path",
+      "memberCount": "{{count}} member",
+      "memberCount_other": "{{count}} members"
+    }
+  },
+  "releaseManagement": {
+    "categories": {
+      "title": "Release Management Categories",
+      "description": "Manage Release Management streams (categories) and their subcategories, plus support levels.",
+      "searchPlaceholder": "Search categories by name or code...",
+      "newRoot": "New category",
+      "addSub": "Add subcategory",
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "openTeamDetails": "Open team details for {{name}}",
+      "emptyTitle": "No categories found",
+      "emptyCreate": "Create the first Release Management category.",
+      "deleteConfirm": "Delete category \"{{name}}\"? Subcategories and assignments may be affected.",
+      "stats": {
+        "total": "Total categories",
+        "parents": "Parent categories",
+        "subcategories": "Subcategories",
+        "withoutAssignments": "Without assignments"
+      },
+      "filters": {
+        "allTypes": "All category types",
+        "allStatuses": "All statuses"
+      },
+      "types": {
+        "parent": "Parent category",
+        "subcategory": "Subcategory"
+      },
+      "tabs": {
+        "categories": "Categories",
+        "levels": "Levels"
+      },
+      "columns": {
+        "name": "Name",
+        "type": "Type",
+        "parent": "Parent",
+        "code": "Code",
+        "assignments": "Assignments",
+        "sortOrder": "Sort order",
+        "isActive": "Active",
+        "created": "Created"
+      },
+      "form": {
+        "createTitle": "New category",
+        "editTitle": "Edit category",
+        "createSubTitle": "New subcategory",
+        "editSubTitle": "Edit subcategory",
+        "rootDescription": "Root categories represent top-level release management streams.",
+        "subDescription": "Subcategories belong to a root category and represent a specific stream.",
+        "parentLabel": "Parent category",
+        "nameEn": "English name",
+        "nameAr": "Arabic name",
+        "code": "Code",
+        "description": "Description",
+        "descriptionPlaceholder": "Optional description",
+        "sortOrder": "Sort order",
+        "isActive": "Active",
+        "saving": "Saving...",
+        "createSubmit": "Create category",
+        "updateSubmit": "Save changes"
+      },
+      "toast": {
+        "created": "Category created successfully.",
+        "updated": "Category updated successfully.",
+        "deleted": "Category deleted successfully.",
+        "createFailed": "Failed to create category.",
+        "updateFailed": "Failed to update category.",
+        "deleteFailed": "Failed to delete category."
+      }
+    },
+    "levels": {
+      "new": "New level",
+      "searchPlaceholder": "Search levels by name, code, or note...",
+      "emptyTitle": "No levels found",
+      "emptyCreate": "Create the first support level.",
+      "deleteConfirm": "Delete level \"{{name}}\"?",
+      "columns": {
+        "nameEn": "English name",
+        "nameAr": "Arabic name",
+        "code": "Code",
+        "note": "Note",
+        "sortOrder": "Sort order",
+        "isActive": "Active"
+      },
+      "form": {
+        "createTitle": "New level",
+        "editTitle": "Edit level",
+        "createDescription": "Add a support level used across release management team assignments.",
+        "editDescription": "Update level details.",
+        "nameEn": "English name",
+        "nameAr": "Arabic name",
+        "code": "Code",
+        "noteEn": "English note",
+        "noteAr": "Arabic note",
+        "notePlaceholder": "Optional note shown on hover",
+        "sortOrder": "Sort order",
+        "isActive": "Active",
+        "saving": "Saving...",
+        "createSubmit": "Create level",
+        "updateSubmit": "Save changes"
+      },
+      "toast": {
+        "created": "Level created successfully.",
+        "updated": "Level updated successfully.",
+        "deleted": "Level deleted successfully.",
+        "createFailed": "Failed to create level.",
+        "updateFailed": "Failed to update level.",
+        "deleteFailed": "Failed to delete level."
+      }
+    },
+    "assignments": {
+      "title": "Release Management Team Assignments",
+      "description": "View and manage users assigned to each release management stream and support level.",
+      "new": "New assignment",
+      "searchPlaceholder": "Search streams by name or code...",
+      "emptyTitle": "No streams found",
+      "emptyCreate": "Create release management categories first to manage team assignments.",
+      "emptyFiltered": "Try a different search term.",
+      "deleteConfirm": "Remove assignment for {{name}}?",
+      "stats": {
+        "total": "Total assignments",
+        "uniqueUsers": "Unique assigned users",
+        "assignedCategories": "Assigned categories",
+        "unassignedCategories": "Unassigned categories"
+      },
+      "actions": {
+        "view": "View assignments",
+        "edit": "Edit assignments"
+      },
+      "filters": {
+        "allCategories": "All categories",
+        "allLevels": "All levels"
+      },
+      "columns": {
+        "stream": "Stream",
+        "user": "User",
+        "level": "Level",
+        "assignedUsers": "Assigned users"
+      },
+      "view": {
+        "title": "Stream assignments",
+        "description": "Users currently assigned to this release management stream.",
+        "empty": "No users are assigned to this stream yet."
+      },
+      "edit": {
+        "title": "Edit assignments — {{name}}",
+        "titleFallback": "Edit assignments",
+        "description": "Add or remove users and set their support level for this stream.",
+        "deleteConfirm": "Remove {{user}} from this stream?",
+        "save": "Save changes",
+        "saving": "Saving..."
+      },
+      "form": {
+        "createTitle": "New assignment",
+        "editTitle": "Edit assignment",
+        "createDescription": "Assign one or more users to a category and support level.",
+        "editDescription": "Update this assignment's category, user, or level.",
+        "category": "Category",
+        "user": "User",
+        "users": "Users",
+        "level": "Level",
+        "selectLevel": "Select a level",
+        "selectUsers": "Select one or more users",
+        "searchCategories": "Search categories...",
+        "searchUsers": "Search users...",
+        "noCategories": "No categories found.",
+        "noUsers": "No users found.",
+        "addUser": "Add user",
+        "saving": "Saving...",
+        "createSubmit": "Create assignments",
+        "updateSubmit": "Save changes"
+      },
+      "validation": {
+        "categoryRequired": "Category is required.",
+        "levelRequired": "Level is required.",
+        "duplicateUserLevel": "This user is already assigned at this level."
+      },
+      "toast": {
+        "created": "Assignments created successfully.",
+        "updated": "Assignment updated successfully.",
+        "deleted": "Assignment removed successfully.",
+        "matrixSaved": "Stream assignments saved successfully.",
+        "createFailed": "Failed to create assignment.",
+        "updateFailed": "Failed to update assignment.",
+        "deleteFailed": "Failed to remove assignment."
+      }
+    },
+    "details": {
+      "title": "Escalation Matrix",
+      "description": "Browse Release Management streams with live staffing by support level.",
+      "searchPlaceholder": "Search streams by name or code...",
+      "showingCount": "Showing {{shown}} of {{total}}",
+      "emptyTitle": "No streams found",
+      "emptyDescription": "Create categories and assignments to see streams here.",
+      "viewDetails": "View details",
+      "exportExcel": "Export Excel",
+      "exportCategory": "Export Excel",
+      "metrics": {
+        "members": "Members",
+        "levels": "Levels"
+      },
+      "manageStreams": "Manage streams"
     },
     "detail": {
       "backToList": "Back to escalation matrix",

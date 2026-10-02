@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { MultiCombobox } from "@/components/ui/multi-combobox"
 import {
   useCreateVendor,
   useUpdateVendor,
@@ -33,11 +34,14 @@ import {
   type VendorFormValues,
 } from "@/features/vendors/types/vendor-schema"
 import { getApiFieldErrors } from "@/lib/api-errors"
+import { OPERATIONAL_AREAS } from "@/lib/operational-areas"
 
 type VendorFormDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   vendor?: Vendor | null
+  defaultAreas?: string[]
+  lockAreas?: boolean
 }
 
 const emptyValues: VendorFormValues = {
@@ -48,11 +52,18 @@ const emptyValues: VendorFormValues = {
   contact_person_phone: "",
   remarks: "",
   status: true,
+  areas: [],
 }
 
-function toFormValues(vendor?: Vendor | null): VendorFormValues {
+function toFormValues(
+  vendor?: Vendor | null,
+  defaultAreas?: string[]
+): VendorFormValues {
   if (!vendor) {
-    return emptyValues
+    return {
+      ...emptyValues,
+      areas: defaultAreas ?? [],
+    }
   }
 
   return {
@@ -63,6 +74,7 @@ function toFormValues(vendor?: Vendor | null): VendorFormValues {
     contact_person_phone: vendor.contact_person_phone ?? "",
     remarks: vendor.remarks ?? "",
     status: vendor.status,
+    areas: vendor.areas ?? defaultAreas ?? [],
   }
 }
 
@@ -70,6 +82,8 @@ export function VendorFormDialog({
   open,
   onOpenChange,
   vendor = null,
+  defaultAreas,
+  lockAreas = false,
 }: VendorFormDialogProps) {
   const { t } = useTranslation()
   const isEdit = Boolean(vendor)
@@ -85,9 +99,9 @@ export function VendorFormDialog({
 
   useEffect(() => {
     if (open) {
-      form.reset(toFormValues(vendor))
+      form.reset(toFormValues(vendor, defaultAreas))
     }
-  }, [open, vendor, form])
+  }, [open, vendor, form, defaultAreas])
 
   const isSubmitting = createMutation.isPending || updateMutation.isPending
 
@@ -100,6 +114,9 @@ export function VendorFormDialog({
       contact_person_phone: values.contact_person_phone || null,
       remarks: values.remarks || null,
       status: values.status,
+      areas: Array.from(
+        new Set([...(values.areas ?? []), ...(defaultAreas ?? [])])
+      ),
     }
 
     try {
@@ -231,6 +248,31 @@ export function VendorFormDialog({
                   <FormLabel>{t("vendors.form.remarks")}</FormLabel>
                   <FormControl>
                     <Textarea {...field} value={field.value ?? ""} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="areas"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("vendors.form.areas")}</FormLabel>
+                  <FormControl>
+                    <MultiCombobox
+                      options={OPERATIONAL_AREAS.map((area) => ({
+                        value: area,
+                        label: t(`operationalAreas.${area}`),
+                      }))}
+                      values={field.value ?? []}
+                      onValuesChange={field.onChange}
+                      placeholder={t("vendors.form.areasPlaceholder")}
+                      searchPlaceholder={t("vendors.form.searchAreas")}
+                      emptyMessage={t("vendors.form.areasEmpty")}
+                      disabled={lockAreas}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

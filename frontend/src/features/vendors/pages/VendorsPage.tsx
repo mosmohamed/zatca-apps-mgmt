@@ -10,6 +10,7 @@ import {
 } from "@/components/EnterpriseDataTable"
 import type { EnterpriseExportConfig } from "@/components/enterprise-data-table/types"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { VendorFormDialog } from "@/features/vendors/components/VendorFormDialog"
 import { VendorStatsCards } from "@/features/vendors/components/VendorStatsCards"
 import {
@@ -19,16 +20,30 @@ import {
 import type { Vendor } from "@/features/vendors/types/vendor"
 import { useAuth } from "@/features/auth/hooks/use-auth"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
+import type { OperationalAreaCode } from "@/lib/operational-areas"
 import { cn } from "@/lib/utils"
 
-const ALL_COLUMN_IDS = ["name", "email", "phone", "status", "actions"]
+const ALL_COLUMN_IDS = ["name", "email", "phone", "areas", "status", "actions"]
 
-export function VendorsPage() {
+export type VendorsPageProps = {
+  forcedArea?: OperationalAreaCode
+  viewPermission?: string
+  titleKey?: string
+  lockArea?: boolean
+}
+
+export function VendorsPage({
+  forcedArea,
+  viewPermission = "vendors.view",
+  titleKey = "vendors.title",
+  lockArea = false,
+}: VendorsPageProps = {}) {
   const { t } = useTranslation()
   const { can } = useAuth()
   const canCreate = can("vendors.create")
   const canUpdate = can("vendors.update")
   const canDelete = can("vendors.delete")
+  const canView = can(viewPermission)
 
   const [searchParams] = useSearchParams()
   const [search, setSearch] = useState(() => searchParams.get("q") ?? "")
@@ -43,14 +58,24 @@ export function VendorsPage() {
 
   const debouncedSearch = useDebouncedValue(search, 350)
   const listParams = useMemo(
-    () => ({ page, per_page: 15, search: debouncedSearch, sort }),
-    [page, debouncedSearch, sort]
+    () => ({
+      page,
+      per_page: 15,
+      search: debouncedSearch,
+      sort,
+      ...(forcedArea ? { area: forcedArea } : {}),
+    }),
+    [page, debouncedSearch, sort, forcedArea]
   )
 
   const vendorsQuery = useVendors(listParams)
   const deleteMutation = useDeleteVendor()
   const items = vendorsQuery.data?.items ?? []
   const pagination = vendorsQuery.data?.pagination
+
+  if (!canView) {
+    return null
+  }
 
   function openCreate() {
     setEditing(null)
@@ -95,6 +120,23 @@ export function VendorsPage() {
         header: t("vendors.columns.phone"),
         label: t("vendors.columns.phone"),
         cell: (row) => row.phone ?? "—",
+      },
+      {
+        id: "areas",
+        header: t("vendors.columns.areas"),
+        label: t("vendors.columns.areas"),
+        cell: (row) =>
+          row.areas && row.areas.length > 0 ? (
+            <div className="flex flex-wrap gap-1">
+              {row.areas.map((area) => (
+                <Badge key={area} variant="secondary">
+                  {t(`operationalAreas.${area}`)}
+                </Badge>
+              ))}
+            </div>
+          ) : (
+            <span className="text-muted-foreground">—</span>
+          ),
       },
       {
         id: "status",
@@ -163,7 +205,7 @@ export function VendorsPage() {
   const exportConfig: EnterpriseExportConfig = {
     entity: "vendors",
     filenamePrefix: "vendors",
-    reportTitle: t("vendors.title"),
+    reportTitle: t(titleKey),
     columns: [
       { key: "name", label: t("vendors.columns.name") },
       { key: "email", label: t("vendors.columns.email") },
@@ -179,7 +221,7 @@ export function VendorsPage() {
     <section className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold">{t("vendors.title")}</h2>
+          <h2 className="text-lg font-semibold">{t(titleKey)}</h2>
           <p className="text-sm text-muted-foreground">
             {t("vendors.description")}
           </p>
@@ -192,7 +234,7 @@ export function VendorsPage() {
         ) : null}
       </div>
 
-      <VendorStatsCards />
+      <VendorStatsCards area={forcedArea} />
 
       <EnterpriseDataTable
         columns={columns}
@@ -245,6 +287,8 @@ export function VendorsPage() {
           open={dialogOpen}
           onOpenChange={setDialogOpen}
           vendor={editing}
+          defaultAreas={forcedArea ? [forcedArea] : undefined}
+          lockAreas={lockArea}
         />
       ) : null}
 

@@ -16,6 +16,10 @@ function toQuery(params: ListQueryParams): Record<string, string | number> {
     query.sort = params.sort
   }
 
+  if (params.area?.trim()) {
+    query.area = params.area.trim()
+  }
+
   return query
 }
 
@@ -45,9 +49,15 @@ export const usersService = {
     await api.delete<ApiEnvelope<null>>(`/users/${id}`)
   },
 
-  async statistics(): Promise<UserStatistics> {
+  async statistics(params: { area?: string } = {}): Promise<UserStatistics> {
+    const query: Record<string, string> = {}
+    if (params.area?.trim()) {
+      query.area = params.area.trim()
+    }
+
     const { data } = await api.get<ApiEnvelope<UserStatistics>>(
-      "/users/statistics"
+      "/users/statistics",
+      { params: query }
     )
     return data.data
   },

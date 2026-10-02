@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\OperationalArea;
 use App\Models\User;
+use App\Models\UserOperationalArea;
 use App\Traits\SearchTrait;
 use App\Traits\SortTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -21,7 +23,7 @@ class UserService
     private const string ROLE_GUARD = 'web';
 
     /**
-     * @param  array{search?: string|null, sort?: string|null, per_page?: int|null, page?: int|null}  $filters
+     * @param  array{search?: string|null, sort?: string|null, per_page?: int|null, page?: int|null, area?: string|null}  $filters
      * @return LengthAwarePaginator<int, User>
      */
     public function list(array $filters = []): LengthAwarePaginator
@@ -29,7 +31,14 @@ class UserService
         $perPage = max(1, min((int) ($filters['per_page'] ?? 15), 100));
         $page = max(1, (int) ($filters['page'] ?? 1));
 
-        $query = User::query()->with(['vendor', 'jobTitle', 'roles']);
+        $query = User::query()->with(['vendor', 'jobTitle', 'roles', 'operationalAreas']);
+
+        $area = isset($filters['area']) ? trim((string) $filters['area']) : '';
+        if ($area !== '' && in_array($area, OperationalArea::values(), true)) {
+            $query->whereHas('operationalAreas', static function (Builder $builder) use ($area): void {
+                $builder->where('area', $area);
+            });
+        }
 
         $this->applyUserSearch($query, $filters['search'] ?? null);
         $this->applyColumnSort(
@@ -44,7 +53,7 @@ class UserService
 
     public function find(int $id): User
     {
-        return User::query()->with(['vendor', 'jobTitle', 'roles'])->findOrFail($id);
+        return User::query()->with(['vendor', 'jobTitle', 'roles', 'operationalAreas'])->findOrFail($id);
     }
 
     /**
@@ -54,6 +63,7 @@ class UserService
     {
         return DB::transaction(function () use ($data, $actor): User {
             $roles = $this->extractRoles($data);
+            $areas = $this->extractAreas($data);
             unset($data['password_confirmation']);
 
             /** @var User $user */
@@ -63,7 +73,11 @@ class UserService
                 $this->syncUserRoles($user, $roles, $actor);
             }
 
-            return $user->load(['vendor', 'jobTitle', 'roles']);
+            if ($areas !== null) {
+                $this->syncAreas($user, $areas);
+            }
+
+            return $user->load(['vendor', 'jobTitle', 'roles', 'operationalAreas']);
         });
     }
 
@@ -74,6 +88,7 @@ class UserService
     {
         return DB::transaction(function () use ($user, $data, $actor): User {
             $roles = $this->extractRoles($data);
+            $areas = $this->extractAreas($data);
             unset($data['password_confirmation']);
 
             if (array_key_exists('password', $data) && ($data['password'] === null || $data['password'] === '')) {
@@ -86,7 +101,11 @@ class UserService
                 $this->syncUserRoles($user, $roles, $actor);
             }
 
-            return $user->refresh()->load(['vendor', 'jobTitle', 'roles']);
+            if ($areas !== null) {
+                $this->syncAreas($user, $areas);
+            }
+
+            return $user->refresh()->load(['vendor', 'jobTitle', 'roles', 'operationalAreas']);
         });
     }
 
@@ -102,7 +121,7 @@ class UserService
         return DB::transaction(static function () use ($user): User {
             $user->restore();
 
-            return $user->refresh()->load(['vendor', 'jobTitle', 'roles']);
+            return $user->refresh()->load(['vendor', 'jobTitle', 'roles', 'operationalAreas']);
         });
     }
 
@@ -125,6 +144,51 @@ class UserService
         }
 
         return array_values(array_unique(array_map('strval', $roles)));
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return list<string>|null
+     */
+    private function extractAreas(array &$data): ?array
+    {
+        if (! array_key_exists('areas', $data)) {
+            return null;
+        }
+
+        /** @var list<string>|null $areas */
+        $areas = $data['areas'];
+        unset($data['areas']);
+
+        if ($areas === null) {
+            return null;
+        }
+
+        if (! is_array($areas)) {
+            return [];
+        }
+
+        return array_values(array_unique(array_map('strval', $areas)));
+    }
+
+    /**
+     * @param  list<string>  $areas
+     */
+    private function syncAreas(User $user, array $areas): void
+    {
+        $allowed = OperationalArea::values();
+        $normalized = array_values(array_intersect($areas, $allowed));
+
+        $user->operationalAreas()->whereNotIn('area', $normalized)->delete();
+
+        foreach ($normalized as $area) {
+            UserOperationalArea::query()->firstOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'area' => $area,
+                ],
+            );
+        }
     }
 
     /**
@@ -190,6 +254,7 @@ class UserService
     }
 
     /**
+     * @param  array{area?: string|null}  $filters
      * @return array{
      *     total: int,
      *     active: int,
@@ -197,17 +262,26 @@ class UserService
      *     with_open_assignments: int
      * }
      */
-    public function statistics(): array
+    public function statistics(array $filters = []): array
     {
-        $totals = User::query()
+        $query = User::query();
+
+        $area = isset($filters['area']) ? trim((string) $filters['area']) : '';
+        if ($area !== '' && in_array($area, OperationalArea::values(), true)) {
+            $query->whereHas('operationalAreas', static function (Builder $builder) use ($area): void {
+                $builder->where('area', $area);
+            });
+        }
+
+        $totals = (clone $query)
             ->selectRaw('COUNT(*) as total')
             ->selectRaw('SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active')
             ->selectRaw('SUM(CASE WHEN is_active = 0 THEN 1 ELSE 0 END) as inactive')
             ->first();
 
-        $withAssignments = User::query()
-            ->whereHas('assignments', static function ($query): void {
-                $query->open();
+        $withAssignments = (clone $query)
+            ->whereHas('assignments', static function ($builder): void {
+                $builder->open();
             })
             ->count();
 
@@ -218,5 +292,4 @@ class UserService
             'with_open_assignments' => $withAssignments,
         ];
     }
-
 }

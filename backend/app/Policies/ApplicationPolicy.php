@@ -25,6 +25,18 @@ class ApplicationPolicy
         return 'applications';
     }
 
+    public function viewAny(User $user): bool
+    {
+        return $user->can('applications.view')
+            || $user->can('applications-details.view');
+    }
+
+    public function view(User $user, Application $application): bool
+    {
+        return $user->can('applications.view')
+            || $user->can('applications-details.view');
+    }
+
     public function viewInfrastructure(User $user, Application $application): bool
     {
         return $this->allowsInfrastructure($user, $application, 'application-infrastructure.view');

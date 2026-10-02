@@ -50,7 +50,7 @@ export function ServiceDeskStreamCard({
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language.startsWith("ar")
   const { can } = useAuth()
-  const canExport = can("service-desk-team-assignments.view")
+  const canExport = can("service-desk-escalation-matrix.view")
   const { exportCategory, isExportingCategory } = useServiceDeskEscalationExport()
   const accent = ACCENTS[accentIndex % ACCENTS.length]
   const exporting = isExportingCategory(card.id)

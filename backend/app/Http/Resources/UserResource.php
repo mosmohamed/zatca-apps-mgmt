@@ -40,6 +40,10 @@ class UserResource extends JsonResource
                 $this->relationLoaded('roles'),
                 fn () => $this->roles->pluck('name')->values()->all(),
             ),
+            'areas' => $this->when(
+                $this->relationLoaded('operationalAreas'),
+                fn () => $this->areaCodes(),
+            ),
             'permissions' => $this->when(
                 $this->canResolvePermissionsWithoutLazyLoading(),
                 fn () => $this->resolvedPermissionNames(),

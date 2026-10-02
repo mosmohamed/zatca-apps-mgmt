@@ -26,6 +26,7 @@ export type ManagedUser = {
   vendor?: UserVendor | null
   job_title?: JobTitleSummary | null
   roles?: string[]
+  areas?: string[]
   created_at: string | null
   updated_at: string | null
   deleted_at: string | null
@@ -45,6 +46,7 @@ export type UserPayload = {
   job_title_id?: number | null
   is_active?: boolean
   roles?: string[]
+  areas?: string[]
 }
 
 export type UserStatistics = {

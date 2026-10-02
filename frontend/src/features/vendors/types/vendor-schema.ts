@@ -21,6 +21,7 @@ export function createVendorFormSchema(t: TFunction) {
     contact_person_phone: z.string().trim().max(50).optional().nullable(),
     remarks: z.string().trim().optional().nullable(),
     status: z.boolean(),
+    areas: z.array(z.string()),
   })
 }
 

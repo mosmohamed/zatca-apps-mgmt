@@ -141,6 +141,8 @@ const DASHBOARD_WIDGET_PERMISSIONS: Record<
   license_usage: "licenses.view",
   infra_license_usage: "infra-licenses.view",
   service_desk_license_usage: "service-desk-licenses.view",
+  network_ops_license_usage: "network-ops-licenses.view",
+  smart_facilities_license_usage: "smart-facilities-licenses.view",
   license_status_distribution: "licenses.view",
   licenses_by_environment: "licenses.view",
   recent_activity: "activity-log.view",
@@ -186,6 +188,10 @@ export function DashboardPage() {
   const infraLicenseUsage = data?.charts.infra_license_usage ?? []
   const serviceDeskLicenseUsage =
     data?.charts.service_desk_license_usage ?? []
+  const networkOpsLicenseUsage =
+    data?.charts.network_ops_license_usage ?? []
+  const smartFacilitiesLicenseUsage =
+    data?.charts.smart_facilities_license_usage ?? []
   const licenseStatusDistribution =
     data?.charts.license_status_distribution ?? []
   const licensesByEnvironment = data?.charts.licenses_by_environment ?? []
@@ -431,6 +437,26 @@ export function DashboardPage() {
             titleKey="dashboard.charts.sdLicenseUsage"
             descriptionKey="dashboard.charts.sdLicenseUsageDesc"
             accentClassName="from-emerald-500/12 via-transparent to-transparent"
+          />
+        )
+      case "network_ops_license_usage":
+        return (
+          <LicenseUsageRadialChart
+            items={networkOpsLicenseUsage}
+            widgetKey="network_ops_license_usage"
+            titleKey="dashboard.charts.networkOpsLicenseUsage"
+            descriptionKey="dashboard.charts.networkOpsLicenseUsageDesc"
+            accentClassName="from-sky-500/12 via-transparent to-transparent"
+          />
+        )
+      case "smart_facilities_license_usage":
+        return (
+          <LicenseUsageRadialChart
+            items={smartFacilitiesLicenseUsage}
+            widgetKey="smart_facilities_license_usage"
+            titleKey="dashboard.charts.smartFacilitiesLicenseUsage"
+            descriptionKey="dashboard.charts.smartFacilitiesLicenseUsageDesc"
+            accentClassName="from-teal-500/12 via-transparent to-transparent"
           />
         )
       case "license_status_distribution":

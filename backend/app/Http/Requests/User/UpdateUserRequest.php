@@ -46,6 +46,8 @@ class UpdateUserRequest extends FormRequest
             'is_active' => ['sometimes', 'boolean'],
             'roles' => ['sometimes', 'array'],
             'roles.*' => ['string', 'max:255', Rule::exists('roles', 'name')->where('guard_name', 'web')],
+            'areas' => ['sometimes', 'array'],
+            'areas.*' => ['string', Rule::in(\App\Enums\OperationalArea::values())],
         ];
     }
 }

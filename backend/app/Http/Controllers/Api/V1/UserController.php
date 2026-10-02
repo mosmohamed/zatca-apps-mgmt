@@ -36,12 +36,14 @@ class UserController extends BaseApiController
     }
 
 
-    public function statistics(): JsonResponse
+    public function statistics(Request $request): JsonResponse
     {
         $this->authorize('viewAny', User::class);
 
+        $area = $request->string('area')->toString();
+
         return $this->successResponse(
-            $this->userService->statistics(),
+            $this->userService->statistics($area !== '' ? ['area' => $area] : []),
             __('messages.users.stats'),
         );
     }

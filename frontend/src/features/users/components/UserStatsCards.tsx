@@ -9,9 +9,13 @@ import {
 } from "@/components/EntityStatsCards"
 import { useUserStatistics } from "@/features/users/hooks/use-users"
 
-export function UserStatsCards() {
+type UserStatsCardsProps = {
+  area?: string
+}
+
+export function UserStatsCards({ area }: UserStatsCardsProps) {
   const { t } = useTranslation()
-  const statsQuery = useUserStatistics()
+  const statsQuery = useUserStatistics(area)
 
   const items = useMemo<EntityStatCardDefinition[]>(() => {
     const stats = statsQuery.data

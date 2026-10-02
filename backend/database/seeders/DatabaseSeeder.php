@@ -43,6 +43,9 @@ class DatabaseSeeder extends Seeder
             LicenseSeeder::class,
             OperationInfraSeeder::class,
             ServiceDeskSeeder::class,
+            NetworkOpsSeeder::class,
+            SmartFacilitiesSeeder::class,
+            ReleaseManagementSeeder::class,
         ]);
     }
 }

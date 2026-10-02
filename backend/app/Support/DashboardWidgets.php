@@ -56,6 +56,8 @@ final class DashboardWidgets
             'license_usage',
             'infra_license_usage',
             'service_desk_license_usage',
+            'network_ops_license_usage',
+            'smart_facilities_license_usage',
             'license_status_distribution',
             'licenses_by_environment',
             'recent_activity',

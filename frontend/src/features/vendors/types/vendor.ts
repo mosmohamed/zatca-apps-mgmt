@@ -7,6 +7,7 @@ export type Vendor = {
   contact_person_phone: string | null
   remarks: string | null
   status: boolean
+  areas?: string[]
   created_at: string | null
   updated_at: string | null
   deleted_at: string | null
@@ -20,6 +21,7 @@ export type VendorPayload = {
   contact_person_phone?: string | null
   remarks?: string | null
   status?: boolean
+  areas?: string[]
 }
 
 export type VendorStatistics = {

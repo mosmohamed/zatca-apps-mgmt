@@ -15,7 +15,7 @@ import { useDebouncedValue } from "@/hooks/use-debounced-value"
 export function InfraTeamsDetailsPage() {
   const { t } = useTranslation()
   const { can } = useAuth()
-  const canExport = can("infra-team-assignments.view")
+  const canExport = can("infra-escalation-matrix.view")
   const { exportAll, isExportingAll } = useInfraEscalationExport()
 
   const [search, setSearch] = useState("")

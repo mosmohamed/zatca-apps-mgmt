@@ -27,7 +27,10 @@ import {
   useCreateLicense,
   useUpdateLicense,
 } from "@/features/licenses/hooks/use-licenses"
-import type { LicenseModuleId } from "@/features/licenses/config/license-modules"
+import {
+  LICENSE_MODULES,
+  type LicenseModuleId,
+} from "@/features/licenses/config/license-modules"
 import type { License } from "@/features/licenses/types/license"
 import {
   createLicenseFormSchema,
@@ -102,10 +105,18 @@ export function LicenseFormDialog({
 }: LicenseFormDialogProps) {
   const { t } = useTranslation()
   const isEdit = Boolean(license)
+  const module = LICENSE_MODULES[moduleId]
   const createMutation = useCreateLicense(moduleId)
   const updateMutation = useUpdateLicense(moduleId)
 
-  const licenseFormSchema = useMemo(() => createLicenseFormSchema(t), [t])
+  const licenseFormSchema = useMemo(
+    () =>
+      createLicenseFormSchema(t, {
+        formProductKey: module.formProductKey,
+        formLicensedKey: module.formLicensedKey,
+      }),
+    [module.formLicensedKey, module.formProductKey, t]
+  )
 
   const form = useForm<LicenseFormValues>({
     resolver: zodResolver(licenseFormSchema),
@@ -203,7 +214,7 @@ export function LicenseFormDialog({
                 name="product"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("licenses.form.product")}</FormLabel>
+                    <FormLabel>{t(module.formProductKey)}</FormLabel>
                     <FormControl>
                       <Input placeholder="Microsoft 365" {...field} />
                     </FormControl>
@@ -270,7 +281,7 @@ export function LicenseFormDialog({
                 name="licensed"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("licenses.form.licensed")}</FormLabel>
+                    <FormLabel>{t(module.formLicensedKey)}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"

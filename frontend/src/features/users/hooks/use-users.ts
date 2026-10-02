@@ -16,7 +16,8 @@ export const userKeys = {
   all: ["users"] as const,
   lists: () => [...userKeys.all, "list"] as const,
   list: (params: ListQueryParams) => [...userKeys.lists(), params] as const,
-  statistics: () => [...userKeys.all, "statistics"] as const,
+  statistics: (area?: string) =>
+    [...userKeys.all, "statistics", area ?? "all"] as const,
 }
 
 export const userLookupKeys = {
@@ -46,6 +47,9 @@ export function useCreateUser() {
     mutationFn: (payload: UserPayload) => usersService.create(payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: userKeys.lists() })
+      await queryClient.invalidateQueries({
+        queryKey: [...userKeys.all, "statistics"],
+      })
       toast.success(i18n.t("users.toast.created"))
     },
     onError: (error) => {
@@ -62,6 +66,9 @@ export function useUpdateUser() {
       usersService.update(id, payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: userKeys.lists() })
+      await queryClient.invalidateQueries({
+        queryKey: [...userKeys.all, "statistics"],
+      })
       toast.success(i18n.t("users.toast.updated"))
     },
     onError: (error) => {
@@ -77,6 +84,9 @@ export function useDeleteUser() {
     mutationFn: (id: number) => usersService.remove(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: userKeys.lists() })
+      await queryClient.invalidateQueries({
+        queryKey: [...userKeys.all, "statistics"],
+      })
       toast.success(i18n.t("users.toast.deleted"))
     },
     onError: (error) => {
@@ -85,10 +95,10 @@ export function useDeleteUser() {
   })
 }
 
-export function useUserStatistics() {
+export function useUserStatistics(area?: string) {
   return useQuery({
-    queryKey: userKeys.statistics(),
-    queryFn: () => usersService.statistics(),
+    queryKey: userKeys.statistics(area),
+    queryFn: () => usersService.statistics(area ? { area } : {}),
     staleTime: 60_000,
   })
 }

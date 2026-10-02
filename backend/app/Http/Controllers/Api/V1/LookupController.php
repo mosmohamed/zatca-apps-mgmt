@@ -14,6 +14,12 @@ use App\Http\Resources\InfraLevelResource;
 use App\Http\Resources\JobTitleResource;
 use App\Http\Resources\ServiceDeskCategoryResource;
 use App\Http\Resources\ServiceDeskLevelResource;
+use App\Http\Resources\NetworkOpsCategoryResource;
+use App\Http\Resources\NetworkOpsLevelResource;
+use App\Http\Resources\SmartFacilitiesCategoryResource;
+use App\Http\Resources\SmartFacilitiesLevelResource;
+use App\Http\Resources\ReleaseManagementCategoryResource;
+use App\Http\Resources\ReleaseManagementLevelResource;
 use App\Http\Resources\SupportTypeResource;
 use App\Http\Resources\TechnologyResource;
 use App\Models\ApplicationStatus;
@@ -26,6 +32,12 @@ use App\Models\InfraLevel;
 use App\Models\JobTitle;
 use App\Models\ServiceDeskCategory;
 use App\Models\ServiceDeskLevel;
+use App\Models\NetworkOpsCategory;
+use App\Models\NetworkOpsLevel;
+use App\Models\SmartFacilitiesCategory;
+use App\Models\SmartFacilitiesLevel;
+use App\Models\ReleaseManagementCategory;
+use App\Models\ReleaseManagementLevel;
 use App\Models\SupportType;
 use App\Models\Technology;
 use App\Models\User;
@@ -269,6 +281,156 @@ class LookupController extends BaseApiController
         return $this->successResponse(
             ServiceDeskCategoryResource::collection($items)->resolve(),
             __('messages.lookups.service_desk_categories'),
+        );
+    }
+
+    public function networkOpsLevels(Request $request): JsonResponse
+    {
+        $this->authorizeLookup($request, [
+            'network-ops-levels.view',
+            'network-ops-team-assignments.view',
+            'network-ops-team-assignments.create',
+            'network-ops-team-assignments.update',
+            'network-ops-escalation-matrix.view',
+        ]);
+
+        $items = NetworkOpsLevel::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name_en')
+            ->get();
+
+        return $this->successResponse(
+            NetworkOpsLevelResource::collection($items)->resolve(),
+            __('messages.lookups.network_ops_levels'),
+        );
+    }
+
+    public function networkOpsCategories(Request $request): JsonResponse
+    {
+        $this->authorizeLookup($request, [
+            'network-ops-categories.view',
+            'network-ops-team-assignments.view',
+            'network-ops-team-assignments.create',
+            'network-ops-team-assignments.update',
+            'network-ops-escalation-matrix.view',
+        ]);
+
+        $items = NetworkOpsCategory::query()
+            ->with(['parent'])
+            ->withCount([
+                'children as children_count' => static function ($query): void {
+                    $query->where('is_active', true);
+                },
+            ])
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name_en')
+            ->get();
+
+        return $this->successResponse(
+            NetworkOpsCategoryResource::collection($items)->resolve(),
+            __('messages.lookups.network_ops_categories'),
+        );
+    }
+
+    public function smartFacilitiesLevels(Request $request): JsonResponse
+    {
+        $this->authorizeLookup($request, [
+            'smart-facilities-levels.view',
+            'smart-facilities-team-assignments.view',
+            'smart-facilities-team-assignments.create',
+            'smart-facilities-team-assignments.update',
+            'smart-facilities-escalation-matrix.view',
+        ]);
+
+        $items = SmartFacilitiesLevel::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name_en')
+            ->get();
+
+        return $this->successResponse(
+            SmartFacilitiesLevelResource::collection($items)->resolve(),
+            __('messages.lookups.smart_facilities_levels'),
+        );
+    }
+
+    public function smartFacilitiesCategories(Request $request): JsonResponse
+    {
+        $this->authorizeLookup($request, [
+            'smart-facilities-categories.view',
+            'smart-facilities-team-assignments.view',
+            'smart-facilities-team-assignments.create',
+            'smart-facilities-team-assignments.update',
+            'smart-facilities-escalation-matrix.view',
+        ]);
+
+        $items = SmartFacilitiesCategory::query()
+            ->with(['parent'])
+            ->withCount([
+                'children as children_count' => static function ($query): void {
+                    $query->where('is_active', true);
+                },
+            ])
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name_en')
+            ->get();
+
+        return $this->successResponse(
+            SmartFacilitiesCategoryResource::collection($items)->resolve(),
+            __('messages.lookups.smart_facilities_categories'),
+        );
+    }
+
+    public function releaseManagementLevels(Request $request): JsonResponse
+    {
+        $this->authorizeLookup($request, [
+            'release-management-levels.view',
+            'release-management-team-assignments.view',
+            'release-management-team-assignments.create',
+            'release-management-team-assignments.update',
+            'release-management-escalation-matrix.view',
+        ]);
+
+        $items = ReleaseManagementLevel::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name_en')
+            ->get();
+
+        return $this->successResponse(
+            ReleaseManagementLevelResource::collection($items)->resolve(),
+            __('messages.lookups.release_management_levels'),
+        );
+    }
+
+    public function releaseManagementCategories(Request $request): JsonResponse
+    {
+        $this->authorizeLookup($request, [
+            'release-management-categories.view',
+            'release-management-team-assignments.view',
+            'release-management-team-assignments.create',
+            'release-management-team-assignments.update',
+            'release-management-escalation-matrix.view',
+        ]);
+
+        $items = ReleaseManagementCategory::query()
+            ->with(['parent'])
+            ->withCount([
+                'children as children_count' => static function ($query): void {
+                    $query->where('is_active', true);
+                },
+            ])
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name_en')
+            ->get();
+
+        return $this->successResponse(
+            ReleaseManagementCategoryResource::collection($items)->resolve(),
+            __('messages.lookups.release_management_categories'),
         );
     }
 

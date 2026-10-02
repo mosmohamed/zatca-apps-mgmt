@@ -25,7 +25,7 @@ trait PaginationTrait
     /**
      * Standard list filter bag extracted from an index request.
      *
-     * @return array{search: string|null, sort: string, page: int, per_page: int}
+     * @return array{search: string|null, sort: string, page: int, per_page: int, area: string|null}
      */
     protected function listFilters(Request $request, string $defaultSort = '-created_at'): array
     {
@@ -33,12 +33,14 @@ trait PaginationTrait
 
         $search = $request->query('search');
         $sort = $request->query('sort', $defaultSort);
+        $area = $request->query('area');
 
         return [
             'search' => is_string($search) ? $search : null,
             'sort' => is_string($sort) && $sort !== '' ? $sort : $defaultSort,
             'page' => $pagination['page'],
             'per_page' => $pagination['per_page'],
+            'area' => is_string($area) && $area !== '' ? $area : null,
         ];
     }
 }

@@ -431,6 +431,126 @@ return [
         'retrieved' => 'Service desk escalation matrix retrieved successfully.',
     ],
 
+    'network_ops_levels' => [
+        'listed' => 'Network ops levels retrieved successfully.',
+        'created' => 'Network ops level created successfully.',
+        'retrieved' => 'Network ops level retrieved successfully.',
+        'updated' => 'Network ops level updated successfully.',
+        'deleted' => 'Network ops level deleted successfully.',
+    ],
+
+    'network_ops_categories' => [
+        'listed' => 'Network ops categories retrieved successfully.',
+        'tree_retrieved' => 'Network ops category tree retrieved successfully.',
+        'statistics_retrieved' => 'Network ops category statistics retrieved successfully.',
+        'created' => 'Network ops category created successfully.',
+        'retrieved' => 'Network ops category retrieved successfully.',
+        'updated' => 'Network ops category updated successfully.',
+        'deleted' => 'Network ops category deleted successfully.',
+        'parent_must_be_root' => 'Subcategories can only be nested under a root category.',
+    ],
+
+    'network_ops_team_assignments' => [
+        'listed' => 'Network ops team assignments retrieved successfully.',
+        'statistics_retrieved' => 'Network ops team assignment statistics retrieved successfully.',
+        'categories_listed' => 'Network ops assignment streams retrieved successfully.',
+        'category_retrieved' => 'Network ops stream assignments retrieved successfully.',
+        'created' => 'Network ops team assignment created successfully.',
+        'retrieved' => 'Network ops team assignment retrieved successfully.',
+        'updated' => 'Network ops team assignment updated successfully.',
+        'deleted' => 'Network ops team assignment deleted successfully.',
+    ],
+
+    'network_ops_teams_details' => [
+        'retrieved' => 'Network ops escalation matrix retrieved successfully.',
+    ],
+
+    'smart_facilities_levels' => [
+        'listed' => 'Smart facilities levels retrieved successfully.',
+        'created' => 'Smart facilities level created successfully.',
+        'retrieved' => 'Smart facilities level retrieved successfully.',
+        'updated' => 'Smart facilities level updated successfully.',
+        'deleted' => 'Smart facilities level deleted successfully.',
+    ],
+
+    'smart_facilities_categories' => [
+        'listed' => 'Smart facilities categories retrieved successfully.',
+        'tree_retrieved' => 'Smart facilities category tree retrieved successfully.',
+        'statistics_retrieved' => 'Smart facilities category statistics retrieved successfully.',
+        'created' => 'Smart facilities category created successfully.',
+        'retrieved' => 'Smart facilities category retrieved successfully.',
+        'updated' => 'Smart facilities category updated successfully.',
+        'deleted' => 'Smart facilities category deleted successfully.',
+        'parent_must_be_root' => 'Subcategories can only be nested under a root category.',
+    ],
+
+    'smart_facilities_team_assignments' => [
+        'listed' => 'Smart facilities team assignments retrieved successfully.',
+        'statistics_retrieved' => 'Smart facilities team assignment statistics retrieved successfully.',
+        'categories_listed' => 'Smart facilities assignment streams retrieved successfully.',
+        'category_retrieved' => 'Smart facilities stream assignments retrieved successfully.',
+        'created' => 'Smart facilities team assignment created successfully.',
+        'retrieved' => 'Smart facilities team assignment retrieved successfully.',
+        'updated' => 'Smart facilities team assignment updated successfully.',
+        'deleted' => 'Smart facilities team assignment deleted successfully.',
+    ],
+
+    'smart_facilities_teams_details' => [
+        'retrieved' => 'Smart facilities escalation matrix retrieved successfully.',
+    ],
+
+    'release_management_levels' => [
+        'listed' => 'Release management levels retrieved successfully.',
+        'created' => 'Release management level created successfully.',
+        'retrieved' => 'Release management level retrieved successfully.',
+        'updated' => 'Release management level updated successfully.',
+        'deleted' => 'Release management level deleted successfully.',
+    ],
+
+    'release_management_categories' => [
+        'listed' => 'Release management categories retrieved successfully.',
+        'tree_retrieved' => 'Release management category tree retrieved successfully.',
+        'statistics_retrieved' => 'Release management category statistics retrieved successfully.',
+        'created' => 'Release management category created successfully.',
+        'retrieved' => 'Release management category retrieved successfully.',
+        'updated' => 'Release management category updated successfully.',
+        'deleted' => 'Release management category deleted successfully.',
+        'parent_must_be_root' => 'Subcategories can only be nested under a root category.',
+    ],
+
+    'release_management_team_assignments' => [
+        'listed' => 'Release management team assignments retrieved successfully.',
+        'statistics_retrieved' => 'Release management team assignment statistics retrieved successfully.',
+        'categories_listed' => 'Release management assignment streams retrieved successfully.',
+        'category_retrieved' => 'Release management stream assignments retrieved successfully.',
+        'created' => 'Release management team assignment created successfully.',
+        'retrieved' => 'Release management team assignment retrieved successfully.',
+        'updated' => 'Release management team assignment updated successfully.',
+        'deleted' => 'Release management team assignment deleted successfully.',
+    ],
+
+    'release_management_teams_details' => [
+        'retrieved' => 'Release management escalation matrix retrieved successfully.',
+    ],
+
+    'network_ops_licenses' => [
+        'listed' => 'Network ops licenses retrieved successfully.',
+        'created' => 'Network ops license created successfully.',
+        'retrieved' => 'Network ops license retrieved successfully.',
+        'updated' => 'Network ops license updated successfully.',
+        'deleted' => 'Network ops license deleted successfully.',
+        'stats' => 'Network ops license statistics retrieved successfully.',
+    ],
+
+    'smart_facilities_licenses' => [
+        'listed' => 'Smart facilities licenses retrieved successfully.',
+        'created' => 'Smart facilities license created successfully.',
+        'retrieved' => 'Smart facilities license retrieved successfully.',
+        'updated' => 'Smart facilities license updated successfully.',
+        'deleted' => 'Smart facilities license deleted successfully.',
+        'stats' => 'Smart facilities license statistics retrieved successfully.',
+    ],
+
     'application_statuses' => [
         'listed' => 'Application statuses retrieved successfully.',
         'created' => 'Application status created successfully.',
@@ -533,6 +653,12 @@ return [
         'infra_categories' => 'Infrastructure categories retrieved successfully.',
         'service_desk_levels' => 'Service desk levels retrieved successfully.',
         'service_desk_categories' => 'Service desk categories retrieved successfully.',
+        'network_ops_levels' => 'Network ops levels retrieved successfully.',
+        'network_ops_categories' => 'Network ops categories retrieved successfully.',
+        'smart_facilities_levels' => 'Smart facilities levels retrieved successfully.',
+        'smart_facilities_categories' => 'Smart facilities categories retrieved successfully.',
+        'release_management_levels' => 'Release management levels retrieved successfully.',
+        'release_management_categories' => 'Release management categories retrieved successfully.',
     ],
 
     'exports' => [

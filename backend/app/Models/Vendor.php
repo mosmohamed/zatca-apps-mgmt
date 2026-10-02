@@ -62,4 +62,25 @@ class Vendor extends Model
     {
         return $this->hasMany(Application::class);
     }
+
+    /**
+     * @return HasMany<VendorOperationalArea, $this>
+     */
+    public function operationalAreas(): HasMany
+    {
+        return $this->hasMany(VendorOperationalArea::class);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function areaCodes(): array
+    {
+        return $this->operationalAreas
+            ->map(static fn (VendorOperationalArea $row): string => $row->area instanceof \BackedEnum
+                ? $row->area->value
+                : (string) $row->area)
+            ->values()
+            ->all();
+    }
 }

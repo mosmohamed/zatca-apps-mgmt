@@ -30,6 +30,10 @@ class VendorResource extends JsonResource
             'contact_person_phone' => $this->contact_person_phone,
             'remarks' => $this->remarks,
             'status' => $this->status,
+            'areas' => $this->when(
+                $this->relationLoaded('operationalAreas'),
+                fn () => $this->areaCodes(),
+            ),
             'users' => UserResource::collection($this->whenLoaded('users')),
             'created_at' => $this->formatDate($this->created_at),
             'updated_at' => $this->formatDate($this->updated_at),

@@ -124,6 +124,8 @@ class DashboardWidgetLayoutSettingsFeatureTest extends TestCase
         $widgets = $response->json('data.dashboard_widget_layout.widgets');
         $this->assertIsArray($widgets);
         $this->assertArrayHasKey('top_technologies', $widgets);
+        $this->assertArrayHasKey('network_ops_license_usage', $widgets);
+        $this->assertArrayHasKey('smart_facilities_license_usage', $widgets);
         $this->assertArrayHasKey('prayer_times', $widgets);
         $this->assertSame(6, $widgets['license_usage']['span_desktop']);
         $this->assertSame(3, $widgets['top_technologies']['span_desktop']);

@@ -24,4 +24,5 @@ export type ListQueryParams = {
   per_page?: number
   search?: string
   sort?: string
+  area?: string
 }

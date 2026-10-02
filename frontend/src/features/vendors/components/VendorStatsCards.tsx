@@ -9,9 +9,13 @@ import {
 } from "@/components/EntityStatsCards"
 import { useVendorStatistics } from "@/features/vendors/hooks/use-vendors"
 
-export function VendorStatsCards() {
+type VendorStatsCardsProps = {
+  area?: string
+}
+
+export function VendorStatsCards({ area }: VendorStatsCardsProps) {
   const { t } = useTranslation()
-  const statsQuery = useVendorStatistics()
+  const statsQuery = useVendorStatistics(area)
 
   const items = useMemo<EntityStatCardDefinition[]>(() => {
     const stats = statsQuery.data

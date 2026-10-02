@@ -29,6 +29,17 @@ use App\Http\Controllers\Api\V1\ServiceDeskCategoryController;
 use App\Http\Controllers\Api\V1\ServiceDeskLevelController;
 use App\Http\Controllers\Api\V1\ServiceDeskLicenseController;
 use App\Http\Controllers\Api\V1\ServiceDeskTeamAssignmentController;
+use App\Http\Controllers\Api\V1\NetworkOpsCategoryController;
+use App\Http\Controllers\Api\V1\NetworkOpsLevelController;
+use App\Http\Controllers\Api\V1\NetworkOpsLicenseController;
+use App\Http\Controllers\Api\V1\NetworkOpsTeamAssignmentController;
+use App\Http\Controllers\Api\V1\SmartFacilitiesCategoryController;
+use App\Http\Controllers\Api\V1\SmartFacilitiesLevelController;
+use App\Http\Controllers\Api\V1\SmartFacilitiesLicenseController;
+use App\Http\Controllers\Api\V1\SmartFacilitiesTeamAssignmentController;
+use App\Http\Controllers\Api\V1\ReleaseManagementCategoryController;
+use App\Http\Controllers\Api\V1\ReleaseManagementLevelController;
+use App\Http\Controllers\Api\V1\ReleaseManagementTeamAssignmentController;
 use App\Http\Controllers\Api\V1\SettingsController;
 use App\Http\Controllers\Api\V1\SupportTypeController;
 use App\Http\Controllers\Api\V1\TechnologyController;
@@ -65,6 +76,12 @@ Route::prefix('v1')->group(function (): void {
         Route::get('lookups/infra-categories', [LookupController::class, 'infraCategories']);
         Route::get('lookups/service-desk-levels', [LookupController::class, 'serviceDeskLevels']);
         Route::get('lookups/service-desk-categories', [LookupController::class, 'serviceDeskCategories']);
+        Route::get('lookups/network-ops-levels', [LookupController::class, 'networkOpsLevels']);
+        Route::get('lookups/network-ops-categories', [LookupController::class, 'networkOpsCategories']);
+        Route::get('lookups/smart-facilities-levels', [LookupController::class, 'smartFacilitiesLevels']);
+        Route::get('lookups/smart-facilities-categories', [LookupController::class, 'smartFacilitiesCategories']);
+        Route::get('lookups/release-management-levels', [LookupController::class, 'releaseManagementLevels']);
+        Route::get('lookups/release-management-categories', [LookupController::class, 'releaseManagementCategories']);
 
         Route::post('exports/{entity}', [ExportController::class, 'store']);
 
@@ -163,5 +180,54 @@ Route::prefix('v1')->group(function (): void {
         Route::get('service-desk-team-assignments/export/{infraCategory}', [ServiceDeskTeamAssignmentController::class, 'exportCategory']);
         Route::apiResource('service-desk-team-assignments', ServiceDeskTeamAssignmentController::class)
             ->parameters(['service-desk-team-assignments' => 'infraTeamAssignment']);
+
+        Route::get('network-ops-categories/statistics', [NetworkOpsCategoryController::class, 'statistics']);
+        Route::get('network-ops-categories/tree', [NetworkOpsCategoryController::class, 'tree']);
+        Route::apiResource('network-ops-levels', NetworkOpsLevelController::class)
+            ->parameters(['network-ops-levels' => 'infraLevel']);
+        Route::apiResource('network-ops-categories', NetworkOpsCategoryController::class)
+            ->parameters(['network-ops-categories' => 'infraCategory']);
+        Route::get('network-ops-team-assignments/statistics', [NetworkOpsTeamAssignmentController::class, 'statistics']);
+        Route::get('network-ops-team-assignments/categories-summary', [NetworkOpsTeamAssignmentController::class, 'categoriesSummary']);
+        Route::get('network-ops-team-assignments/category/{infraCategory}', [NetworkOpsTeamAssignmentController::class, 'categoryMatrix']);
+        Route::get('network-ops-team-assignments/details', [NetworkOpsTeamAssignmentController::class, 'details']);
+        Route::get('network-ops-team-assignments/export', [NetworkOpsTeamAssignmentController::class, 'export']);
+        Route::get('network-ops-team-assignments/export/{infraCategory}', [NetworkOpsTeamAssignmentController::class, 'exportCategory']);
+        Route::apiResource('network-ops-team-assignments', NetworkOpsTeamAssignmentController::class)
+            ->parameters(['network-ops-team-assignments' => 'infraTeamAssignment']);
+        Route::get('network-ops-licenses/statistics', [NetworkOpsLicenseController::class, 'statistics']);
+        Route::apiResource('network-ops-licenses', NetworkOpsLicenseController::class);
+
+        Route::get('smart-facilities-categories/statistics', [SmartFacilitiesCategoryController::class, 'statistics']);
+        Route::get('smart-facilities-categories/tree', [SmartFacilitiesCategoryController::class, 'tree']);
+        Route::apiResource('smart-facilities-levels', SmartFacilitiesLevelController::class)
+            ->parameters(['smart-facilities-levels' => 'infraLevel']);
+        Route::apiResource('smart-facilities-categories', SmartFacilitiesCategoryController::class)
+            ->parameters(['smart-facilities-categories' => 'infraCategory']);
+        Route::get('smart-facilities-team-assignments/statistics', [SmartFacilitiesTeamAssignmentController::class, 'statistics']);
+        Route::get('smart-facilities-team-assignments/categories-summary', [SmartFacilitiesTeamAssignmentController::class, 'categoriesSummary']);
+        Route::get('smart-facilities-team-assignments/category/{infraCategory}', [SmartFacilitiesTeamAssignmentController::class, 'categoryMatrix']);
+        Route::get('smart-facilities-team-assignments/details', [SmartFacilitiesTeamAssignmentController::class, 'details']);
+        Route::get('smart-facilities-team-assignments/export', [SmartFacilitiesTeamAssignmentController::class, 'export']);
+        Route::get('smart-facilities-team-assignments/export/{infraCategory}', [SmartFacilitiesTeamAssignmentController::class, 'exportCategory']);
+        Route::apiResource('smart-facilities-team-assignments', SmartFacilitiesTeamAssignmentController::class)
+            ->parameters(['smart-facilities-team-assignments' => 'infraTeamAssignment']);
+        Route::get('smart-facilities-licenses/statistics', [SmartFacilitiesLicenseController::class, 'statistics']);
+        Route::apiResource('smart-facilities-licenses', SmartFacilitiesLicenseController::class);
+
+        Route::get('release-management-categories/statistics', [ReleaseManagementCategoryController::class, 'statistics']);
+        Route::get('release-management-categories/tree', [ReleaseManagementCategoryController::class, 'tree']);
+        Route::apiResource('release-management-levels', ReleaseManagementLevelController::class)
+            ->parameters(['release-management-levels' => 'infraLevel']);
+        Route::apiResource('release-management-categories', ReleaseManagementCategoryController::class)
+            ->parameters(['release-management-categories' => 'infraCategory']);
+        Route::get('release-management-team-assignments/statistics', [ReleaseManagementTeamAssignmentController::class, 'statistics']);
+        Route::get('release-management-team-assignments/categories-summary', [ReleaseManagementTeamAssignmentController::class, 'categoriesSummary']);
+        Route::get('release-management-team-assignments/category/{infraCategory}', [ReleaseManagementTeamAssignmentController::class, 'categoryMatrix']);
+        Route::get('release-management-team-assignments/details', [ReleaseManagementTeamAssignmentController::class, 'details']);
+        Route::get('release-management-team-assignments/export', [ReleaseManagementTeamAssignmentController::class, 'export']);
+        Route::get('release-management-team-assignments/export/{infraCategory}', [ReleaseManagementTeamAssignmentController::class, 'exportCategory']);
+        Route::apiResource('release-management-team-assignments', ReleaseManagementTeamAssignmentController::class)
+            ->parameters(['release-management-team-assignments' => 'infraTeamAssignment']);
     });
 });

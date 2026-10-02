@@ -121,6 +121,27 @@ class User extends Authenticatable
     }
 
     /**
+     * @return HasMany<UserOperationalArea, $this>
+     */
+    public function operationalAreas(): HasMany
+    {
+        return $this->hasMany(UserOperationalArea::class);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function areaCodes(): array
+    {
+        return $this->operationalAreas
+            ->map(static fn (UserOperationalArea $row): string => $row->area instanceof \BackedEnum
+                ? $row->area->value
+                : (string) $row->area)
+            ->values()
+            ->all();
+    }
+
+    /**
      * @return HasOne<UserDashboardLayout, $this>
      */
     public function dashboardLayout(): HasOne

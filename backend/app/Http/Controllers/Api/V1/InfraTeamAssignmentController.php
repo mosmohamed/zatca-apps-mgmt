@@ -51,7 +51,10 @@ class InfraTeamAssignmentController extends BaseApiController
 
     public function details(): JsonResponse
     {
-        $this->authorize('viewAny', InfraTeamAssignment::class);
+        abort_unless(
+            request()->user()?->can('infra-escalation-matrix.view') ?? false,
+            403,
+        );
 
         return $this->successResponse(
             $this->infraTeamAssignmentService->detailsCards(),
@@ -61,7 +64,10 @@ class InfraTeamAssignmentController extends BaseApiController
 
     public function export(): BinaryFileResponse
     {
-        $this->authorize('viewAny', InfraTeamAssignment::class);
+        abort_unless(
+            request()->user()?->can('infra-escalation-matrix.view') ?? false,
+            403,
+        );
 
         /** @var User $user */
         $user = request()->user();
@@ -71,7 +77,10 @@ class InfraTeamAssignmentController extends BaseApiController
 
     public function exportCategory(InfraCategory $infraCategory): BinaryFileResponse
     {
-        $this->authorize('viewAny', InfraTeamAssignment::class);
+        abort_unless(
+            request()->user()?->can('infra-escalation-matrix.view') ?? false,
+            403,
+        );
 
         /** @var User $user */
         $user = request()->user();

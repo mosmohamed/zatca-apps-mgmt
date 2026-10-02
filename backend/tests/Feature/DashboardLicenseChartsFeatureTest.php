@@ -6,7 +6,9 @@ namespace Tests\Feature;
 
 use App\Models\InfraLicense;
 use App\Models\License;
+use App\Models\NetworkOpsLicense;
 use App\Models\ServiceDeskLicense;
+use App\Models\SmartFacilitiesLicense;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -37,6 +39,8 @@ class DashboardLicenseChartsFeatureTest extends TestCase
         License::factory()->create(['licensed' => 100, 'used' => 40, 'available' => 60]);
         InfraLicense::factory()->create(['licensed' => 70, 'used' => 30, 'available' => 40]);
         ServiceDeskLicense::factory()->create(['licensed' => 25, 'used' => 5, 'available' => 20]);
+        NetworkOpsLicense::factory()->create(['licensed' => 50, 'used' => 10, 'available' => 40]);
+        SmartFacilitiesLicense::factory()->create(['licensed' => 15, 'used' => 3, 'available' => 12]);
     }
 
     #[Test]
@@ -49,10 +53,14 @@ class DashboardLicenseChartsFeatureTest extends TestCase
         $this->assertSame(100, $this->chartCount($response->json('data.charts.license_usage'), 'licensed'));
         $this->assertSame(70, $this->chartCount($response->json('data.charts.infra_license_usage'), 'licensed'));
         $this->assertSame(25, $this->chartCount($response->json('data.charts.service_desk_license_usage'), 'licensed'));
+        $this->assertSame(50, $this->chartCount($response->json('data.charts.network_ops_license_usage'), 'licensed'));
+        $this->assertSame(15, $this->chartCount($response->json('data.charts.smart_facilities_license_usage'), 'licensed'));
 
         $this->assertSame(40, $this->chartCount($response->json('data.charts.license_usage'), 'used'));
         $this->assertSame(40, $this->chartCount($response->json('data.charts.infra_license_usage'), 'available'));
         $this->assertSame(20, $this->chartCount($response->json('data.charts.service_desk_license_usage'), 'available'));
+        $this->assertSame(40, $this->chartCount($response->json('data.charts.network_ops_license_usage'), 'available'));
+        $this->assertSame(12, $this->chartCount($response->json('data.charts.smart_facilities_license_usage'), 'available'));
     }
 
     #[Test]
@@ -73,6 +81,8 @@ class DashboardLicenseChartsFeatureTest extends TestCase
         $this->assertSame(100, $this->chartCount($response->json('data.charts.license_usage'), 'licensed'));
         $this->assertSame([], $response->json('data.charts.infra_license_usage'));
         $this->assertSame([], $response->json('data.charts.service_desk_license_usage'));
+        $this->assertSame([], $response->json('data.charts.network_ops_license_usage'));
+        $this->assertSame([], $response->json('data.charts.smart_facilities_license_usage'));
     }
 
     private function chartCount(mixed $chart, string $key): int

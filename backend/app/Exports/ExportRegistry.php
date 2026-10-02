@@ -10,6 +10,8 @@ use App\Exports\Definitions\DepartmentsExportDefinition;
 use App\Exports\Definitions\InfraLicensesExportDefinition;
 use App\Exports\Definitions\LicensesExportDefinition;
 use App\Exports\Definitions\ServiceDeskLicensesExportDefinition;
+use App\Exports\Definitions\NetworkOpsLicensesExportDefinition;
+use App\Exports\Definitions\SmartFacilitiesLicensesExportDefinition;
 use App\Exports\Definitions\TechnologiesExportDefinition;
 use App\Exports\Definitions\UsersExportDefinition;
 use App\Exports\Definitions\VendorsExportDefinition;
@@ -28,6 +30,8 @@ final class ExportRegistry
         'licenses' => LicensesExportDefinition::class,
         'infra-licenses' => InfraLicensesExportDefinition::class,
         'service-desk-licenses' => ServiceDeskLicensesExportDefinition::class,
+        'network-ops-licenses' => NetworkOpsLicensesExportDefinition::class,
+        'smart-facilities-licenses' => SmartFacilitiesLicensesExportDefinition::class,
         'departments' => DepartmentsExportDefinition::class,
     ];
 

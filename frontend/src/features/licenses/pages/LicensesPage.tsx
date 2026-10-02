@@ -150,8 +150,8 @@ export function LicensesPage({ moduleId = "apps" }: LicensesPageProps) {
       },
       {
         id: "product",
-        header: t("licenses.columns.product"),
-        label: t("licenses.columns.product"),
+        header: t(module.productKey),
+        label: t(module.productKey),
         sortable: true,
         sortKey: "product",
         cell: (row) => row.product,
@@ -166,8 +166,8 @@ export function LicensesPage({ moduleId = "apps" }: LicensesPageProps) {
       },
       {
         id: "licensed",
-        header: t("licenses.columns.licensed"),
-        label: t("licenses.columns.licensed"),
+        header: t(module.licensedKey),
+        label: t(module.licensedKey),
         sortable: true,
         sortKey: "licensed",
         cell: (row) => (
@@ -286,10 +286,10 @@ export function LicensesPage({ moduleId = "apps" }: LicensesPageProps) {
     columns: [
       { key: "publisher", label: t("licenses.columns.publisher") },
       { key: "name", label: t("licenses.columns.name") },
-      { key: "product", label: t("licenses.columns.product") },
+      { key: "product", label: t(module.productKey) },
       { key: "version", label: t("licenses.columns.version") },
       { key: "environment", label: t("licenses.columns.environment") },
-      { key: "licensed", label: t("licenses.columns.licensed") },
+      { key: "licensed", label: t(module.licensedKey) },
       { key: "used", label: t("licenses.columns.used") },
       { key: "available", label: t("licenses.columns.available") },
       { key: "start_date", label: t("licenses.columns.startDate") },

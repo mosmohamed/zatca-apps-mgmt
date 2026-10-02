@@ -51,7 +51,10 @@ class ServiceDeskTeamAssignmentController extends BaseApiController
 
     public function details(): JsonResponse
     {
-        $this->authorize('viewAny', ServiceDeskTeamAssignment::class);
+        abort_unless(
+            request()->user()?->can('service-desk-escalation-matrix.view') ?? false,
+            403,
+        );
 
         return $this->successResponse(
             $this->infraTeamAssignmentService->detailsCards(),
@@ -61,7 +64,10 @@ class ServiceDeskTeamAssignmentController extends BaseApiController
 
     public function export(): BinaryFileResponse
     {
-        $this->authorize('viewAny', ServiceDeskTeamAssignment::class);
+        abort_unless(
+            request()->user()?->can('service-desk-escalation-matrix.view') ?? false,
+            403,
+        );
 
         /** @var User $user */
         $user = request()->user();
@@ -71,7 +77,10 @@ class ServiceDeskTeamAssignmentController extends BaseApiController
 
     public function exportCategory(ServiceDeskCategory $infraCategory): BinaryFileResponse
     {
-        $this->authorize('viewAny', ServiceDeskTeamAssignment::class);
+        abort_unless(
+            request()->user()?->can('service-desk-escalation-matrix.view') ?? false,
+            403,
+        );
 
         /** @var User $user */
         $user = request()->user();

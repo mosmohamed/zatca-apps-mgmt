@@ -1,7 +1,19 @@
 import type { TFunction } from "i18next"
 import { z } from "zod"
 
-export function createLicenseFormSchema(t: TFunction) {
+import type { LicenseModuleConfig } from "@/features/licenses/config/license-modules"
+
+type LicenseLabelKeys = Pick<
+  LicenseModuleConfig,
+  "formProductKey" | "formLicensedKey"
+>
+
+export function createLicenseFormSchema(
+  t: TFunction,
+  labels?: Partial<LicenseLabelKeys>
+) {
+  const productLabel = t(labels?.formProductKey ?? "licenses.form.product")
+
   return z
     .object({
       publisher: z
@@ -17,7 +29,7 @@ export function createLicenseFormSchema(t: TFunction) {
       product: z
         .string()
         .trim()
-        .min(1, t("validation.required", { field: t("licenses.form.product") }))
+        .min(1, t("validation.required", { field: productLabel }))
         .max(255),
       version: z.string().trim().max(255).optional().nullable(),
       description: z.string().trim().max(5000).optional().nullable(),

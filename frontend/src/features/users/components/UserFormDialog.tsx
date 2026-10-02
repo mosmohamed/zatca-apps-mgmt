@@ -38,11 +38,14 @@ import {
 import { useVendors } from "@/features/vendors/hooks/use-vendors"
 import { useAuth } from "@/features/auth/hooks/use-auth"
 import { getApiFieldErrors } from "@/lib/api-errors"
+import { OPERATIONAL_AREAS } from "@/lib/operational-areas"
 
 type UserFormDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   user?: ManagedUser | null
+  defaultAreas?: string[]
+  lockAreas?: boolean
 }
 
 const emptyValues: UserFormValues = {
@@ -57,13 +60,20 @@ const emptyValues: UserFormValues = {
   job_title_id: null,
   is_active: true,
   roles: [],
+  areas: [],
   password: "",
   password_confirmation: "",
 }
 
-function toFormValues(user?: ManagedUser | null): UserFormValues {
+function toFormValues(
+  user?: ManagedUser | null,
+  defaultAreas?: string[]
+): UserFormValues {
   if (!user) {
-    return emptyValues
+    return {
+      ...emptyValues,
+      areas: defaultAreas ?? [],
+    }
   }
 
   return {
@@ -78,6 +88,7 @@ function toFormValues(user?: ManagedUser | null): UserFormValues {
     job_title_id: user.job_title_id,
     is_active: user.is_active,
     roles: user.roles ?? [],
+    areas: user.areas ?? defaultAreas ?? [],
     password: "",
     password_confirmation: "",
   }
@@ -87,6 +98,8 @@ export function UserFormDialog({
   open,
   onOpenChange,
   user = null,
+  defaultAreas,
+  lockAreas = false,
 }: UserFormDialogProps) {
   const { t } = useTranslation()
   const isEdit = Boolean(user)
@@ -119,6 +132,8 @@ export function UserFormDialog({
           jobTitles={jobTitlesQuery.data ?? []}
           createMutation={createMutation}
           updateMutation={updateMutation}
+          defaultAreas={defaultAreas}
+          lockAreas={lockAreas}
         />
       </DialogContent>
     </Dialog>
@@ -134,6 +149,8 @@ type UserFormFieldsProps = {
   jobTitles: Array<{ id: number; name_en: string; name_ar: string }>
   createMutation: ReturnType<typeof useCreateUser>
   updateMutation: ReturnType<typeof useUpdateUser>
+  defaultAreas?: string[]
+  lockAreas?: boolean
 }
 
 function UserFormFields({
@@ -145,6 +162,8 @@ function UserFormFields({
   jobTitles,
   createMutation,
   updateMutation,
+  defaultAreas,
+  lockAreas = false,
 }: UserFormFieldsProps) {
   const { t } = useTranslation()
   const { isSuperAdmin } = useAuth()
@@ -162,9 +181,9 @@ function UserFormFields({
 
   useEffect(() => {
     if (open) {
-      form.reset(toFormValues(user))
+      form.reset(toFormValues(user, defaultAreas))
     }
-  }, [open, user, form])
+  }, [open, user, form, defaultAreas])
 
   const vendorOptions = useMemo(
     () => [
@@ -214,6 +233,12 @@ function UserFormFields({
       job_title_id: values.job_title_id ?? null,
       is_active: values.is_active,
       roles: values.roles ?? [],
+      areas: Array.from(
+        new Set([
+          ...(values.areas ?? []),
+          ...(defaultAreas ?? []),
+        ])
+      ),
       ...(values.password
         ? {
             password: values.password,
@@ -365,6 +390,31 @@ function UserFormFields({
                   placeholder={t("users.form.rolesPlaceholder")}
                   searchPlaceholder={t("users.form.searchRoles")}
                   emptyMessage={t("roles.emptyTitle")}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="areas"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("users.form.areas")}</FormLabel>
+              <FormControl>
+                <MultiCombobox
+                  options={OPERATIONAL_AREAS.map((area) => ({
+                    value: area,
+                    label: t(`operationalAreas.${area}`),
+                  }))}
+                  values={field.value ?? []}
+                  onValuesChange={field.onChange}
+                  placeholder={t("users.form.areasPlaceholder")}
+                  searchPlaceholder={t("users.form.searchAreas")}
+                  emptyMessage={t("users.form.areasEmpty")}
+                  disabled={lockAreas}
                 />
               </FormControl>
               <FormMessage />

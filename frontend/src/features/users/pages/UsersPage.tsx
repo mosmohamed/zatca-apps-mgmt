@@ -22,24 +22,39 @@ import {
 import type { ManagedUser } from "@/features/users/types/user"
 import { useAuth } from "@/features/auth/hooks/use-auth"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
+import type { OperationalAreaCode } from "@/lib/operational-areas"
 import { cn } from "@/lib/utils"
 
 const ALL_COLUMN_IDS = [
   "name",
   "email",
   "roles",
+  "areas",
   "vendor",
   "jobTitle",
   "active",
   "actions",
 ]
 
-export function UsersPage() {
+export type UsersPageProps = {
+  forcedArea?: OperationalAreaCode
+  viewPermission?: string
+  titleKey?: string
+  lockArea?: boolean
+}
+
+export function UsersPage({
+  forcedArea,
+  viewPermission = "users.view",
+  titleKey = "users.title",
+  lockArea = false,
+}: UsersPageProps = {}) {
   const { t } = useTranslation()
   const { can } = useAuth()
   const canCreate = can("users.create")
   const canUpdate = can("users.update")
   const canDelete = can("users.delete")
+  const canView = can(viewPermission)
 
   const [searchParams] = useSearchParams()
   const [search, setSearch] = useState(() => searchParams.get("q") ?? "")
@@ -54,8 +69,14 @@ export function UsersPage() {
 
   const debouncedSearch = useDebouncedValue(search, 350)
   const listParams = useMemo(
-    () => ({ page, per_page: 15, search: debouncedSearch, sort }),
-    [page, debouncedSearch, sort]
+    () => ({
+      page,
+      per_page: 15,
+      search: debouncedSearch,
+      sort,
+      ...(forcedArea ? { area: forcedArea } : {}),
+    }),
+    [page, debouncedSearch, sort, forcedArea]
   )
 
   const usersQuery = useUsers(listParams)
@@ -63,6 +84,10 @@ export function UsersPage() {
   const updateMutation = useUpdateUser()
   const items = usersQuery.data?.items ?? []
   const pagination = usersQuery.data?.pagination
+
+  if (!canView) {
+    return null
+  }
 
   function openCreate() {
     setEditing(null)
@@ -100,6 +125,7 @@ export function UsersPage() {
         job_title_id: user.job_title_id,
         is_active: !user.is_active,
         roles: user.roles ?? [],
+        areas: user.areas ?? (forcedArea ? [forcedArea] : []),
       },
     })
   }
@@ -139,6 +165,23 @@ export function UsersPage() {
               {row.roles.map((role) => (
                 <Badge key={role} variant="outline">
                   {role}
+                </Badge>
+              ))}
+            </div>
+          ) : (
+            <span className="text-muted-foreground">—</span>
+          ),
+      },
+      {
+        id: "areas",
+        header: t("users.columns.areas"),
+        label: t("users.columns.areas"),
+        cell: (row) =>
+          row.areas && row.areas.length > 0 ? (
+            <div className="flex flex-wrap gap-1">
+              {row.areas.map((area) => (
+                <Badge key={area} variant="secondary">
+                  {t(`operationalAreas.${area}`)}
                 </Badge>
               ))}
             </div>
@@ -248,7 +291,7 @@ export function UsersPage() {
   const exportConfig: EnterpriseExportConfig = {
     entity: "users",
     filenamePrefix: "users",
-    reportTitle: t("users.title"),
+    reportTitle: t(titleKey),
     columns: [
       { key: "full_name", label: t("users.columns.name") },
       { key: "email", label: t("users.columns.email") },
@@ -265,7 +308,7 @@ export function UsersPage() {
     <section className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold">{t("users.title")}</h2>
+          <h2 className="text-lg font-semibold">{t(titleKey)}</h2>
           <p className="text-sm text-muted-foreground">
             {t("users.description")}
           </p>
@@ -278,7 +321,7 @@ export function UsersPage() {
         ) : null}
       </div>
 
-      <UserStatsCards />
+      <UserStatsCards area={forcedArea} />
 
       <EnterpriseDataTable
         columns={columns}
@@ -331,6 +374,8 @@ export function UsersPage() {
           open={dialogOpen}
           onOpenChange={setDialogOpen}
           user={editing}
+          defaultAreas={forcedArea ? [forcedArea] : undefined}
+          lockAreas={lockArea}
         />
       ) : null}
 

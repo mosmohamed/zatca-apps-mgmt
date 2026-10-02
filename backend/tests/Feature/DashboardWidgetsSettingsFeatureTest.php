@@ -49,6 +49,8 @@ class DashboardWidgetsSettingsFeatureTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.dashboard_widgets.top_technologies', true)
             ->assertJsonPath('data.dashboard_widgets.applications_by_ha_model', true)
+            ->assertJsonPath('data.dashboard_widgets.network_ops_license_usage', true)
+            ->assertJsonPath('data.dashboard_widgets.smart_facilities_license_usage', true)
             ->assertJsonPath('data.dashboard_widgets.weather', false)
             ->assertJsonPath('data.dashboard_widgets.local_time', false)
             ->assertJsonPath('data.dashboard_widgets.prayer_times', false)

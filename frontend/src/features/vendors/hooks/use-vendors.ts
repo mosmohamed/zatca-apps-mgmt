@@ -15,7 +15,8 @@ export const vendorKeys = {
   all: ["vendors"] as const,
   lists: () => [...vendorKeys.all, "list"] as const,
   list: (params: ListQueryParams) => [...vendorKeys.lists(), params] as const,
-  statistics: () => [...vendorKeys.all, "statistics"] as const,
+  statistics: (area?: string) =>
+    [...vendorKeys.all, "statistics", area ?? "all"] as const,
 }
 
 export function useVendors(params: ListQueryParams) {
@@ -33,6 +34,9 @@ export function useCreateVendor() {
     mutationFn: (payload: VendorPayload) => vendorsService.create(payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: vendorKeys.lists() })
+      await queryClient.invalidateQueries({
+        queryKey: [...vendorKeys.all, "statistics"],
+      })
       toast.success(i18n.t("vendors.toast.created"))
     },
     onError: (error) => {
@@ -49,6 +53,9 @@ export function useUpdateVendor() {
       vendorsService.update(id, payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: vendorKeys.lists() })
+      await queryClient.invalidateQueries({
+        queryKey: [...vendorKeys.all, "statistics"],
+      })
       toast.success(i18n.t("vendors.toast.updated"))
     },
     onError: (error) => {
@@ -64,6 +71,9 @@ export function useDeleteVendor() {
     mutationFn: (id: number) => vendorsService.remove(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: vendorKeys.lists() })
+      await queryClient.invalidateQueries({
+        queryKey: [...vendorKeys.all, "statistics"],
+      })
       toast.success(i18n.t("vendors.toast.deleted"))
     },
     onError: (error) => {
@@ -72,10 +82,10 @@ export function useDeleteVendor() {
   })
 }
 
-export function useVendorStatistics() {
+export function useVendorStatistics(area?: string) {
   return useQuery({
-    queryKey: vendorKeys.statistics(),
-    queryFn: () => vendorsService.statistics(),
+    queryKey: vendorKeys.statistics(area),
+    queryFn: () => vendorsService.statistics(area ? { area } : {}),
     staleTime: 60_000,
   })
 }

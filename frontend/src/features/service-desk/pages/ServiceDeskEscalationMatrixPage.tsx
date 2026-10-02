@@ -15,7 +15,7 @@ import { useDebouncedValue } from "@/hooks/use-debounced-value"
 export function ServiceDeskEscalationMatrixPage() {
   const { t } = useTranslation()
   const { can } = useAuth()
-  const canExport = can("service-desk-team-assignments.view")
+  const canExport = can("service-desk-escalation-matrix.view")
   const { exportAll, isExportingAll } = useServiceDeskEscalationExport()
 
   const [search, setSearch] = useState("")

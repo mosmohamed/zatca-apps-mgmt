@@ -1,4 +1,9 @@
-export type LicenseModuleId = "apps" | "infra" | "service-desk"
+export type LicenseModuleId =
+  | "apps"
+  | "infra"
+  | "service-desk"
+  | "network-ops"
+  | "smart-facilities"
 
 export type LicenseModuleConfig = {
   id: LicenseModuleId
@@ -10,6 +15,14 @@ export type LicenseModuleConfig = {
   titleKey: string
   descriptionKey: string
   queryKey: string
+  /** Column/detail label for the product field. */
+  productKey: string
+  /** Column/detail label for the licensed count field. */
+  licensedKey: string
+  /** Form label for the product field. */
+  formProductKey: string
+  /** Form label for the licensed count field. */
+  formLicensedKey: string
 }
 
 export const LICENSE_MODULES: Record<LicenseModuleId, LicenseModuleConfig> = {
@@ -23,6 +36,10 @@ export const LICENSE_MODULES: Record<LicenseModuleId, LicenseModuleConfig> = {
     titleKey: "licenses.titleApps",
     descriptionKey: "licenses.descriptionApps",
     queryKey: "licenses",
+    productKey: "licenses.columns.application",
+    licensedKey: "licenses.columns.licensedNo",
+    formProductKey: "licenses.form.application",
+    formLicensedKey: "licenses.form.licensedNo",
   },
   infra: {
     id: "infra",
@@ -34,6 +51,10 @@ export const LICENSE_MODULES: Record<LicenseModuleId, LicenseModuleConfig> = {
     titleKey: "licenses.titleInfra",
     descriptionKey: "licenses.descriptionInfra",
     queryKey: "infra-licenses",
+    productKey: "licenses.columns.product",
+    licensedKey: "licenses.columns.licensed",
+    formProductKey: "licenses.form.product",
+    formLicensedKey: "licenses.form.licensed",
   },
   "service-desk": {
     id: "service-desk",
@@ -45,6 +66,40 @@ export const LICENSE_MODULES: Record<LicenseModuleId, LicenseModuleConfig> = {
     titleKey: "licenses.titleSd",
     descriptionKey: "licenses.descriptionSd",
     queryKey: "service-desk-licenses",
+    productKey: "licenses.columns.product",
+    licensedKey: "licenses.columns.licensed",
+    formProductKey: "licenses.form.product",
+    formLicensedKey: "licenses.form.licensed",
+  },
+  "network-ops": {
+    id: "network-ops",
+    apiBase: "network-ops-licenses",
+    permissionPrefix: "network-ops-licenses",
+    exportEntity: "network-ops-licenses",
+    listPath: "/network-ops-licenses",
+    detailPath: (id) => `/network-ops-licenses/${id}`,
+    titleKey: "licenses.titleNetworkOps",
+    descriptionKey: "licenses.descriptionNetworkOps",
+    queryKey: "network-ops-licenses",
+    productKey: "licenses.columns.product",
+    licensedKey: "licenses.columns.licensed",
+    formProductKey: "licenses.form.product",
+    formLicensedKey: "licenses.form.licensed",
+  },
+  "smart-facilities": {
+    id: "smart-facilities",
+    apiBase: "smart-facilities-licenses",
+    permissionPrefix: "smart-facilities-licenses",
+    exportEntity: "smart-facilities-licenses",
+    listPath: "/smart-facilities-licenses",
+    detailPath: (id) => `/smart-facilities-licenses/${id}`,
+    titleKey: "licenses.titleSmartFacilities",
+    descriptionKey: "licenses.descriptionSmartFacilities",
+    queryKey: "smart-facilities-licenses",
+    productKey: "licenses.columns.product",
+    licensedKey: "licenses.columns.licensed",
+    formProductKey: "licenses.form.product",
+    formLicensedKey: "licenses.form.licensed",
   },
 }
 

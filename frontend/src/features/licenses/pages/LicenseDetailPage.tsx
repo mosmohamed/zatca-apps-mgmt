@@ -178,7 +178,7 @@ export function LicenseDetailPage({
                 value={license.name}
               />
               <DetailItem
-                label={t("licenses.columns.product")}
+                label={t(module.productKey)}
                 value={license.product}
               />
               <DetailItem
@@ -211,7 +211,7 @@ export function LicenseDetailPage({
           <CardContent className="pt-5">
             <dl className="grid gap-3 sm:grid-cols-2">
               <DetailItem
-                label={t("licenses.columns.licensed")}
+                label={t(module.licensedKey)}
                 value={String(license.licensed)}
               />
               <DetailItem

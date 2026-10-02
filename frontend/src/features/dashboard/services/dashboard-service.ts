@@ -49,6 +49,8 @@ export type DashboardData = {
     license_usage: DashboardChartItem[]
     infra_license_usage: DashboardChartItem[]
     service_desk_license_usage: DashboardChartItem[]
+    network_ops_license_usage: DashboardChartItem[]
+    smart_facilities_license_usage: DashboardChartItem[]
     license_status_distribution: DashboardChartItem[]
     licenses_by_environment: DashboardChartItem[]
   }

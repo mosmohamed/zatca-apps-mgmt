@@ -1,4 +1,12 @@
 {
+  "operationalAreas": {
+    "application": "التطبيقات",
+    "infra": "البنية التحتية",
+    "service_desk": "مكتب الخدمة",
+    "network_ops": "عمليات الشبكة",
+    "release_management": "إدارة الإصدارات",
+    "smart_facilities": "المرافق الذكية"
+  },
   "app": {
     "name": "Zatca Application OPS",
     "tagline": "",
@@ -44,7 +52,28 @@
     "serviceDesk": "مكتب الخدمة",
     "serviceDeskCategories": "التصنيفات",
     "serviceDeskTeamAssignments": "تعيينات الفريق",
-    "serviceDeskEscalationMatrix": "مصفوفة التصعيد"
+    "serviceDeskEscalationMatrix": "مصفوفة التصعيد",
+    "infraEmployees": "الموظفون",
+    "infraVendors": "الموردون",
+    "serviceDeskEmployees": "الموظفون",
+    "serviceDeskVendors": "الموردون",
+    "networkOps": "عمليات الشبكة",
+    "networkOpsCategories": "تصنيف الشبكة",
+    "networkOpsEmployees": "الموظفون",
+    "networkOpsVendors": "الموردون",
+    "networkOpsEscalationMatrix": "مصفوفة التصعيد",
+    "networkOpsLicenses": "التراخيص",
+    "releaseManagement": "إدارة الإصدارات",
+    "releaseManagementCategories": "التصنيفات",
+    "releaseManagementEmployees": "الموظفون",
+    "releaseManagementVendors": "الموردون",
+    "releaseManagementEscalationMatrix": "مصفوفة التصعيد",
+    "smartFacilities": "المرافق الذكية",
+    "smartFacilitiesCategories": "التصنيفات",
+    "smartFacilitiesEmployees": "الموظفون",
+    "smartFacilitiesVendors": "الموردون",
+    "smartFacilitiesEscalationMatrix": "مصفوفة التصعيد",
+    "smartFacilitiesLicenses": "التراخيص"
   },
   "common": {
     "cancel": "إلغاء",
@@ -234,7 +263,11 @@
       "emptyStatus": "أضف تطبيقات لعرض مزيج الحالات.",
       "emptyDepartments": "أنشئ الأقسام والتطبيقات لملء هذا الرسم.",
       "emptyLicenses": "أضف تراخيص لملء هذه الرسوم.",
-      "emptyHaModel": "عيّن نماذج التوافر العالي للتطبيقات لملء هذا الرسم."
+      "emptyHaModel": "عيّن نماذج التوافر العالي للتطبيقات لملء هذا الرسم.",
+      "networkOpsLicenseUsage": "استخدام تراخيص عمليات الشبكة",
+      "networkOpsLicenseUsageDesc": "المقاعد المستخدمة مقابل السعة المتاحة عبر تراخيص عمليات الشبكة.",
+      "smartFacilitiesLicenseUsage": "استخدام تراخيص المرافق الذكية",
+      "smartFacilitiesLicenseUsageDesc": "المقاعد المستخدمة مقابل السعة المتاحة عبر تراخيص المرافق الذكية."
     },
     "layout": {
       "dragHandle": "اسحب لإعادة ترتيب العنصر",
@@ -1221,7 +1254,9 @@
       "endDate": "تاريخ الانتهاء",
       "daysRemaining": "الأيام المتبقية",
       "description": "الوصف",
-      "proofOfEntitlement": "إثبات الاستحقاق"
+      "proofOfEntitlement": "إثبات الاستحقاق",
+      "application": "التطبيق",
+      "licensedNo": "عدد المرخّص"
     },
     "form": {
       "createTitle": "ترخيص جديد",
@@ -1250,7 +1285,9 @@
       "endDateAfterStart": "يجب أن يكون تاريخ الانتهاء في يوم البداية أو بعده.",
       "saving": "جاري الحفظ...",
       "createSubmit": "إنشاء الترخيص",
-      "updateSubmit": "حفظ التغييرات"
+      "updateSubmit": "حفظ التغييرات",
+      "application": "التطبيق",
+      "licensedNo": "عدد المرخّص"
     },
     "toast": {
       "created": "تم إنشاء الترخيص بنجاح.",
@@ -1279,7 +1316,11 @@
       "proofOfEntitlementDescription": "إثبات الشراء أو مرجع الاتفاقية أو رابط داعم.",
       "createdAt": "تاريخ الإنشاء",
       "updatedAt": "تاريخ التحديث"
-    }
+    },
+    "titleNetworkOps": "تراخيص عمليات الشبكة",
+    "descriptionNetworkOps": "تتبع استحقاقات برمجيات عمليات الشبكة والاستخدام والتجديدات.",
+    "titleSmartFacilities": "تراخيص المرافق الذكية",
+    "descriptionSmartFacilities": "تتبع استحقاقات برمجيات المرافق الذكية والاستخدام والتجديدات."
   },
   "applicationsDetails": {
     "title": "تفاصيل التطبيقات",
@@ -1629,7 +1670,9 @@
         "recent_activity": "النشاط الأخير",
         "weather": "الطقس",
         "local_time": "الوقت والتاريخ الحالي",
-        "prayer_times": "مواقيت الصلاة"
+        "prayer_times": "مواقيت الصلاة",
+        "network_ops_license_usage": "استخدام تراخيص عمليات الشبكة",
+        "smart_facilities_license_usage": "استخدام تراخيص المرافق الذكية"
       },
       "widgetHints": {
         "top_technologies": "رسم راداري لأكثر التقنيات استخداماً.",
@@ -1645,7 +1688,9 @@
         "recent_activity": "أحدث سجل النشاطات المدققة.",
         "weather": "حالة الطقس الحية للموقع المضبوط. مخفي افتراضياً.",
         "local_time": "ساعة وتاريخ محليان مباشران. مخفي افتراضياً.",
-        "prayer_times": "مواقيت الصلاة وعدّاد الصلاة التالية. مخفي افتراضياً."
+        "prayer_times": "مواقيت الصلاة وعدّاد الصلاة التالية. مخفي افتراضياً.",
+        "network_ops_license_usage": "رسم شعاعي لمقاعد تراخيص عمليات الشبكة.",
+        "smart_facilities_license_usage": "رسم شعاعي لمقاعد تراخيص المرافق الذكية."
       }
     },
     "security": {
@@ -1922,7 +1967,8 @@
       "metrics": {
         "members": "الأعضاء",
         "levels": "المستويات"
-      }
+      },
+      "manageStreams": "إدارة المسارات"
     },
     "detail": {
       "backToList": "العودة إلى مصفوفة التصعيد",
@@ -2137,7 +2183,656 @@
       "metrics": {
         "members": "الأعضاء",
         "levels": "المستويات"
+      },
+      "manageStreams": "إدارة المسارات"
+    },
+    "detail": {
+      "backToList": "العودة إلى مصفوفة التصعيد",
+      "invalidId": "مسار غير صالح",
+      "invalidIdDescription": "معرّف المسار في الرابط غير صالح.",
+      "notFoundTitle": "المسار غير موجود",
+      "notFoundDescription": "ربما تمت إزالة هذا المسار أو لا تملك صلاحية الوصول إليه.",
+      "noMembersTitle": "لا يوجد أعضاء معيّنون",
+      "noMembersDescription": "قم بتعيين مستخدمين لهذا المسار من صفحة تعيينات الفريق.",
+      "escalationMatrix": "مصفوفة التصعيد",
+      "escalationPath": "مسار التصعيد",
+      "memberCount": "{{count}} عضو",
+      "memberCount_other": "{{count}} أعضاء"
+    }
+  },
+  "networkOps": {
+    "categories": {
+      "title": "تصنيفات عمليات الشبكة",
+      "description": "إدارة تصنيفات عمليات الشبكة والتصنيفات الفرعية ومستويات الدعم.",
+      "searchPlaceholder": "البحث عن التصنيفات بالاسم أو الرمز...",
+      "newRoot": "تصنيف جديد",
+      "addSub": "إضافة تصنيف فرعي",
+      "expand": "توسيع",
+      "collapse": "طي",
+      "openTeamDetails": "فتح تفاصيل الفريق لـ {{name}}",
+      "emptyTitle": "لا توجد تصنيفات",
+      "emptyCreate": "أنشئ أول تصنيف لعمليات الشبكة.",
+      "deleteConfirm": "حذف التصنيف \"{{name}}\"؟ قد تتأثر التصنيفات الفرعية والتعيينات.",
+      "stats": {
+        "total": "إجمالي التصنيفات",
+        "parents": "التصنيفات الرئيسية",
+        "subcategories": "التصنيفات الفرعية",
+        "withoutAssignments": "بدون تعيينات"
+      },
+      "filters": {
+        "allTypes": "جميع أنواع التصنيفات",
+        "allStatuses": "جميع الحالات"
+      },
+      "types": {
+        "parent": "تصنيف رئيسي",
+        "subcategory": "تصنيف فرعي"
+      },
+      "tabs": {
+        "categories": "التصنيفات",
+        "levels": "المستويات"
+      },
+      "columns": {
+        "name": "الاسم",
+        "type": "النوع",
+        "parent": "التصنيف الرئيسي",
+        "code": "الرمز",
+        "assignments": "التعيينات",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط",
+        "created": "تاريخ الإنشاء"
+      },
+      "form": {
+        "createTitle": "تصنيف جديد",
+        "editTitle": "تعديل التصنيف",
+        "createSubTitle": "تصنيف فرعي جديد",
+        "editSubTitle": "تعديل التصنيف الفرعي",
+        "rootDescription": "التصنيفات الرئيسية تمثل مسارات عمليات الشبكة الأساسية.",
+        "subDescription": "التصنيفات الفرعية تنتمي إلى تصنيف رئيسي وتمثل مساراً محدداً.",
+        "parentLabel": "التصنيف الرئيسي",
+        "nameEn": "الاسم بالإنجليزية",
+        "nameAr": "الاسم بالعربية",
+        "code": "الرمز",
+        "description": "الوصف",
+        "descriptionPlaceholder": "وصف اختياري",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط",
+        "saving": "جارٍ الحفظ...",
+        "createSubmit": "إنشاء التصنيف",
+        "updateSubmit": "حفظ التغييرات"
+      },
+      "toast": {
+        "created": "تم إنشاء التصنيف بنجاح.",
+        "updated": "تم تحديث التصنيف بنجاح.",
+        "deleted": "تم حذف التصنيف بنجاح.",
+        "createFailed": "فشل إنشاء التصنيف.",
+        "updateFailed": "فشل تحديث التصنيف.",
+        "deleteFailed": "فشل حذف التصنيف."
       }
+    },
+    "levels": {
+      "new": "مستوى جديد",
+      "searchPlaceholder": "البحث عن المستويات بالاسم أو الرمز أو الملاحظة...",
+      "emptyTitle": "لا توجد مستويات",
+      "emptyCreate": "أنشئ أول مستوى دعم.",
+      "deleteConfirm": "حذف المستوى \"{{name}}\"؟",
+      "columns": {
+        "nameEn": "الاسم بالإنجليزية",
+        "nameAr": "الاسم بالعربية",
+        "code": "الرمز",
+        "note": "ملاحظة",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط"
+      },
+      "form": {
+        "createTitle": "مستوى جديد",
+        "editTitle": "تعديل المستوى",
+        "createDescription": "أضف مستوى دعم يُستخدم في تعيينات فرق عمليات الشبكة.",
+        "editDescription": "تحديث تفاصيل المستوى.",
+        "nameEn": "الاسم بالإنجليزية",
+        "nameAr": "الاسم بالعربية",
+        "code": "الرمز",
+        "noteEn": "ملاحظة بالإنجليزية",
+        "noteAr": "ملاحظة بالعربية",
+        "notePlaceholder": "ملاحظة اختيارية تظهر عند التمرير",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط",
+        "saving": "جارٍ الحفظ...",
+        "createSubmit": "إنشاء المستوى",
+        "updateSubmit": "حفظ التغييرات"
+      },
+      "toast": {
+        "created": "تم إنشاء المستوى بنجاح.",
+        "updated": "تم تحديث المستوى بنجاح.",
+        "deleted": "تم حذف المستوى بنجاح.",
+        "createFailed": "فشل إنشاء المستوى.",
+        "updateFailed": "فشل تحديث المستوى.",
+        "deleteFailed": "فشل حذف المستوى."
+      }
+    },
+    "assignments": {
+      "title": "تعيينات فريق عمليات الشبكة",
+      "description": "عرض وإدارة المستخدمين المعيّنين لكل مسار بنية تحتية ومستوى دعم.",
+      "new": "تعيين جديد",
+      "searchPlaceholder": "البحث عن المسارات بالاسم أو الرمز...",
+      "emptyTitle": "لا توجد مسارات",
+      "emptyCreate": "أنشئ تصنيفات عمليات الشبكة أولاً لإدارة تعيينات الفريق.",
+      "emptyFiltered": "جرّب مصطلح بحث مختلف.",
+      "deleteConfirm": "إزالة تعيين {{name}}؟",
+      "stats": {
+        "total": "إجمالي التعيينات",
+        "uniqueUsers": "المستخدمون المعيّنون",
+        "assignedCategories": "التصنيفات المعيّنة",
+        "unassignedCategories": "التصنيفات غير المعيّنة"
+      },
+      "actions": {
+        "view": "عرض التعيينات",
+        "edit": "تعديل التعيينات"
+      },
+      "filters": {
+        "allCategories": "جميع التصنيفات",
+        "allLevels": "جميع المستويات"
+      },
+      "columns": {
+        "stream": "المسار",
+        "user": "المستخدم",
+        "level": "المستوى",
+        "assignedUsers": "المستخدمون المعيّنون"
+      },
+      "view": {
+        "title": "تعيينات المسار",
+        "description": "المستخدمون المعيّنون حالياً لهذا المسار.",
+        "empty": "لا يوجد مستخدمون معيّنون لهذا المسار بعد."
+      },
+      "edit": {
+        "title": "تعديل التعيينات — {{name}}",
+        "titleFallback": "تعديل التعيينات",
+        "description": "أضف أو أزل المستخدمين وحدد مستوى الدعم لكل مستخدم في هذا المسار.",
+        "deleteConfirm": "إزالة {{user}} من هذا المسار؟",
+        "save": "حفظ التغييرات",
+        "saving": "جارٍ الحفظ..."
+      },
+      "form": {
+        "createTitle": "تعيين جديد",
+        "editTitle": "تعديل التعيين",
+        "createDescription": "تعيين مستخدم واحد أو أكثر إلى تصنيف ومستوى دعم.",
+        "editDescription": "تحديث التصنيف أو المستخدم أو المستوى لهذا التعيين.",
+        "category": "التصنيف",
+        "user": "المستخدم",
+        "users": "المستخدمون",
+        "level": "المستوى",
+        "selectLevel": "اختر مستوى",
+        "selectUsers": "اختر مستخدمًا واحدًا أو أكثر",
+        "searchCategories": "البحث عن التصنيفات...",
+        "searchUsers": "البحث عن المستخدمين...",
+        "noCategories": "لا توجد تصنيفات.",
+        "noUsers": "لا يوجد مستخدمون.",
+        "addUser": "إضافة مستخدم",
+        "saving": "جارٍ الحفظ...",
+        "createSubmit": "إنشاء التعيينات",
+        "updateSubmit": "حفظ التغييرات"
+      },
+      "validation": {
+        "categoryRequired": "التصنيف مطلوب.",
+        "levelRequired": "المستوى مطلوب.",
+        "duplicateUserLevel": "هذا المستخدم معيّن بالفعل على هذا المستوى."
+      },
+      "toast": {
+        "created": "تم إنشاء التعيينات بنجاح.",
+        "updated": "تم تحديث التعيين بنجاح.",
+        "deleted": "تمت إزالة التعيين بنجاح.",
+        "matrixSaved": "تم حفظ تعيينات المسار بنجاح.",
+        "createFailed": "فشل إنشاء التعيين.",
+        "updateFailed": "فشل تحديث التعيين.",
+        "deleteFailed": "فشل إزالة التعيين."
+      }
+    },
+    "details": {
+      "title": "مصفوفة التصعيد",
+      "description": "استعرض مسارات عمليات الشبكة مع التوزيع الحي حسب مستوى الدعم.",
+      "searchPlaceholder": "البحث عن المسارات بالاسم أو الرمز...",
+      "showingCount": "عرض {{shown}} من {{total}}",
+      "emptyTitle": "لا توجد مسارات",
+      "emptyDescription": "أنشئ تصنيفات وتعيينات لعرض المسارات هنا.",
+      "viewDetails": "عرض التفاصيل",
+      "exportExcel": "تصدير Excel",
+      "exportCategory": "تصدير Excel",
+      "metrics": {
+        "members": "الأعضاء",
+        "levels": "المستويات"
+      },
+      "manageStreams": "إدارة المسارات"
+    },
+    "detail": {
+      "backToList": "العودة إلى مصفوفة التصعيد",
+      "invalidId": "مسار غير صالح",
+      "invalidIdDescription": "معرّف المسار في الرابط غير صالح.",
+      "notFoundTitle": "المسار غير موجود",
+      "notFoundDescription": "ربما تمت إزالة هذا المسار أو لا تملك صلاحية الوصول إليه.",
+      "noMembersTitle": "لا يوجد أعضاء معيّنون",
+      "noMembersDescription": "قم بتعيين مستخدمين لهذا المسار من صفحة تعيينات الفريق.",
+      "escalationMatrix": "مصفوفة التصعيد",
+      "escalationPath": "مسار التصعيد",
+      "memberCount": "{{count}} عضو",
+      "memberCount_other": "{{count}} أعضاء"
+    }
+  },
+  "smartFacilities": {
+    "categories": {
+      "title": "تصنيفات المرافق الذكية",
+      "description": "إدارة تصنيفات المرافق الذكية والتصنيفات الفرعية ومستويات الدعم.",
+      "searchPlaceholder": "البحث عن التصنيفات بالاسم أو الرمز...",
+      "newRoot": "تصنيف جديد",
+      "addSub": "إضافة تصنيف فرعي",
+      "expand": "توسيع",
+      "collapse": "طي",
+      "openTeamDetails": "فتح تفاصيل الفريق لـ {{name}}",
+      "emptyTitle": "لا توجد تصنيفات",
+      "emptyCreate": "أنشئ أول تصنيف لالمرافق الذكية.",
+      "deleteConfirm": "حذف التصنيف \"{{name}}\"؟ قد تتأثر التصنيفات الفرعية والتعيينات.",
+      "stats": {
+        "total": "إجمالي التصنيفات",
+        "parents": "التصنيفات الرئيسية",
+        "subcategories": "التصنيفات الفرعية",
+        "withoutAssignments": "بدون تعيينات"
+      },
+      "filters": {
+        "allTypes": "جميع أنواع التصنيفات",
+        "allStatuses": "جميع الحالات"
+      },
+      "types": {
+        "parent": "تصنيف رئيسي",
+        "subcategory": "تصنيف فرعي"
+      },
+      "tabs": {
+        "categories": "التصنيفات",
+        "levels": "المستويات"
+      },
+      "columns": {
+        "name": "الاسم",
+        "type": "النوع",
+        "parent": "التصنيف الرئيسي",
+        "code": "الرمز",
+        "assignments": "التعيينات",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط",
+        "created": "تاريخ الإنشاء"
+      },
+      "form": {
+        "createTitle": "تصنيف جديد",
+        "editTitle": "تعديل التصنيف",
+        "createSubTitle": "تصنيف فرعي جديد",
+        "editSubTitle": "تعديل التصنيف الفرعي",
+        "rootDescription": "التصنيفات الرئيسية تمثل مسارات المرافق الذكية الأساسية.",
+        "subDescription": "التصنيفات الفرعية تنتمي إلى تصنيف رئيسي وتمثل مساراً محدداً.",
+        "parentLabel": "التصنيف الرئيسي",
+        "nameEn": "الاسم بالإنجليزية",
+        "nameAr": "الاسم بالعربية",
+        "code": "الرمز",
+        "description": "الوصف",
+        "descriptionPlaceholder": "وصف اختياري",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط",
+        "saving": "جارٍ الحفظ...",
+        "createSubmit": "إنشاء التصنيف",
+        "updateSubmit": "حفظ التغييرات"
+      },
+      "toast": {
+        "created": "تم إنشاء التصنيف بنجاح.",
+        "updated": "تم تحديث التصنيف بنجاح.",
+        "deleted": "تم حذف التصنيف بنجاح.",
+        "createFailed": "فشل إنشاء التصنيف.",
+        "updateFailed": "فشل تحديث التصنيف.",
+        "deleteFailed": "فشل حذف التصنيف."
+      }
+    },
+    "levels": {
+      "new": "مستوى جديد",
+      "searchPlaceholder": "البحث عن المستويات بالاسم أو الرمز أو الملاحظة...",
+      "emptyTitle": "لا توجد مستويات",
+      "emptyCreate": "أنشئ أول مستوى دعم.",
+      "deleteConfirm": "حذف المستوى \"{{name}}\"؟",
+      "columns": {
+        "nameEn": "الاسم بالإنجليزية",
+        "nameAr": "الاسم بالعربية",
+        "code": "الرمز",
+        "note": "ملاحظة",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط"
+      },
+      "form": {
+        "createTitle": "مستوى جديد",
+        "editTitle": "تعديل المستوى",
+        "createDescription": "أضف مستوى دعم يُستخدم في تعيينات فرق المرافق الذكية.",
+        "editDescription": "تحديث تفاصيل المستوى.",
+        "nameEn": "الاسم بالإنجليزية",
+        "nameAr": "الاسم بالعربية",
+        "code": "الرمز",
+        "noteEn": "ملاحظة بالإنجليزية",
+        "noteAr": "ملاحظة بالعربية",
+        "notePlaceholder": "ملاحظة اختيارية تظهر عند التمرير",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط",
+        "saving": "جارٍ الحفظ...",
+        "createSubmit": "إنشاء المستوى",
+        "updateSubmit": "حفظ التغييرات"
+      },
+      "toast": {
+        "created": "تم إنشاء المستوى بنجاح.",
+        "updated": "تم تحديث المستوى بنجاح.",
+        "deleted": "تم حذف المستوى بنجاح.",
+        "createFailed": "فشل إنشاء المستوى.",
+        "updateFailed": "فشل تحديث المستوى.",
+        "deleteFailed": "فشل حذف المستوى."
+      }
+    },
+    "assignments": {
+      "title": "تعيينات فريق المرافق الذكية",
+      "description": "عرض وإدارة المستخدمين المعيّنين لكل مسار بنية تحتية ومستوى دعم.",
+      "new": "تعيين جديد",
+      "searchPlaceholder": "البحث عن المسارات بالاسم أو الرمز...",
+      "emptyTitle": "لا توجد مسارات",
+      "emptyCreate": "أنشئ تصنيفات المرافق الذكية أولاً لإدارة تعيينات الفريق.",
+      "emptyFiltered": "جرّب مصطلح بحث مختلف.",
+      "deleteConfirm": "إزالة تعيين {{name}}؟",
+      "stats": {
+        "total": "إجمالي التعيينات",
+        "uniqueUsers": "المستخدمون المعيّنون",
+        "assignedCategories": "التصنيفات المعيّنة",
+        "unassignedCategories": "التصنيفات غير المعيّنة"
+      },
+      "actions": {
+        "view": "عرض التعيينات",
+        "edit": "تعديل التعيينات"
+      },
+      "filters": {
+        "allCategories": "جميع التصنيفات",
+        "allLevels": "جميع المستويات"
+      },
+      "columns": {
+        "stream": "المسار",
+        "user": "المستخدم",
+        "level": "المستوى",
+        "assignedUsers": "المستخدمون المعيّنون"
+      },
+      "view": {
+        "title": "تعيينات المسار",
+        "description": "المستخدمون المعيّنون حالياً لهذا المسار.",
+        "empty": "لا يوجد مستخدمون معيّنون لهذا المسار بعد."
+      },
+      "edit": {
+        "title": "تعديل التعيينات — {{name}}",
+        "titleFallback": "تعديل التعيينات",
+        "description": "أضف أو أزل المستخدمين وحدد مستوى الدعم لكل مستخدم في هذا المسار.",
+        "deleteConfirm": "إزالة {{user}} من هذا المسار؟",
+        "save": "حفظ التغييرات",
+        "saving": "جارٍ الحفظ..."
+      },
+      "form": {
+        "createTitle": "تعيين جديد",
+        "editTitle": "تعديل التعيين",
+        "createDescription": "تعيين مستخدم واحد أو أكثر إلى تصنيف ومستوى دعم.",
+        "editDescription": "تحديث التصنيف أو المستخدم أو المستوى لهذا التعيين.",
+        "category": "التصنيف",
+        "user": "المستخدم",
+        "users": "المستخدمون",
+        "level": "المستوى",
+        "selectLevel": "اختر مستوى",
+        "selectUsers": "اختر مستخدمًا واحدًا أو أكثر",
+        "searchCategories": "البحث عن التصنيفات...",
+        "searchUsers": "البحث عن المستخدمين...",
+        "noCategories": "لا توجد تصنيفات.",
+        "noUsers": "لا يوجد مستخدمون.",
+        "addUser": "إضافة مستخدم",
+        "saving": "جارٍ الحفظ...",
+        "createSubmit": "إنشاء التعيينات",
+        "updateSubmit": "حفظ التغييرات"
+      },
+      "validation": {
+        "categoryRequired": "التصنيف مطلوب.",
+        "levelRequired": "المستوى مطلوب.",
+        "duplicateUserLevel": "هذا المستخدم معيّن بالفعل على هذا المستوى."
+      },
+      "toast": {
+        "created": "تم إنشاء التعيينات بنجاح.",
+        "updated": "تم تحديث التعيين بنجاح.",
+        "deleted": "تمت إزالة التعيين بنجاح.",
+        "matrixSaved": "تم حفظ تعيينات المسار بنجاح.",
+        "createFailed": "فشل إنشاء التعيين.",
+        "updateFailed": "فشل تحديث التعيين.",
+        "deleteFailed": "فشل إزالة التعيين."
+      }
+    },
+    "details": {
+      "title": "مصفوفة التصعيد",
+      "description": "استعرض مسارات المرافق الذكية مع التوزيع الحي حسب مستوى الدعم.",
+      "searchPlaceholder": "البحث عن المسارات بالاسم أو الرمز...",
+      "showingCount": "عرض {{shown}} من {{total}}",
+      "emptyTitle": "لا توجد مسارات",
+      "emptyDescription": "أنشئ تصنيفات وتعيينات لعرض المسارات هنا.",
+      "viewDetails": "عرض التفاصيل",
+      "exportExcel": "تصدير Excel",
+      "exportCategory": "تصدير Excel",
+      "metrics": {
+        "members": "الأعضاء",
+        "levels": "المستويات"
+      },
+      "manageStreams": "إدارة المسارات"
+    },
+    "detail": {
+      "backToList": "العودة إلى مصفوفة التصعيد",
+      "invalidId": "مسار غير صالح",
+      "invalidIdDescription": "معرّف المسار في الرابط غير صالح.",
+      "notFoundTitle": "المسار غير موجود",
+      "notFoundDescription": "ربما تمت إزالة هذا المسار أو لا تملك صلاحية الوصول إليه.",
+      "noMembersTitle": "لا يوجد أعضاء معيّنون",
+      "noMembersDescription": "قم بتعيين مستخدمين لهذا المسار من صفحة تعيينات الفريق.",
+      "escalationMatrix": "مصفوفة التصعيد",
+      "escalationPath": "مسار التصعيد",
+      "memberCount": "{{count}} عضو",
+      "memberCount_other": "{{count}} أعضاء"
+    }
+  },
+  "releaseManagement": {
+    "categories": {
+      "title": "تصنيفات إدارة الإصدارات",
+      "description": "إدارة تصنيفات إدارة الإصدارات والتصنيفات الفرعية ومستويات الدعم.",
+      "searchPlaceholder": "البحث عن التصنيفات بالاسم أو الرمز...",
+      "newRoot": "تصنيف جديد",
+      "addSub": "إضافة تصنيف فرعي",
+      "expand": "توسيع",
+      "collapse": "طي",
+      "openTeamDetails": "فتح تفاصيل الفريق لـ {{name}}",
+      "emptyTitle": "لا توجد تصنيفات",
+      "emptyCreate": "أنشئ أول تصنيف لإدارة الإصدارات.",
+      "deleteConfirm": "حذف التصنيف \"{{name}}\"؟ قد تتأثر التصنيفات الفرعية والتعيينات.",
+      "stats": {
+        "total": "إجمالي التصنيفات",
+        "parents": "التصنيفات الرئيسية",
+        "subcategories": "التصنيفات الفرعية",
+        "withoutAssignments": "بدون تعيينات"
+      },
+      "filters": {
+        "allTypes": "جميع أنواع التصنيفات",
+        "allStatuses": "جميع الحالات"
+      },
+      "types": {
+        "parent": "تصنيف رئيسي",
+        "subcategory": "تصنيف فرعي"
+      },
+      "tabs": {
+        "categories": "التصنيفات",
+        "levels": "المستويات"
+      },
+      "columns": {
+        "name": "الاسم",
+        "type": "النوع",
+        "parent": "التصنيف الرئيسي",
+        "code": "الرمز",
+        "assignments": "التعيينات",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط",
+        "created": "تاريخ الإنشاء"
+      },
+      "form": {
+        "createTitle": "تصنيف جديد",
+        "editTitle": "تعديل التصنيف",
+        "createSubTitle": "تصنيف فرعي جديد",
+        "editSubTitle": "تعديل التصنيف الفرعي",
+        "rootDescription": "التصنيفات الرئيسية تمثل مسارات إدارة الإصدارات الأساسية.",
+        "subDescription": "التصنيفات الفرعية تنتمي إلى تصنيف رئيسي وتمثل مساراً محدداً.",
+        "parentLabel": "التصنيف الرئيسي",
+        "nameEn": "الاسم بالإنجليزية",
+        "nameAr": "الاسم بالعربية",
+        "code": "الرمز",
+        "description": "الوصف",
+        "descriptionPlaceholder": "وصف اختياري",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط",
+        "saving": "جارٍ الحفظ...",
+        "createSubmit": "إنشاء التصنيف",
+        "updateSubmit": "حفظ التغييرات"
+      },
+      "toast": {
+        "created": "تم إنشاء التصنيف بنجاح.",
+        "updated": "تم تحديث التصنيف بنجاح.",
+        "deleted": "تم حذف التصنيف بنجاح.",
+        "createFailed": "فشل إنشاء التصنيف.",
+        "updateFailed": "فشل تحديث التصنيف.",
+        "deleteFailed": "فشل حذف التصنيف."
+      }
+    },
+    "levels": {
+      "new": "مستوى جديد",
+      "searchPlaceholder": "البحث عن المستويات بالاسم أو الرمز أو الملاحظة...",
+      "emptyTitle": "لا توجد مستويات",
+      "emptyCreate": "أنشئ أول مستوى دعم.",
+      "deleteConfirm": "حذف المستوى \"{{name}}\"؟",
+      "columns": {
+        "nameEn": "الاسم بالإنجليزية",
+        "nameAr": "الاسم بالعربية",
+        "code": "الرمز",
+        "note": "ملاحظة",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط"
+      },
+      "form": {
+        "createTitle": "مستوى جديد",
+        "editTitle": "تعديل المستوى",
+        "createDescription": "أضف مستوى دعم يُستخدم في تعيينات فرق إدارة الإصدارات.",
+        "editDescription": "تحديث تفاصيل المستوى.",
+        "nameEn": "الاسم بالإنجليزية",
+        "nameAr": "الاسم بالعربية",
+        "code": "الرمز",
+        "noteEn": "ملاحظة بالإنجليزية",
+        "noteAr": "ملاحظة بالعربية",
+        "notePlaceholder": "ملاحظة اختيارية تظهر عند التمرير",
+        "sortOrder": "ترتيب الفرز",
+        "isActive": "نشط",
+        "saving": "جارٍ الحفظ...",
+        "createSubmit": "إنشاء المستوى",
+        "updateSubmit": "حفظ التغييرات"
+      },
+      "toast": {
+        "created": "تم إنشاء المستوى بنجاح.",
+        "updated": "تم تحديث المستوى بنجاح.",
+        "deleted": "تم حذف المستوى بنجاح.",
+        "createFailed": "فشل إنشاء المستوى.",
+        "updateFailed": "فشل تحديث المستوى.",
+        "deleteFailed": "فشل حذف المستوى."
+      }
+    },
+    "assignments": {
+      "title": "تعيينات فريق إدارة الإصدارات",
+      "description": "عرض وإدارة المستخدمين المعيّنين لكل مسار بنية تحتية ومستوى دعم.",
+      "new": "تعيين جديد",
+      "searchPlaceholder": "البحث عن المسارات بالاسم أو الرمز...",
+      "emptyTitle": "لا توجد مسارات",
+      "emptyCreate": "أنشئ تصنيفات إدارة الإصدارات أولاً لإدارة تعيينات الفريق.",
+      "emptyFiltered": "جرّب مصطلح بحث مختلف.",
+      "deleteConfirm": "إزالة تعيين {{name}}؟",
+      "stats": {
+        "total": "إجمالي التعيينات",
+        "uniqueUsers": "المستخدمون المعيّنون",
+        "assignedCategories": "التصنيفات المعيّنة",
+        "unassignedCategories": "التصنيفات غير المعيّنة"
+      },
+      "actions": {
+        "view": "عرض التعيينات",
+        "edit": "تعديل التعيينات"
+      },
+      "filters": {
+        "allCategories": "جميع التصنيفات",
+        "allLevels": "جميع المستويات"
+      },
+      "columns": {
+        "stream": "المسار",
+        "user": "المستخدم",
+        "level": "المستوى",
+        "assignedUsers": "المستخدمون المعيّنون"
+      },
+      "view": {
+        "title": "تعيينات المسار",
+        "description": "المستخدمون المعيّنون حالياً لهذا المسار.",
+        "empty": "لا يوجد مستخدمون معيّنون لهذا المسار بعد."
+      },
+      "edit": {
+        "title": "تعديل التعيينات — {{name}}",
+        "titleFallback": "تعديل التعيينات",
+        "description": "أضف أو أزل المستخدمين وحدد مستوى الدعم لكل مستخدم في هذا المسار.",
+        "deleteConfirm": "إزالة {{user}} من هذا المسار؟",
+        "save": "حفظ التغييرات",
+        "saving": "جارٍ الحفظ..."
+      },
+      "form": {
+        "createTitle": "تعيين جديد",
+        "editTitle": "تعديل التعيين",
+        "createDescription": "تعيين مستخدم واحد أو أكثر إلى تصنيف ومستوى دعم.",
+        "editDescription": "تحديث التصنيف أو المستخدم أو المستوى لهذا التعيين.",
+        "category": "التصنيف",
+        "user": "المستخدم",
+        "users": "المستخدمون",
+        "level": "المستوى",
+        "selectLevel": "اختر مستوى",
+        "selectUsers": "اختر مستخدمًا واحدًا أو أكثر",
+        "searchCategories": "البحث عن التصنيفات...",
+        "searchUsers": "البحث عن المستخدمين...",
+        "noCategories": "لا توجد تصنيفات.",
+        "noUsers": "لا يوجد مستخدمون.",
+        "addUser": "إضافة مستخدم",
+        "saving": "جارٍ الحفظ...",
+        "createSubmit": "إنشاء التعيينات",
+        "updateSubmit": "حفظ التغييرات"
+      },
+      "validation": {
+        "categoryRequired": "التصنيف مطلوب.",
+        "levelRequired": "المستوى مطلوب.",
+        "duplicateUserLevel": "هذا المستخدم معيّن بالفعل على هذا المستوى."
+      },
+      "toast": {
+        "created": "تم إنشاء التعيينات بنجاح.",
+        "updated": "تم تحديث التعيين بنجاح.",
+        "deleted": "تمت إزالة التعيين بنجاح.",
+        "matrixSaved": "تم حفظ تعيينات المسار بنجاح.",
+        "createFailed": "فشل إنشاء التعيين.",
+        "updateFailed": "فشل تحديث التعيين.",
+        "deleteFailed": "فشل إزالة التعيين."
+      }
+    },
+    "details": {
+      "title": "مصفوفة التصعيد",
+      "description": "استعرض مسارات إدارة الإصدارات مع التوزيع الحي حسب مستوى الدعم.",
+      "searchPlaceholder": "البحث عن المسارات بالاسم أو الرمز...",
+      "showingCount": "عرض {{shown}} من {{total}}",
+      "emptyTitle": "لا توجد مسارات",
+      "emptyDescription": "أنشئ تصنيفات وتعيينات لعرض المسارات هنا.",
+      "viewDetails": "عرض التفاصيل",
+      "exportExcel": "تصدير Excel",
+      "exportCategory": "تصدير Excel",
+      "metrics": {
+        "members": "الأعضاء",
+        "levels": "المستويات"
+      },
+      "manageStreams": "إدارة المسارات"
     },
     "detail": {
       "backToList": "العودة إلى مصفوفة التصعيد",

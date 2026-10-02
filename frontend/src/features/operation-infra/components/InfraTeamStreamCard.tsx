@@ -50,7 +50,7 @@ export function InfraTeamStreamCard({
   const { t, i18n } = useTranslation()
   const isArabic = i18n.language.startsWith("ar")
   const { can } = useAuth()
-  const canExport = can("infra-team-assignments.view")
+  const canExport = can("infra-escalation-matrix.view")
   const { exportCategory, isExportingCategory } = useInfraEscalationExport()
   const accent = ACCENTS[accentIndex % ACCENTS.length]
   const exporting = isExportingCategory(card.id)

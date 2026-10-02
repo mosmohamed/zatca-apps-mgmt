@@ -46,6 +46,8 @@ const DEFAULT_SPANS: Record<DashboardWidgetKey, WidgetDesktopSpan> = {
   license_usage: 2,
   infra_license_usage: 2,
   service_desk_license_usage: 2,
+  network_ops_license_usage: 2,
+  smart_facilities_license_usage: 2,
   license_status_distribution: 2,
   licenses_by_environment: 2,
   recent_activity: 2,

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Support\DashboardWidgetLayout;
+use App\Support\DashboardWidgets;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Test;
@@ -63,6 +65,39 @@ class LoginDefaultCredentialsSettingsFeatureTest extends TestCase
             'key' => 'login_default_credentials_enabled',
             'value' => '0',
         ]);
+    }
+
+    #[Test]
+    public function toggling_login_credentials_with_the_full_settings_form_payload_succeeds(): void
+    {
+        Sanctum::actingAs($this->admin);
+
+        $roles = Role::query()->orderBy('id')->get();
+        $roleMaps = [];
+        foreach ($roles as $role) {
+            $roleMaps[(string) $role->id] = DashboardWidgets::defaults();
+        }
+
+        $response = $this->putJson('/api/v1/settings', [
+            'settings' => [
+                'login_default_credentials_enabled' => false,
+                'login_default_email' => 'viewer@zatca.gov.sa',
+                'login_default_password' => 'password',
+                'dashboard_widgets' => [
+                    'roles' => $roleMaps,
+                ],
+                'dashboard_widget_layout' => DashboardWidgetLayout::defaults(),
+            ],
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.login_default_credentials_enabled', false)
+            ->assertJsonPath('data.dashboard_widgets.network_ops_license_usage', true)
+            ->assertJsonPath('data.dashboard_widgets.smart_facilities_license_usage', true);
+
+        $order = $response->json('data.dashboard_widget_layout.default_order');
+        $this->assertIsArray($order);
+        $this->assertContains('network_ops_license_usage', $order);
+        $this->assertContains('smart_facilities_license_usage', $order);
     }
 
     #[Test]
